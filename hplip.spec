@@ -379,6 +379,7 @@ rm -f %{buildroot}%{_prefix}/lib*/cups/filter/foomatic-rip
 # Remove other unneeded files
 rm -f %{buildroot}%{_sysconfdir}/init.d/hplip
 rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
+rm -f %{buildroot}%{py_platsitedir}/cupsext.la %{buildroot}%{py_platsitedir}/pcardext.la
 
 # install menu icons
 mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
