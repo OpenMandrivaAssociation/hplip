@@ -19,8 +19,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	1.6.12
-Release:	%mkrel 2
+Version:	1.7.4a
+Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Servers
 
@@ -88,7 +88,7 @@ Patch11: hplip-1.6.12-14_charsign_fixes.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
-Url:		http://hpinkjet.sourceforge.net/
+Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
 BuildRequires:	libsane-devel, xsane
 %endif
@@ -526,7 +526,7 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/[e-z]*
 # C libraries for Python
 %{_libdir}/python*/*/*.so*
-%{py_platsitedir}/*.egg-info
+#%{py_platsitedir}/*.egg-info
 # CUPS backends (0700 permissions, so that CUPS 1.2 runs these backends
 # as root)
 %attr(0700,root,root) %{_prefix}/lib*/cups/backend/hp*
