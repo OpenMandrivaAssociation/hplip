@@ -20,7 +20,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	1.7.4a
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL/MIT/BSD
 Group:		System/Servers
 
@@ -92,7 +92,7 @@ Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
 BuildRequires:	libsane-devel, xsane
 %endif
-BuildRequires:	python-devel
+%py_requires -d
 BuildRequires:	PyQt >= 3.13-2mdk, sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	libusb-devel >= 0.1.8
@@ -302,7 +302,7 @@ chmod -R u+w .
 #export CFLAGS="-g"
 #export CXXFLAGS="-g"
 
-autoconf-2.5x
+autoconf
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
