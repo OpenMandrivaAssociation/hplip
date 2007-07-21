@@ -70,7 +70,7 @@ Patch3: hplip-1.6.12-HP-PhotoSmart_7150tilde.patch
 # Henrique de Moraes Holschuh from Debian)
 #Patch9: hplip-0.9.5-11_fix-misc-gcc-warnings.patch.bz2
 #Patch10: hplip-0.9.5-13_intsign-fixes.patch.bz2
-Patch11: hplip-1.6.12-14_charsign_fixes.patch
+Patch11: hplip-2.7.6-14_charsign_fixes.patch
 #Patch12: hplip-0.9.5-15_64bit_fixes.patch.bz2
 #Patch13: hplip-0.9.5-20_fix_unitialized_var_bugs.patch.bz2
 #Patch14: hplip-0.9.5-50_hp-clean_fix.patch.bz2
@@ -85,6 +85,9 @@ Patch11: hplip-1.6.12-14_charsign_fixes.patch
 # Fix problem of HP PSC 950 series printers not being correctly
 # recognized and a duplex bug
 #Patch18: hplip-0.9.11-2.patch.bz2
+
+# Patch100: official patch
+Patch100: hplip-2.7.6-1.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -238,6 +241,7 @@ flash memory cards.
 %prep
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
+%patch100 -p1
 #patch0 -p1
 
 # Support for HP PSC 750xi
