@@ -26,8 +26,6 @@ Group:		System/Servers
 
 %define mdv2007 %(perl -e 'print ("%release" =~ /mdv/ ? 1 : 0)')
 
-
-
 ##### SOURCE FILES #####
 
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -36,55 +34,10 @@ Source1: hplip.png.bz2
 
 ##### PATCHES #####
 
-# Let SNMP stuff really getting built
-#Patch0: hplip-0.8.8.patch.bz2
-
-# Support for HP PSC 750xi
-#Patch1: hplip-0.9-HP-PSC_950xi.patch.bz2
-
-# Fix battery level check for HP DeskJet 450
-#Patch2: hplip-0.9.1-HP-DeskJet_450-Battery.patch.bz2
-
 # Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
 Patch3: hplip-1.6.12-HP-PhotoSmart_7150tilde.patch
 
-# 64-bit fixes
-# NOTE: knowingly overflowing as on 32-bit platforms under certain conditions
-#Patch4: hplip-0.9.4-64bit-fixes.patch.bz2
-
-# Remove "su" from startup script
-#Patch5: hplip-0.9.5-startup-script.patch.bz2
-
-# Let the HPLIP toolbox start the browser to access the web interface
-# of a LAN printer in the background, so that one can still work in
-# the toolbox while the browser is open.
-#Patch6: hplip-0.9.4-browser-launch.patch.bz2
-
-# Fix full-bleed on Letter, A4 or bigger paper
-#Patch7: hplip-0.9.4-letter-a4-full-bleed.patch.bz2
-
-# Fix PML scanning regression in HPLIP 0.9.5 (official patch from HP)
-#Patch8: hplip-0.9.5-pml-scannning-big-endian-pc.patch.bz2
-
-# Assorted fixes from Debian and Ubuntu (Thanks to
-# Henrique de Moraes Holschuh from Debian)
-#Patch9: hplip-0.9.5-11_fix-misc-gcc-warnings.patch.bz2
-#Patch10: hplip-0.9.5-13_intsign-fixes.patch.bz2
 Patch11: hplip-2.7.6-14_charsign_fixes.patch
-#Patch12: hplip-0.9.5-15_64bit_fixes.patch.bz2
-#Patch13: hplip-0.9.5-20_fix_unitialized_var_bugs.patch.bz2
-#Patch14: hplip-0.9.5-50_hp-clean_fix.patch.bz2
-#Patch15: hplip-0.9.5-99_ubuntu_hplip-deroot.patch.bz2
-
-# Official 0.9.7 bugfix patch from HP
-#Patch16: hplip-0.9.7-2.patch.bz2
-
-# Official 0.9.8 bugfix patch from HP
-#Patch17: hplip-0.9.8-4.patch.bz2
-
-# Fix problem of HP PSC 950 series printers not being correctly
-# recognized and a duplex bug
-#Patch18: hplip-0.9.11-2.patch.bz2
 
 # Patch100: official patch
 Patch100: hplip-2.7.6-1.patch
@@ -136,8 +89,6 @@ Linux workstation with CUPS printing system.
 For status and consumable checking and also for inkjet maintenance
 there is the graphical tool "hp-toolbox" available (Menu:
 "System"/"Monitoring"/"HP Printer Toolbox").
-
-
 
 ##### SUB-PACKAGES #####
 
@@ -242,46 +193,11 @@ flash memory cards.
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 %patch100 -p1
-#patch0 -p1
-
-# Support for HP PSC 750xi
-#patch1 -p0
-
-# Fix battery level check for HP DeskJet 450
-#patch2 -p0
 
 # Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
 %patch3 -p1 -b .hpps7150
 
-#patch4 -p1 -b .64bit-fixes
-
-#patch5 -p0 -b .startup
-
-#patch6 -p0 -b .browser
-
-#patch7 -p0 -b .fullbleed
-
-#patch8 -p1 -b .pmlscan
-
-#patch9 -p0 -b .11gccwarn
-
-#patch10 -p0 -b .13intsign
-
 %patch11 -p1 -b .14charsign
-
-#patch12 -p0 -b .15_64bit
-
-#patch13 -p0 -b .20uninit
-
-#patch14 -p0 -b .50hpclean
-
-#patch15 -p0 -b .99nonroot
-
-#patch16 -p1 -b .hp0972
-
-#patch17 -p1 -b .hp0984
-
-#patch18 -p1 -b .psc950duplex
 
 # Load menu icon
 bzcat %{SOURCE1} > hplip.png
@@ -292,25 +208,16 @@ perl -p -i -e 's:/usr/lib/menu::g' configure.in
 
 # Make all files in the source user-writable
 chmod -R u+w .
-#perl -p -i -e 's:^(\s*cp\s+fax/ppd/HP-Fax-hplip.ppd\s+prnt/hpijs/ppd/):\#$1:' Makefile.in
-
-# "make install" gzips a directory which contains an already gzipped file,
-# override the exit state of gzip
-#perl -p -i -e 's/(gzip\s+-qf\s+.*)$/$1 || :/' prnt/hpijs/Makefile*
 
 ##### BUILD #####
 
 %build
 %serverbuild
 
-#export CFLAGS="-g"
-#export CXXFLAGS="-g"
-
 autoconf
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
-#configure2_5x --enable-rpm-install $WITHOUT_SANE
 %configure2_5x $WITHOUT_SANE
 
 %make
@@ -603,6 +510,3 @@ rm -rf %{buildroot}
 %files hpijs-ppds
 %defattr(-,root,root)
 %{_datadir}/ppd/HP/*.ppd*
-
-
-
