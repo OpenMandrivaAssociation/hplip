@@ -222,7 +222,7 @@ autoconf
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
-%configure2_5x $WITHOUT_SANE
+%configure2_5x $WITHOUT_SANE --disable-foomatic-xml-install
 
 %make
 
@@ -246,52 +246,20 @@ mkdir -p %{buildroot}/var/run/hplip
 #make test-destdir DESTDIR=%{buildroot}
 make install DESTDIR=%{buildroot}
 
-# Enter directories in startup file
-perl -p -i -e 's:HPIODDIR=:HPIODDIR=%{_sbindir}:' %{buildroot}%{_datadir}/%{name}/%{name}.sh
-perl -p -i -e 's:HPSSDDIR=:HPSSDDIR=%{_datadir}/%{name}:' %{buildroot}%{_datadir}/%{name}/%{name}.sh
-
-# Set priority in startup file for HPLIP to get started before CUPS
-perl -p -i -e 's/chkconfig: 2345 50 10/chkconfig: 2345 14 61/' %{buildroot}%{_datadir}/%{name}/%{name}.sh
-
-# Install configuration and startup files
-mv %{buildroot}%{_datadir}/%{name}/%{name}.conf %{buildroot}%{_sysconfdir}/hp
-mv %{buildroot}%{_datadir}/%{name}/%{name}.sh %{buildroot}%{_initrddir}/%{name}
-
 # Install files which the "make install" missed to install
 install -m 644 ip/hpip.h %{buildroot}%{_includedir}
 install -m 644 ip/xform.h %{buildroot}%{_includedir}
-
-# Make SANE scanner driver modules available in the right place (SANE
-# only finds them in /usr/lib/sane, not in /usr/lib
-%if %{sane_backend}
-install -d %{buildroot}%{_libdir}/sane
-(cd %{buildroot}%{_libdir}/sane/ && ln -sf ../libsane-* .)
-%else
-rm -rf %{buildroot}/%{_libdir}/libsane-hpaio.so.*
-%endif
-
-# Move fax PPD to be part of main HPLIP package and not of the HPIJS PPDs
-#mv %{buildroot}/%{_datadir}/ppd/HP/HP-Fax*.ppd.gz %{buildroot}/%{_datadir}/cups/model/
 
 # Move doc in sub-package
 mv %{buildroot}%{_docdir}/%{name}-%{version}%{extraversion} %{buildroot}%{_docdir}/%{name}-doc-%{version}%{extraversion}
 
 # Remove static libraries of SANE driver
-rm -f %{buildroot}%{_libdir}/libsane-hpaio*.so
-rm -f %{buildroot}%{_libdir}/libsane-hpaio*.a
-rm -f %{buildroot}%{_libdir}/libsane-hpaio*.la
 rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.so
-rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.a
 rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.la
-
-# Remove foomatic-rip, as Mandriva Linux already contains Foomatic
-rm -f %{buildroot}%{_bindir}/foomatic-rip
-rm -f %{buildroot}%{_prefix}/lib*/cups/filter/foomatic-rip
+rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 
 # Remove other unneeded files
-rm -f %{buildroot}%{_sysconfdir}/init.d/hplip
-rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
-rm -f %{buildroot}%{py_platsitedir}/cupsext.la %{buildroot}%{py_platsitedir}/pcardext.la
+rm -f %{buildroot}%{py_platsitedir}/*.la
 
 # install menu icons
 mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
@@ -299,7 +267,6 @@ install -m 644 %{name}.png -D %{buildroot}%{_iconsdir}/%{name}.png
 install -m 644 %{name}.mini.png -D %{buildroot}%{_miconsdir}/%{name}.png
 install -m 644 %{name}.large.png -D %{buildroot}%{_liconsdir}/%{name}.png
 
-%if %mdv2007
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-toolbox.desktop << EOF
 [Desktop Entry]
@@ -323,11 +290,6 @@ Terminal=false
 Type=Application
 Categories=X-MandrivaLinux-Office-Communications-Fax;
 EOF
-%endif
-
-# Set link for easy access to the toolbox
-#ln -s %{_datadir}/hplip/toolbox %{buildroot}%{_bindir}
-
 
 
 ##### PRE/POST INSTALL SCRIPTS #####
@@ -404,10 +366,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 #doc COPYING doc/*
 %config(noreplace) %{_sysconfdir}/hp
-%config(noreplace) %{_initrddir}/*
-%{_sbindir}/hpiod
+%config(noreplace) %{_sysconfdir}/udev/rules.d/55-hpmud.rules
 %dir /var/run/hplip/
-#{_bindir}/toolbox
 %{_bindir}/hp-*
 %{_datadir}/hplip/[A-Za-c_]*
 %{_datadir}/hplip/data/*
@@ -415,11 +375,9 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/[e-z]*
 # C libraries for Python
 %{_libdir}/python*/*/*.so*
-#%{py_platsitedir}/*.egg-info
 # CUPS backends (0700 permissions, so that CUPS 1.2 runs these backends
 # as root)
 %attr(0700,root,root) %{_prefix}/lib*/cups/backend/hp*
-%{_datadir}/ppd/HP/fax
 # menu entry
 %{_iconsdir}/*.png
 %{_iconsdir}/*/*.png
@@ -433,6 +391,7 @@ rm -rf %{buildroot}
 %files -n %{hpip_libname}
 %defattr(-,root,root)
 %{_libdir}/libhpip*.so.*
+%{_libidr}/libhpmud.so.*
 
 ##### %{hpip_libname}-devel
 %files -n %{hpip_libname}-devel
@@ -440,15 +399,15 @@ rm -rf %{buildroot}
 %{_includedir}/hpip.h
 %{_includedir}/xform.h
 %{_libdir}/libhpip*.so
-#%{_libdir}/libhpip*.a
 %{_libdir}/libhpip*.la
+%{_libdir}/libhpmud.so
+%{_libdir}/libhpmud.la
 
 %if %{sane_backend}
 
 ##### %{sane_hpaio_libname}
 %files -n %{sane_hpaio_libname}
 %defattr(-,root,root)
-%{_libdir}/libsane-hpaio*.so.*
 %{_libdir}/sane/libsane-hpaio*.so.*
 
 %if 0
@@ -473,12 +432,9 @@ rm -rf %{buildroot}
 ##### hpijs
 %files hpijs
 %defattr(-,root,root)
-%doc %{_defaultdocdir}/hpijs-2.*
-#doc %{_defaultdocdir}/hpijs*
 %{_bindir}/hpijs
 # Needed for both printing and fax PPDs. They all need HPIJS, therefore
 # the link is here
-%{_datadir}/cups/model/foomatic-ppds
 %dir %{_datadir}/ppd
 %dir %{_datadir}/ppd/HP
 
