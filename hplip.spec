@@ -29,8 +29,6 @@ Group:		System/Servers
 ##### SOURCE FILES #####
 
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
-# Icon for the Mandriva menu
-Source1: hplip.png.bz2
 
 ##### PATCHES #####
 
@@ -190,8 +188,6 @@ printers and all-in-one peripherals (also known as Multi-Function
 Peripherals or MFPs), which can print, scan, copy, fax, and/or access
 flash memory cards.
 
-
-
 ##### PREP #####
 
 %prep
@@ -213,10 +209,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch106 -p1
 %patch107 -p1
 
-# Let configure not use /usr/lib/menu/hplip as icon directory, it is the
-# place of our menu file
-perl -p -i -e 's:/usr/lib/menu::g' configure.in
-
 # Make all files in the source user-writable
 chmod -R u+w .
 
@@ -225,6 +217,7 @@ chmod -R u+w .
 %build
 %serverbuild
 
+aclocal
 autoconf
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
@@ -234,9 +227,9 @@ WITHOUT_SANE="--without-sane"
 %make
 
 # convert icons to required sizes
-convert doc/images/hpliplogo.png -resize 16x16 %{name}.mini.png
-convert doc/images/hpliplogo.png -resize 32x32 %{name}.png
-convert doc/images/hpliplogo.png -resize 48x48 %{name}.large.png
+convert data/images/print.png -resize 16x16 %{name}.mini.png
+convert data/images/print.png -resize 32x32 %{name}.png
+convert data/images/print.png -resize 48x48 %{name}.large.png
 
 ##### INSTALL #####
 
@@ -247,9 +240,6 @@ mkdir -p %{buildroot}%{_includedir}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
 mkdir -p %{buildroot}/var/run/hplip
-
-# Let %{buildroot} also be used when C libraries for Perl are installed
-#perl -p -i -e 's:(setup.py install):$1 --root=%{buildroot}:' Makefile */Makefile */*/Makefile
 
 # Do not use the macro here, use the standard DESTDIR method as it works
 # with HPLIP, in contrary to the non-standard Mandriva method
