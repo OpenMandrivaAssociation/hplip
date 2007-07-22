@@ -42,6 +42,15 @@ Patch11: hplip-2.7.6-14_charsign_fixes.patch
 # Patch100: official patch
 Patch100: hplip-2.7.6-1.patch
 
+# fwang: Patch 101-107 from fedora
+Patch101: hplip-2.7.6-libm.patch
+Patch102: hplip-2.7.6-libsane.patch
+Patch103: hplip-2.7.6-marker-supply.patch
+Patch104: hplip-2.7.6-media-empty.patch
+Patch105: hplip-2.7.6-no-root-config.patch
+Patch106: hplip-2.7.6-quiet-startup.patch
+Patch107: hplip-2.7.6-unload-traceback.patch
+
 ##### ADDITIONAL DEFINITIONS #####
 
 Url:		http://hplip.sourceforge.net/
@@ -198,6 +207,15 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch3 -p1 -b .hpps7150
 
 %patch11 -p1 -b .14charsign
+
+# apply fedora patches
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%patch104 -p1
+%patch105 -p1
+%patch106 -p1
+%patch107 -p1
 
 # Load menu icon
 bzcat %{SOURCE1} > hplip.png
