@@ -299,30 +299,6 @@ install -m 644 %{name}.png -D %{buildroot}%{_iconsdir}/%{name}.png
 install -m 644 %{name}.mini.png -D %{buildroot}%{_miconsdir}/%{name}.png
 install -m 644 %{name}.large.png -D %{buildroot}%{_liconsdir}/%{name}.png
 
-# install menu entry
-mkdir -p %{buildroot}%{_menudir}
-
-cat <<EOF > %{buildroot}%{_menudir}/hplip
-?package(hplip): needs=X11 \
-section=System/Monitoring \
-title="HP Printer Toolbox" \
-longtitle="Maintenance and monitoring utility for HP printers" \
-command="%{_bindir}/hp-toolbox" \
-%if %mdv2007
-xdg=true \
-%endif
-icon="%{name}.png"
-?package(hplip): needs=X11 \
-section=Office/Communications/Fax \
-title="HP Sendfax" \
-longtitle="Utility for sending faxes with HP's multi-function devices" \
-command="%{_bindir}/hp-sendfax" \
-%if %mdv2007
-xdg=true \
-%endif
-icon="%{name}.png"
-EOF
-
 %if %mdv2007
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-toolbox.desktop << EOF
@@ -447,7 +423,6 @@ rm -rf %{buildroot}
 # menu entry
 %{_iconsdir}/*.png
 %{_iconsdir}/*/*.png
-%{_menudir}/*
 %{_datadir}/applications/*
 
 %files doc
