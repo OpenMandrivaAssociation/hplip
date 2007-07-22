@@ -62,14 +62,10 @@ BuildRequires:	PyQt >= 3.13-2mdk, sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	libusb-devel >= 0.1.8
 BuildRequires:  ImageMagick
-BuildRequires:  autoconf2.5
-%ifarch x86_64
-BuildRequires:	libcups-devel >= 1.2.0-0.5361.0mdk
-%else
+BuildRequires:  autoconf
 BuildRequires:	libcups-devel
-%endif
-#Conflicts: 	hpoj
-Prereq:		rpm-helper
+BuildRequires:	libjpeg-devel
+BuildRequires:	python-devel
 Requires:	foomatic-filters, cups, PyQt >= 3.13-2mdk, sip >= 4.1.1
 Requires:	hplip-model-data hplip-hpijs
 # Needed for communicating with ethernet-connected printers
@@ -217,9 +213,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch106 -p1
 %patch107 -p1
 
-# Load menu icon
-bzcat %{SOURCE1} > hplip.png
-
 # Let configure not use /usr/lib/menu/hplip as icon directory, it is the
 # place of our menu file
 perl -p -i -e 's:/usr/lib/menu::g' configure.in
@@ -241,9 +234,9 @@ WITHOUT_SANE="--without-sane"
 %make
 
 # convert icons to required sizes
-mv %{name}.png %{name}.mini.png
-convert %{name}.mini.png -resize 32x32 %{name}.png
-convert %{name}.mini.png -resize 48x48 %{name}.large.png
+convert doc/images/hpliplogo.png -resize 16x16 %{name}.mini.png
+convert doc/images/hpliplogo.png -resize 32x32 %{name}.png
+convert doc/images/hpliplogo.png -resize 48x48 %{name}.large.png
 
 ##### INSTALL #####
 
