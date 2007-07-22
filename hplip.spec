@@ -277,7 +277,7 @@ Exec=%{_bindir}/hp-toolbox
 Icon=%{name}.png
 Terminal=false
 Type=Application
-Categories=X-MandrivaLinux-System-Configuration-Printing;Settings;HardwareSettings;X-MandrivaLinux-System-Monitoring;System;Monitor;
+Categories=Settings;HardwareSettings;System;Monitor;
 EOF
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 [Desktop Entry]
@@ -288,15 +288,13 @@ Exec=%{_bindir}/hp-sendfax
 Icon=%{name}.png
 Terminal=false
 Type=Application
-Categories=X-MandrivaLinux-Office-Communications-Fax;
+Categories=TelephonyTools;Utility;
 EOF
 
 
 ##### PRE/POST INSTALL SCRIPTS #####
 
 %post
-# Let HPLIP daemons be automatically started at boot time
-%_post_service hplip
 # Menu update
 %{update_menus}
 # Restart CUPS to make the Fax PPD known to it
@@ -317,10 +315,6 @@ if ! grep ^hpaio /etc/sane.d/dll.conf >/dev/null 2>/dev/null ; then \
 	echo hpaio >> /etc/sane.d/dll.conf; \
 fi
 %endif
-
-%preun
-# Let HPLIP daemons not be automatically started at boot time any more
-%_preun_service hplip
 
 %if %{sane_backend}
 %preun -n %{sane_hpaio_libname}
