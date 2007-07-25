@@ -388,7 +388,7 @@ rm -rf %{buildroot}
 %files -n %{hpip_libname}
 %defattr(-,root,root)
 %{_libdir}/libhpip*.so.*
-%{_libidr}/libhpmud.so.*
+%{_libdir}/libhpmud.so.*
 
 ##### %{hpip_libname}-devel
 %files -n %{hpip_libname}-devel
