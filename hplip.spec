@@ -209,6 +209,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch106 -p1
 %patch107 -p1
 
+# fix for gentoo bug#161926, to be fixed in upstream 2.7.7
+sed -i -e "s:if (!localOnly):if (1):" scan/sane/hpaio.c
+
 # Make all files in the source user-writable
 chmod -R u+w .
 
