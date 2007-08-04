@@ -19,7 +19,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.7.6
+Version:	2.7.7
 Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Servers
@@ -38,7 +38,6 @@ Patch3: hplip-1.6.12-HP-PhotoSmart_7150tilde.patch
 Patch11: hplip-2.7.6-14_charsign_fixes.patch
 
 # Patch100: official patch
-Patch100: hplip-2.7.6-1.patch
 
 # fwang: Patch 101-107 from fedora
 Patch101: hplip-2.7.6-libm.patch
@@ -193,7 +192,6 @@ flash memory cards.
 %prep
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
-%patch100 -p1
 
 # Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
 %patch3 -p1 -b .hpps7150
