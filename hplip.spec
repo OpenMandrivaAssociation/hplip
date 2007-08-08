@@ -64,6 +64,7 @@ BuildRequires:  autoconf
 BuildRequires:	libcups-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	python-devel
+BuildRequires:	desktop-file-utils
 Requires:	foomatic-filters, cups, PyQt >= 3.13-2mdk, sip >= 4.1.1
 Requires:	hplip-model-data hplip-hpijs
 # Needed for communicating with ethernet-connected printers
