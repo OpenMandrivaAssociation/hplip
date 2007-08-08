@@ -20,7 +20,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.7.7
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL/MIT/BSD
 Group:		System/Servers
 
@@ -278,7 +278,7 @@ Exec=%{_bindir}/hp-toolbox
 Icon=%{name}.png
 Terminal=false
 Type=Application
-Categories=Settings;HardwareSettings;System;Monitor;
+Categories=Settings;HardwareSettings;System;Monitor;Printiing;
 EOF
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 [Desktop Entry]
