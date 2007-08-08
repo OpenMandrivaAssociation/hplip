@@ -269,17 +269,15 @@ install -m 644 %{name}.mini.png -D %{buildroot}%{_miconsdir}/%{name}.png
 install -m 644 %{name}.large.png -D %{buildroot}%{_liconsdir}/%{name}.png
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
-cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-toolbox.desktop << EOF
-[Desktop Entry]
-Encoding=UTF-8
-Name=HP Printer Toolbox
-Comment=Maintenance and monitoring utility for HP printers
-Exec=%{_bindir}/hp-toolbox
-Icon=%{name}.png
-Terminal=false
-Type=Application
-Categories=Settings;System;Monitor;Printing;
-EOF
+desktop-file-install --vendor='' \
+	--dir=%{buildroot}%{_datadir}/applications \
+	--remove-category='Application' \
+	--remove-category='Utility' \
+	--add-category='System' \
+	--add-category='Settings' \
+	--add-category='Printing' \
+	%{buildroot}%{_datadir}/applications/hplip.desktop
+
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 [Desktop Entry]
 Encoding=UTF-8
