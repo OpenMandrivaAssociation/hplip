@@ -278,7 +278,7 @@ Exec=%{_bindir}/hp-toolbox
 Icon=%{name}.png
 Terminal=false
 Type=Application
-Categories=Settings;HardwareSettings;System;Monitor;Printing;
+Categories=Settings;System;Monitor;Printing;
 EOF
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 [Desktop Entry]
