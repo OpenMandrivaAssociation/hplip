@@ -20,9 +20,9 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.7.7
-Release:	%mkrel 5
+Release:	%mkrel 6
 License:	GPL/MIT/BSD
-Group:		System/Servers
+Group:		System/Printers
 
 %define mdv2007 %(perl -e 'print ("%release" =~ /mdv/ ? 1 : 0)')
 
@@ -56,7 +56,7 @@ Url:		http://hplip.sourceforge.net/
 BuildRequires:	libsane-devel, xsane
 %endif
 %py_requires -d
-BuildRequires:	PyQt >= 3.13-2mdk, sip >= 4.1.1
+BuildRequires:	PyQt >= 3.13-2mdk, python-sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	libusb-devel >= 0.1.8
 BuildRequires:  ImageMagick
@@ -65,7 +65,7 @@ BuildRequires:	libcups-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	python-devel
 BuildRequires:	desktop-file-utils
-Requires:	foomatic-filters, cups, PyQt >= 3.13-2mdk, sip >= 4.1.1
+Requires:	foomatic-filters, cups, PyQt >= 3.13-2mdk, python-sip >= 4.1.1
 Requires:	hplip-model-data hplip-hpijs
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
@@ -98,7 +98,7 @@ there is the graphical tool "hp-toolbox" available (Menu:
 
 %package -n %{hpip_libname}
 Summary: Dynamic library for the "hplip" HP printer/all-in-one drivers
-Group: System/Servers
+Group: System/Printers
 
 %description -n %{hpip_libname}
 Library needed for the "hplip" HP printer/all-in-one drivers
@@ -116,7 +116,7 @@ the "%{hpip_libname}" library.
 %if %{sane_backend}
 %package -n %{sane_hpaio_libname}
 Summary: SANE driver for scanners in HP's multi-function devices (from HPLIP)
-Group: System/Servers
+Group: System/Printers
 Requires: sane-backends
 %define _requires_exceptions devel(libcrypto)\\|devel(libdl)\\|devel(libhpip)\\|devel(libm)\\|devel(libsnmp)
 %endif
@@ -144,7 +144,7 @@ the "%{sane_hpaio_libname}" library.
 
 %package model-data
 Summary: Data file listing the HP printer models supported by HPLIP
-Group: System/Servers
+Group: System/Printers
 
 %description model-data
 HPLIP supports most current HP printers and multifunction devices, but
@@ -154,7 +154,7 @@ determine whether HPLIP has to be installed or not.
 
 %package hpijs
 Summary: HPs printer driver IJS plug-in for GhostScript
-Group: System/Servers
+Group: System/Printers
 Requires: ghostscript
 Provides: hpijs
 Conflicts: printer-filters < 10.2
@@ -168,7 +168,7 @@ printers made by HP.
 
 %package hpijs-ppds
 Summary: PPD files for the HPIJS printer driver
-Group: System/Servers
+Group: System/Printers
 Requires: foomatic-filters, hplip-hpijs
 
 %description hpijs-ppds
@@ -178,7 +178,7 @@ printer spooler like CUPS, LPRng, PDQ, ...
 
 %package doc
 Summary:	Documentation for HPLIP
-Group:		System/Servers
+Group:		System/Printers
 
 %description doc
 This package contains documentation for the HPLIP driver.
