@@ -20,7 +20,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.7.7
-Release:	%mkrel 7
+Release:	%mkrel 8
 License:	GPL/MIT/BSD
 Group:		System/Printing
 
@@ -279,6 +279,8 @@ desktop-file-install --vendor='' \
 	--add-category='System' \
 	--add-category='Settings' \
 	--add-category='Printing' \
+        --add-category='Qt' \
+        --add-category='X-MandrivaLinux-CrossDesktop' \
 	%{buildroot}%{_datadir}/applications/hplip.desktop
 
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
