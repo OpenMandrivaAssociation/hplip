@@ -280,6 +280,7 @@ desktop-file-install --vendor='' \
 	--add-category='Settings' \
 	--add-category='Printing' \
         --add-category='Qt' \
+        --add-category='HardwareSettings' \
         --add-category='X-MandrivaLinux-CrossDesktop' \
 	%{buildroot}%{_datadir}/applications/hplip.desktop
 
