@@ -289,7 +289,7 @@ cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 Name=HP Sendfax
 Comment=Utility for sending faxes with HP's multi-function devices
 Exec=%{_bindir}/hp-sendfax
-Icon=%{name}.png
+Icon=%{name}
 Terminal=false
 Type=Application
 Categories=TelephonyTools;Utility;
