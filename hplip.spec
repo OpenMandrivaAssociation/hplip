@@ -6,7 +6,7 @@
 %define hpip_major		0
 %define hpip_libname		%mklibname hpip %{hpip_major}
 
-%define sane_hpaio_major		1
+%define sane_hpaio_major	1
 %define sane_hpaio_libname	%mklibname sane-hpaio %{sane_hpaio_major}
 
 # Suppress automatically generated Requires for devel packages
@@ -19,8 +19,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.7.7
-Release:	%mkrel 8
+Version:	2.7.9
+Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
 
