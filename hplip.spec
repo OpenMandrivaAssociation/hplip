@@ -19,7 +19,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.7.10
+Version:	2.7.12
 Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
@@ -43,7 +43,6 @@ Patch11: hplip-2.7.6-14_charsign_fixes.patch
 Patch101: hplip-2.7.6-libm.patch
 Patch102: hplip-2.7.6-libsane.patch
 Patch103: hplip-2.7.6-marker-supply.patch
-Patch104: hplip-2.7.6-media-empty.patch
 Patch105: hplip-2.7.6-no-root-config.patch
 Patch106: hplip-2.7.6-quiet-startup.patch
 Patch107: hplip-2.7.6-unload-traceback.patch
@@ -203,7 +202,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
-%patch104 -p1
 %patch105 -p1
 %patch106 -p1
 %patch107 -p1
