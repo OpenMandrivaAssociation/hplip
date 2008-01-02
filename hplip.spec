@@ -73,6 +73,7 @@ Requires:	python-reportlab
 %ifarch x86_64
 Conflicts:	cups < 1.2.0-0.5361.0mdk
 %endif
+BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 %description
 
