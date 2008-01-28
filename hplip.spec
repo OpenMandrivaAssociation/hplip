@@ -303,11 +303,11 @@ chkconfig --del hplip
 # Menu update
 %{update_menus}
 # Restart CUPS to make the Fax PPD known to it
-/sbin/service cups condrestart > /dev/null 2>/dev/null || :
+/sbin/service cups condrestart || :
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
-/sbin/service cups condrestart > /dev/null 2>/dev/null || :
+/sbin/service cups condrestart || :
 
 # Reload the library lists when installing shared libraries
 %post -n %{hpip_libname} -p /sbin/ldconfig
@@ -337,11 +337,11 @@ fi
 ## Menu update
 %{update_menus}
 # Restart CUPS to make the removal of the Fax PPD known to it
-/sbin/service cups condrestart > /dev/null 2>/dev/null || :
+/sbin/service cups condrestart || :
 
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-/sbin/service cups condrestart > /dev/null 2>/dev/null || :
+/sbin/service cups condrestart || :
 
 # Reload the library lists when uninstalling shared libraries
 %postun -n %{hpip_libname} -p /sbin/ldconfig
