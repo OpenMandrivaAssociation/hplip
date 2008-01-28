@@ -20,7 +20,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.7.12
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL/MIT/BSD
 Group:		System/Printing
 
