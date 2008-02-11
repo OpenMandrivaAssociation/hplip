@@ -14,12 +14,12 @@
 
 ##### GENERAL STUFF #####
 
-%define extraversion -RC1
-#define extraversion %nil
+#define extraversion -RC1
+%define extraversion %nil
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.8.2.1
+Version:	2.8.2
 Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
