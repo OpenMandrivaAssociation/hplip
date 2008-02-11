@@ -58,14 +58,19 @@ BuildRequires:	libsane-devel, xsane
 BuildRequires:	PyQt >= 3.13-2mdk, python-sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	libusb-devel >= 0.1.8
-BuildRequires:  ImageMagick
-BuildRequires:  autoconf
+BuildRequires:	ImageMagick
+BuildRequires:	autoconf
 BuildRequires:	libcups-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	python-devel
 BuildRequires:	desktop-file-utils
-Requires:	foomatic-filters, cups, PyQt >= 3.13-2mdk, python-sip >= 4.1.1
+Requires:	PyQt >= 3.13-2mdk
+Requires:	cups
+# For dynamic ppd generation.
+Requires:	cupsddk-drivers >= 1.2.3-2mdv
+Requires:	foomatic-filters
 Requires:	hplip-model-data hplip-hpijs
+Requires:	python-sip >= 4.1.1
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
