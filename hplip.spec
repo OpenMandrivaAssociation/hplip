@@ -14,13 +14,13 @@
 
 ##### GENERAL STUFF #####
 
-#define extraversion -rc3
-%define extraversion %nil
+%define extraversion -RC1
+#define extraversion %nil
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.7.12
-Release:	%mkrel 2
+Version:	2.8.2.1
+Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
 
@@ -224,7 +224,9 @@ autoconf
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
-%configure2_5x $WITHOUT_SANE --disable-foomatic-xml-install
+%configure2_5x $WITHOUT_SANE \
+	--disable-foomatic-rip-hplip-install \
+	--disable-foomatic-xml-install
 
 %make
 
@@ -377,6 +379,7 @@ rm -rf %{buildroot}
 # CUPS backends (0700 permissions, so that CUPS 1.2 runs these backends
 # as root)
 %attr(0700,root,root) %{_prefix}/lib*/cups/backend/hp*
+%{_datadir}/cups/drv/hp/hpijs.drv
 # menu entry
 %{_iconsdir}/*.png
 %{_iconsdir}/*/*.png
