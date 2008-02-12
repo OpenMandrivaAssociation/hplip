@@ -292,7 +292,7 @@ Exec=%{_bindir}/hp-sendfax
 Icon=%{name}
 Terminal=false
 Type=Application
-Categories=TelephonyTools;Utility;
+Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
 EOF
 
 
