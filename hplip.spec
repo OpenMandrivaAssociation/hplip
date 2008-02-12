@@ -80,7 +80,6 @@ Conflicts:	cups < 1.2.0-0.5361.0mdk
 BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 %description
-
 This is the HP driver package to supply Linux support for most
 Hewlett-Packard DeskJet, LaserJet, PSC, OfficeJet, and PhotoSmart
 printers and all-in-one peripherals (also known as Multi-Function
@@ -164,7 +163,6 @@ Conflicts: printer-filters < 10.2
 Conflicts: hplip <= 1.6.7-1mdv2007.0
 
 %description hpijs
-
 HPs printer driver IJS plug-in for GhostScript. This driver gives full
 printing support for nearly all non-PostScript inkjet and laser
 printers made by HP.
@@ -175,7 +173,6 @@ Group: System/Printing
 Requires: foomatic-filters, hplip-hpijs
 
 %description hpijs-ppds
-
 PPD files to use the HPIJS printer driver with foomatic-rip and a
 printer spooler like CUPS, LPRng, PDQ, ...
 
