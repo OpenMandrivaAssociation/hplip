@@ -12,33 +12,20 @@
 # Suppress automatically generated Requires for devel packages
 %define _requires_exceptions devel\(.*\)
 
-##### GENERAL STUFF #####
-
 #define extraversion -RC1
 %define extraversion %nil
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.8.2
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL/MIT/BSD
 Group:		System/Printing
-
-%define mdv2007 %(perl -e 'print ("%release" =~ /mdv/ ? 1 : 0)')
-
-##### SOURCE FILES #####
-
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
-
-##### PATCHES #####
-
 # Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
 Patch3: hplip-1.6.12-HP-PhotoSmart_7150tilde.patch
-
 Patch11: hplip-2.7.6-14_charsign_fixes.patch
-
 # Patch100: official patch
-
 # fwang: Patch 101-108 from fedora
 Patch101: hplip-2.7.6-libm.patch
 Patch102: hplip-2.7.6-libsane.patch
@@ -46,9 +33,6 @@ Patch105: hplip-2.7.6-no-root-config.patch
 Patch106: hplip-2.7.6-quiet-startup.patch
 Patch107: hplip-2.7.6-unload-traceback.patch
 Patch108: hplip-2.7.7-desktop.patch
-
-##### ADDITIONAL DEFINITIONS #####
-
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
 BuildRequires:	libsane-devel, xsane
@@ -77,6 +61,8 @@ Requires:	python-reportlab
 %ifarch x86_64
 Conflicts:	cups < 1.2.0-0.5361.0mdk
 %endif
+# Due to fax ppds.
+Conflicts:	hplip-hpijs-ppds <= 2.8.2-1mdv
 BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 %description
@@ -95,8 +81,6 @@ Linux workstation with CUPS printing system.
 For status and consumable checking and also for inkjet maintenance
 there is the graphical tool "hp-toolbox" available (Menu:
 "System"/"Monitoring"/"HP Printer Toolbox").
-
-##### SUB-PACKAGES #####
 
 %package -n %{hpip_libname}
 Summary: Dynamic library for the "hplip" HP printer/all-in-one drivers
@@ -189,8 +173,6 @@ printers and all-in-one peripherals (also known as Multi-Function
 Peripherals or MFPs), which can print, scan, copy, fax, and/or access
 flash memory cards.
 
-##### PREP #####
-
 %prep
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
@@ -214,8 +196,6 @@ sed -i -e "s:if (!localOnly):if (1):" scan/sane/hpaio.c
 # Make all files in the source user-writable
 chmod -R u+w .
 
-##### BUILD #####
-
 %build
 %serverbuild
 
@@ -234,8 +214,6 @@ WITHOUT_SANE="--without-sane"
 convert data/images/print.png -resize 16x16 %{name}.mini.png
 convert data/images/print.png -resize 32x32 %{name}.png
 convert data/images/print.png -resize 48x48 %{name}.large.png
-
-##### INSTALL #####
 
 %install
 rm -rf %{buildroot}
@@ -294,9 +272,7 @@ Terminal=false
 Type=Application
 Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
 EOF
-
-
-##### PRE/POST INSTALL SCRIPTS #####
+#' #Fix vim's stupid syntax
 
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
@@ -354,15 +330,10 @@ fi
 %endif
 
 
-##### CLEAN UP #####
-
 %clean
 rm -rf %{buildroot}
 
 
-##### FILE LISTS FOR ALL BINARY PACKAGES #####
-
-##### hplip
 %files
 %defattr(-,root,root)
 #doc COPYING doc/*
@@ -380,6 +351,7 @@ rm -rf %{buildroot}
 # as root)
 %attr(0700,root,root) %{_prefix}/lib*/cups/backend/hp*
 %{_datadir}/cups/drv/hp/hpijs.drv
+%{_datadir}/ppd/HP/HP-Fax*.ppd*
 # menu entry
 %{_iconsdir}/*.png
 %{_iconsdir}/*/*.png
@@ -389,13 +361,11 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
 
-##### %{hpip_libname}
 %files -n %{hpip_libname}
 %defattr(-,root,root)
 %{_libdir}/libhpip*.so.*
 %{_libdir}/libhpmud.so.*
 
-##### %{hpip_libname}-devel
 %files -n %{hpip_libname}-devel
 %defattr(-,root,root)
 %{_includedir}/hpip.h
@@ -407,13 +377,11 @@ rm -rf %{buildroot}
 
 %if %{sane_backend}
 
-##### %{sane_hpaio_libname}
 %files -n %{sane_hpaio_libname}
 %defattr(-,root,root)
 %{_libdir}/sane/libsane-hpaio*.so.*
 
 %if 0
-##### %{sane_hpaio_libname}-devel
 %files -n %{sane_hpaio_libname}-devel
 %defattr(-,root,root)
 #%{_libdir}/libsane-hpaio*.so
@@ -426,12 +394,10 @@ rm -rf %{buildroot}
 
 %endif
 
-##### model-data
 %files model-data
 %defattr(-,root,root)
 %{_datadir}/hplip/data/models
 
-##### hpijs
 %files hpijs
 %defattr(-,root,root)
 %{_bindir}/hpijs
@@ -440,7 +406,7 @@ rm -rf %{buildroot}
 %dir %{_datadir}/ppd
 %dir %{_datadir}/ppd/HP
 
-##### hpijs-ppds
 %files hpijs-ppds
 %defattr(-,root,root)
 %{_datadir}/ppd/HP/*.ppd*
+%exclude %{_datadir}/ppd/HP/HP-Fax*.ppd*
