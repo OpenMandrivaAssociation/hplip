@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.8.2
-Release:	%mkrel 2
+Version:	2.8.4
+Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -30,9 +30,13 @@ Patch11: hplip-2.7.6-14_charsign_fixes.patch
 Patch101: hplip-2.7.6-libm.patch
 Patch102: hplip-2.7.6-libsane.patch
 Patch105: hplip-2.7.6-no-root-config.patch
-Patch106: hplip-2.7.6-quiet-startup.patch
+#Patch106: hplip-2.7.6-quiet-startup.patch
 Patch107: hplip-2.7.6-unload-traceback.patch
-Patch108: hplip-2.7.7-desktop.patch
+#Patch108: hplip-2.7.7-desktop.patch
+# fhimpe: patch from OpenSUSE
+# Do not start systrap applet if no HP printer
+Patch120: hplip-2.8.4-systray_exit_if_no_device.patch
+
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
 BuildRequires:	libsane-devel, xsane
@@ -58,6 +62,7 @@ Requires:	python-sip >= 4.1.1
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
 Requires:	python-reportlab
+Requires:	python-dbus
 %ifarch x86_64
 Conflicts:	cups < 1.2.0-0.5361.0mdk
 %endif
@@ -186,9 +191,12 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch101 -p1
 %patch102 -p1
 %patch105 -p1
-%patch106 -p1
+#%patch106 -p1
 %patch107 -p1
-%patch108 -p1
+#%patch108 -p1
+
+#OpenSUSE patch
+%patch120 -p0 -b .no-systray-applet-if-no-hp
 
 # fix for gentoo bug#161926, to be fixed in upstream 2.7.7
 sed -i -e "s:if (!localOnly):if (1):" scan/sane/hpaio.c
@@ -211,9 +219,9 @@ WITHOUT_SANE="--without-sane"
 %make
 
 # convert icons to required sizes
-convert data/images/print.png -resize 16x16 %{name}.mini.png
-convert data/images/print.png -resize 32x32 %{name}.png
-convert data/images/print.png -resize 48x48 %{name}.large.png
+#convert data/images/print.png -resize 16x16 %{name}.mini.png
+#convert data/images/print.png -resize 32x32 %{name}.png
+#convert data/images/print.png -resize 48x48 %{name}.large.png
 
 %install
 rm -rf %{buildroot}
@@ -244,10 +252,10 @@ rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 rm -f %{buildroot}%{py_platsitedir}/*.la
 
 # install menu icons
-mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
-install -m 644 %{name}.png -D %{buildroot}%{_iconsdir}/%{name}.png
-install -m 644 %{name}.mini.png -D %{buildroot}%{_miconsdir}/%{name}.png
-install -m 644 %{name}.large.png -D %{buildroot}%{_liconsdir}/%{name}.png
+#mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
+#install -m 644 %{name}.png -D %{buildroot}%{_iconsdir}/%{name}.png
+#install -m 644 %{name}.mini.png -D %{buildroot}%{_miconsdir}/%{name}.png
+#install -m 644 %{name}.large.png -D %{buildroot}%{_liconsdir}/%{name}.png
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
 desktop-file-install --vendor='' \
@@ -260,7 +268,8 @@ desktop-file-install --vendor='' \
         --add-category='Qt' \
         --add-category='HardwareSettings' \
         --add-category='X-MandrivaLinux-CrossDesktop' \
-	%{buildroot}%{_datadir}/applications/hplip.desktop
+	--remove-key='Version' \
+        %{buildroot}%{_datadir}/applications/hplip.desktop
 
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 [Desktop Entry]
@@ -353,9 +362,10 @@ rm -rf %{buildroot}
 %{_datadir}/cups/drv/hp/hpijs.drv
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 # menu entry
-%{_iconsdir}/*.png
-%{_iconsdir}/*/*.png
+#%{_iconsdir}/*.png
+#%{_iconsdir}/*/*.png
 %{_datadir}/applications/*
+%config(noreplace) %_sysconfdir/xdg/autostart/hplip-systray.desktop
 
 %files doc
 %defattr(-,root,root)
