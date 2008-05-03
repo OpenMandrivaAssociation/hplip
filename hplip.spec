@@ -51,6 +51,7 @@ BuildRequires:	libcups-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	python-devel
 BuildRequires:	desktop-file-utils
+BuildRequires:	libdbus-devel
 Requires:	PyQt >= 3.13-2mdk
 Requires:	cups
 # For dynamic ppd generation.
