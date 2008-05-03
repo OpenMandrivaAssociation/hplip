@@ -25,6 +25,9 @@ Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{e
 # Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
 Patch3: hplip-1.6.12-HP-PhotoSmart_7150tilde.patch
 Patch11: hplip-2.7.6-14_charsign_fixes.patch
+# Use QT4 for system tray applet, the QT3 version does get embedded in  
+# GNOME's notification area
+Patch12: hplip-2.8.4-systray-qt4.patch
 # Patch100: official patch
 # fwang: Patch 101-108 from fedora
 Patch101: hplip-2.7.6-libm.patch
@@ -63,7 +66,11 @@ Requires:	python-sip >= 4.1.1
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
 Requires:	python-reportlab
+# Needed since 2.8.4 for IPC
 Requires:	python-dbus
+# Needed for system tray applet
+Requires:	python-qt4-gui
+
 %ifarch x86_64
 Conflicts:	cups < 1.2.0-0.5361.0mdk
 %endif
@@ -187,6 +194,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch3 -p1 -b .hpps7150
 
 %patch11 -p1 -b .14charsign
+%patch12 -p1 -b .systray-applet-qt4
 
 # apply fedora patches
 %patch101 -p1
