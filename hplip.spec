@@ -31,12 +31,10 @@ Patch11: hplip-2.7.6-14_charsign_fixes.patch
 # Use QT4 for system tray applet, the QT3 version does get embedded in  
 # GNOME's notification area
 Patch12: hplip-2.8.4-systray-qt4.patch
-# Patch100: official patch
 # fwang: Patch 101-108 from fedora
 Patch101: hplip-2.7.6-libm.patch
 Patch102: hplip-2.7.6-libsane.patch
 Patch105: hplip-2.7.6-no-root-config.patch
-#Patch107: hplip-2.7.6-unload-traceback.patch
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -198,12 +196,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch101 -p1
 %patch102 -p1
 %patch105 -p1
-#%patch106 -p1
-#%patch107 -p1
-#%patch108 -p1
-
-# fix for gentoo bug#161926, to be fixed in upstream 2.7.7
-sed -i -e "s:if (!localOnly):if (1):" scan/sane/hpaio.c
 
 # Make all files in the source user-writable
 chmod -R u+w .
