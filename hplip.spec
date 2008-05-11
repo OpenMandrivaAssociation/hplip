@@ -17,11 +17,14 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.8.4
+Version:	2.8.5
 Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+# fhimpe: Script from OpenSUSE/Ubuntu to create Hal fdi file for HP scanners
+# https://bugs.launchpad.net/ubuntu/+source/hal/+bug/195782
+Source1: create_hal_global_fdi_from_hpmud_rules
 # Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
 Patch3: hplip-1.6.12-HP-PhotoSmart_7150tilde.patch
 Patch11: hplip-2.7.6-14_charsign_fixes.patch
@@ -33,12 +36,7 @@ Patch12: hplip-2.8.4-systray-qt4.patch
 Patch101: hplip-2.7.6-libm.patch
 Patch102: hplip-2.7.6-libsane.patch
 Patch105: hplip-2.7.6-no-root-config.patch
-#Patch106: hplip-2.7.6-quiet-startup.patch
-Patch107: hplip-2.7.6-unload-traceback.patch
-#Patch108: hplip-2.7.7-desktop.patch
-# fhimpe: patch from OpenSUSE
-# Do not start systrap applet if no HP printer
-Patch120: hplip-2.8.4-systray_exit_if_no_device.patch
+#Patch107: hplip-2.7.6-unload-traceback.patch
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -201,11 +199,8 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch102 -p1
 %patch105 -p1
 #%patch106 -p1
-%patch107 -p1
+#%patch107 -p1
 #%patch108 -p1
-
-#OpenSUSE patch
-%patch120 -p0 -b .no-systray-applet-if-no-hp
 
 # fix for gentoo bug#161926, to be fixed in upstream 2.7.7
 sed -i -e "s:if (!localOnly):if (1):" scan/sane/hpaio.c
@@ -259,6 +254,13 @@ rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 
 # Remove other unneeded files
 rm -f %{buildroot}%{py_platsitedir}/*.la
+
+# Run the script which outputs a global HAL fdi file for all HP USB devices
+# which belong to HPLIP and install its output as 
+# /etc/hal/fdi/policy/10osvendor/70-hpmud.fdi:
+bash %{SOURCE1} data/rules/55-hpmud.rules >70-hpmud.fdi
+install -d %{buildroot}%{_sysconfdir}/hal/fdi/policy/10osvendor
+install -m644 70-hpmud.fdi %{buildroot}%{_sysconfdir}/hal/fdi/policy/10osvendor/70-hpmud.fdi
 
 # install menu icons
 #mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
@@ -368,6 +370,7 @@ rm -rf %{buildroot}
 # CUPS backends (0700 permissions, so that CUPS 1.2 runs these backends
 # as root)
 %attr(0700,root,root) %{_prefix}/lib*/cups/backend/hp*
+%{_prefix}/lib/cups/filter/hplipjs
 %{_datadir}/cups/drv/hp/hpijs.drv
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 # menu entry
@@ -375,6 +378,7 @@ rm -rf %{buildroot}
 #%{_iconsdir}/*/*.png
 %{_datadir}/applications/*
 %config(noreplace) %_sysconfdir/xdg/autostart/hplip-systray.desktop
+%{_sysconfdir}/hal/fdi/policy/10osvendor/70-hpmud.fdi
 
 %files doc
 %defattr(-,root,root)
