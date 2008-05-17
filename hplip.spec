@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.8.5
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL/MIT/BSD
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -57,6 +57,7 @@ Requires:	cups
 Requires:	cupsddk-drivers >= 1.2.3-2mdv
 Requires:	foomatic-filters
 Requires:	hplip-model-data hplip-hpijs
+Requires:	hplip-hpijs-ppds
 Requires:	python-sip >= 4.1.1
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
