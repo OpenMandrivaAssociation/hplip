@@ -291,7 +291,6 @@ EOF
 chkconfig --del hplip
 
 %post
-# Menu update
 %{update_menus}
 # Restart CUPS to make the Fax PPD known to it
 /sbin/service cups condrestart || :
@@ -329,7 +328,6 @@ fi
 %endif
 
 %postun
-## Menu update
 %{update_menus}
 # Restart CUPS to make the removal of the Fax PPD known to it
 /sbin/service cups condrestart || :
