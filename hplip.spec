@@ -301,11 +301,15 @@ chkconfig --del hplip
 /sbin/service cups condrestart || :
 
 # Reload the library lists when installing shared libraries
+%if %mdkversion < 200900
 %post -n %{hpip_libname} -p /sbin/ldconfig
+%endif
 
 %if %{sane_backend}
 %post -n %{sane_hpaio_libname}
+%if %mdkversion < 200900
 /sbin/ldconfig
+%endif
 # Add HPLIP driver to /etc/sane.d/dll.conf
 if ! grep ^hpaio /etc/sane.d/dll.conf >/dev/null 2>/dev/null ; then \
 	echo hpaio >> /etc/sane.d/dll.conf; \
@@ -335,11 +339,15 @@ fi
 /sbin/service cups condrestart || :
 
 # Reload the library lists when uninstalling shared libraries
+%if %mdkversion < 200900
 %postun -n %{hpip_libname} -p /sbin/ldconfig
+%endif
 
 %if %{sane_backend}
 %postun -n %{sane_hpaio_libname}
+%if %mdkversion < 200900
 /sbin/ldconfig
+%endif
 %endif
 
 
