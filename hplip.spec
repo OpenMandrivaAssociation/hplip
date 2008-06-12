@@ -291,7 +291,9 @@ EOF
 chkconfig --del hplip
 
 %post
+%if %mdkversion < 200900
 %{update_menus}
+%endif
 # Restart CUPS to make the Fax PPD known to it
 /sbin/service cups condrestart || :
 
@@ -327,7 +329,9 @@ fi
 %endif
 
 %postun
+%if %mdkversion < 200900
 %{update_menus}
+%endif
 # Restart CUPS to make the removal of the Fax PPD known to it
 /sbin/service cups condrestart || :
 
