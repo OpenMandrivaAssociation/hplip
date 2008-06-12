@@ -299,7 +299,6 @@ chkconfig --del hplip
 # Restart CUPS to make the printing PPDs known to it
 /sbin/service cups condrestart || :
 
-# Reload the library lists when installing shared libraries
 %if %mdkversion < 200900
 %post -n %{hpip_libname} -p /sbin/ldconfig
 %endif
@@ -336,7 +335,6 @@ fi
 # Restart CUPS to make the removal of the printing PPDs known to it
 /sbin/service cups condrestart || :
 
-# Reload the library lists when uninstalling shared libraries
 %if %mdkversion < 200900
 %postun -n %{hpip_libname} -p /sbin/ldconfig
 %endif
