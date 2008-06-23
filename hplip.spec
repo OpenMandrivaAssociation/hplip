@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.8.5
-Release:	%mkrel 2
+Version:	2.8.6
+Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -372,6 +372,7 @@ rm -rf %{buildroot}
 %{_bindir}/hp-*
 %{_datadir}/hplip/[A-Za-c_]*
 %{_datadir}/hplip/data/*
+%{_datadir}/hplip/dat2drv.py
 %exclude %{_datadir}/hplip/data/models
 %{_datadir}/hplip/[e-z]*
 # C libraries for Python
