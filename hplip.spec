@@ -295,11 +295,15 @@ chkconfig --del hplip
 %{update_menus}
 %endif
 # Restart CUPS to make the Fax PPD known to it
-/sbin/service cups condrestart || :
+if [ -f /etc/init.d/cups ]; then
+	/sbin/service cups condrestart || :
+fi
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
-/sbin/service cups condrestart || :
+if [ -f /etc/init.d/cups ]; then
+	/sbin/service cups condrestart || :
+fi
 
 %if %mdkversion < 200900
 %post -n %{hpip_libname} -p /sbin/ldconfig
@@ -333,11 +337,15 @@ fi
 %{update_menus}
 %endif
 # Restart CUPS to make the removal of the Fax PPD known to it
-/sbin/service cups condrestart || :
+if [ -f /etc/init.d/cups ]; then
+	/sbin/service cups condrestart || :
+fi
 
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-/sbin/service cups condrestart || :
+if [ -f /etc/init.d/cups ]; then
+	/sbin/service cups condrestart || :
+fi
 
 %if %mdkversion < 200900
 %postun -n %{hpip_libname} -p /sbin/ldconfig
