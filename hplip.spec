@@ -17,7 +17,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.8.6
+Version:	2.8.6b
 Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
