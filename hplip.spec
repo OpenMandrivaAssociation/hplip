@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.8.7
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	GPL/MIT/BSD
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -31,7 +31,6 @@ Patch11: hplip-2.7.6-14_charsign_fixes.patch
 # Use QT4 for system tray applet, the QT3 version does get embedded in  
 # GNOME's notification area
 Patch12: hplip-2.8.4-systray-qt4.patch
-Patch13: hplip-2.8.7-disable-auto-start.patch
 Patch14: hplip-2.8.7-force-utf8.patch
 # fwang: Patch 101-108 from fedora
 Patch101: hplip-2.7.6-libm.patch
@@ -194,7 +193,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 %patch11 -p1 -b .14charsign
 %patch12 -p1 -b .systray-applet-qt4
-%patch13 -p1 -b .disable-auto-start
 %patch14 -p1 -b .force-utf8
 
 # apply fedora patches
@@ -290,6 +288,8 @@ Type=Application
 Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
 EOF
 #' #Fix vim's stupid syntax
+
+rm -f $RPM_BUILD_ROOT%_sysconfdir/xdg/autostart/hplip-systray.desktop
 
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
@@ -391,7 +391,6 @@ rm -rf %{buildroot}
 #%{_iconsdir}/*.png
 #%{_iconsdir}/*/*.png
 %{_datadir}/applications/*
-%config(noreplace) %_sysconfdir/xdg/autostart/hplip-systray.desktop
 %{_sysconfdir}/hal/fdi/policy/10osvendor/70-hpmud.fdi
 
 %files doc
