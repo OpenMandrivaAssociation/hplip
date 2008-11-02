@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.8.7
-Release:	%mkrel 5
+Release:	%mkrel 6
 License:	GPL/MIT/BSD
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -284,7 +284,7 @@ cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 Name=HP Sendfax
 Comment=Utility for sending faxes with HP's multi-function devices
 Exec=%{_bindir}/hp-sendfax
-Icon=%{name}
+Icon=%{_datadir}/%{name}/data/images/32x32/fax_machine.png
 Terminal=false
 Type=Application
 Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
