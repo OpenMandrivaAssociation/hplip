@@ -46,7 +46,7 @@ BuildRequires:	libsane-devel, xsane
 BuildRequires:	PyQt >= 3.13-2mdk, python-sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	libusb-devel >= 0.1.8
-BuildRequires:	ImageMagick
+BuildRequires:	imagemagick
 BuildRequires:	autoconf
 BuildRequires:	libcups-devel
 BuildRequires:	libjpeg-devel
