@@ -17,26 +17,23 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.8.7
-Release:	%mkrel 6
+Version:	2.8.12
+Release:	%mkrel 1
 License:	GPL/MIT/BSD
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
-# fhimpe: Script from OpenSUSE/Ubuntu to create Hal fdi file for HP scanners
-# https://bugs.launchpad.net/ubuntu/+source/hal/+bug/195782
-Source1: create_hal_global_fdi_from_hpmud_rules
-# Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
-Patch3: hplip-1.6.12-HP-PhotoSmart_7150tilde.patch
+Patch5: hplip-2.8.12-string-format.patch
+Patch6: hplip-2.8.12-unresolved-sym.patch
 Patch11: hplip-2.7.6-14_charsign_fixes.patch
-# Use QT4 for system tray applet, the QT3 version does get embedded in  
-# GNOME's notification area
-Patch12: hplip-2.8.4-systray-qt4.patch
-Patch14: hplip-2.8.7-force-utf8.patch
-Patch15: hpijs.drv-2.8.7-a3.patch
-# fwang: Patch 101-108 from fedora
-Patch101: hplip-2.7.6-libm.patch
-Patch102: hplip-2.7.6-libsane.patch
-Patch105: hplip-2.7.6-no-root-config.patch
+Patch14: hplip-2.8.12-force-utf8.patch
+
+# Fedora patches
+Patch101: hplip-desktop.patch
+Patch104: hplip-marker-supply.patch
+Patch105: hplip-dbus.patch
+#Patch106: hplip-systray.patch
+Patch108: hplip-libsane.patch
+Patch113: hplip-ui-optional.patch
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -189,18 +186,30 @@ flash memory cards.
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 
-# Some HP PhotoSmart 7150 identify themselves as "hp photosmart 7150~"
-%patch3 -p1 -b .hpps7150
-
+%patch5 -p1 -b .stringformat
+%patch6 -p1 -b .unresolved-sym
 %patch11 -p1 -b .14charsign
-%patch12 -p1 -b .systray-applet-qt4
 %patch14 -p1 -b .force-utf8
-%patch15 -p1 -b .hpijs.drv-A3-paper
 
 # apply fedora patches
-%patch101 -p1
-%patch102 -p1
-%patch105 -p1
+# Fix desktop file.
+%patch101 -p1 -b .desktop
+
+# Low ink is a warning condition, not an error.
+%patch104 -p1 -b .marker-supply
+
+# Prevent backend crash when D-Bus not running (bug #474362).
+%patch105 -p1 -b .dbus
+
+# Make --qt4 the default for the systray applet, so that it appears
+# in the right place.
+#%patch106 -p1 -b .systray
+
+# Link libsane-hpaio against libsane (bug #234813).
+#%patch108 -p1 -b .libsane
+
+# Make utils.checkPyQtImport() look for the gui sub-package (bug #243273).
+%patch113 -p1 -b .ui-optional
 
 # Make all files in the source user-writable
 chmod -R u+w .
@@ -215,7 +224,8 @@ WITHOUT_SANE="--without-sane"
 %endif
 %configure2_5x $WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
-	--disable-foomatic-xml-install
+	--disable-foomatic-xml-install \
+	--enable-qt4 --disable-qt3
 
 %make
 
@@ -251,13 +261,6 @@ rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 
 # Remove other unneeded files
 rm -f %{buildroot}%{py_platsitedir}/*.la
-
-# Run the script which outputs a global HAL fdi file for all HP USB devices
-# which belong to HPLIP and install its output as 
-# /etc/hal/fdi/policy/10osvendor/70-hpmud.fdi:
-bash %{SOURCE1} data/rules/55-hpmud.rules >70-hpmud.fdi
-install -d %{buildroot}%{_sysconfdir}/hal/fdi/policy/10osvendor
-install -m644 70-hpmud.fdi %{buildroot}%{_sysconfdir}/hal/fdi/policy/10osvendor/70-hpmud.fdi
 
 # install menu icons
 #mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
@@ -378,7 +381,6 @@ rm -rf %{buildroot}
 %{_bindir}/hp-*
 %{_datadir}/hplip/[A-Za-c_]*
 %{_datadir}/hplip/data/*
-%{_datadir}/hplip/dat2drv.py
 %exclude %{_datadir}/hplip/data/models
 %{_datadir}/hplip/[e-z]*
 # C libraries for Python
@@ -393,7 +395,9 @@ rm -rf %{buildroot}
 #%{_iconsdir}/*.png
 #%{_iconsdir}/*/*.png
 %{_datadir}/applications/*
-%{_sysconfdir}/hal/fdi/policy/10osvendor/70-hpmud.fdi
+%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
+%{_datadir}/hplip/devicesetup.py
+
 
 %files doc
 %defattr(-,root,root)
