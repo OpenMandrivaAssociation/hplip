@@ -18,8 +18,8 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.8.12
-Release:	%mkrel 1
-License:	GPL/MIT/BSD
+Release:	%mkrel 2
+License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 Patch5: hplip-2.8.12-string-format.patch
@@ -40,7 +40,7 @@ Url:		http://hplip.sourceforge.net/
 BuildRequires:	libsane-devel, xsane
 %endif
 %py_requires -d
-BuildRequires:	PyQt >= 3.13-2mdk, python-sip >= 4.1.1
+BuildRequires:	python-sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	libusb-devel >= 0.1.8
 BuildRequires:	imagemagick
@@ -50,7 +50,6 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	python-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	libdbus-devel
-Requires:	PyQt >= 3.13-2mdk
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	cupsddk-drivers >= 1.2.3-2mdv
