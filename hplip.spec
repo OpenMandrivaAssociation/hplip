@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	2.8.12
-Release:	%mkrel 3
+Release:	%mkrel 4  
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -29,10 +29,11 @@ Patch14: hplip-2.8.12-force-utf8.patch
 
 # Fedora patches
 Patch101: hplip-desktop.patch
+Patch102: hplip-segfault.patch
+Patch103: hplip-quit.patch
 Patch104: hplip-marker-supply.patch
 Patch105: hplip-dbus.patch
-#Patch106: hplip-systray.patch
-Patch108: hplip-libsane.patch
+Patch112: hplip-no-root-config.patch
 Patch113: hplip-ui-optional.patch
 
 Url:		http://hplip.sourceforge.net/
@@ -63,8 +64,10 @@ Requires:	net-snmp-mibs
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
 Requires:	python-dbus
-# Needed for system tray applet
-Requires:	python-qt4-gui
+# Required by hp-scan for command line scanning
+Suggests:	python-imaging
+# Some HP ppds are in foomatic-db and foomatic-db-hpijs (bug #47415)
+Suggests:	foomatic-db-hpijs
 
 %ifarch x86_64
 Conflicts:	cups < 1.2.0-0.5361.0mdk
@@ -146,6 +149,17 @@ there are some older models not supported. This package contains the
 list of supported models. Printerdrake installs it automatically to
 determine whether HPLIP has to be installed or not.
 
+%package gui
+Summary: HPLIP graphical tools
+Group: System/Printing
+Requires:python-qt4-gui
+Requires: %{name} = %{version}-%{release}
+Conflicts: hplip < 2.8.12-4
+
+%description gui
+HPLIP graphical tools.
+
+
 %package hpijs
 Summary: HPs printer driver IJS plug-in for GhostScript
 Group: System/Printing
@@ -194,18 +208,22 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # Fix desktop file.
 %patch101 -p1 -b .desktop
 
+# Prevent crash when DEVICE_URI/PRINTER environment variables are not
+# set (RH bug #479808 comment 6).
+%patch102 -p1 -b .segfault
+
+# Fixed Quit menu item in device manager (RH bug #479751).
+%patch103 -p1 -b .quit
+
+
 # Low ink is a warning condition, not an error.
 %patch104 -p1 -b .marker-supply
 
 # Prevent backend crash when D-Bus not running (bug #474362).
 %patch105 -p1 -b .dbus
 
-# Make --qt4 the default for the systray applet, so that it appears
-# in the right place.
-#%patch106 -p1 -b .systray
-
-# Link libsane-hpaio against libsane (bug #234813).
-#%patch108 -p1 -b .libsane
+# Prevent SELinux audit message from the CUPS backends (bug #241776)
+%patch112 -p1 -b .no-root-config
 
 # Make utils.checkPyQtImport() look for the gui sub-package (bug #243273).
 %patch113 -p1 -b .ui-optional
@@ -216,15 +234,16 @@ chmod -R u+w .
 %build
 %serverbuild
 
-aclocal
-autoconf
+autoreconf -f
+libtoolize
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
 %configure2_5x $WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
-	--disable-foomatic-xml-install \
 	--enable-qt4 --disable-qt3
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 %make
 
@@ -376,26 +395,83 @@ rm -rf %{buildroot}
 #doc COPYING doc/*
 %config(noreplace) %{_sysconfdir}/hp
 %config(noreplace) %{_sysconfdir}/udev/rules.d/55-hpmud.rules
+%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 %dir /var/run/hplip/
-%{_bindir}/hp-*
-%{_datadir}/hplip/[A-Za-c_]*
-%{_datadir}/hplip/data/*
+%{_bindir}/hp-align
+%{_bindir}/hp-clean
+%{_bindir}/hp-colorcal
+%{_bindir}/hp-devicesetup
+%{_bindir}/hp-fab
+%{_bindir}/hp-faxsetup
+%{_bindir}/hp-firmware
+%{_bindir}/hp-info
+%{_bindir}/hp-levels
+%{_bindir}/hp-linefeedcal
+%{_bindir}/hp-makecopies
+%{_bindir}/hp-makeuri
+%{_bindir}/hp-mkuri
+%{_bindir}/hp-plugin
+%{_bindir}/hp-pqdiag
+%{_bindir}/hp-printsettings
+%{_bindir}/hp-probe
+%{_bindir}/hp-scan
+%{_bindir}/hp-sendfax
+%{_bindir}/hp-setup
+%{_bindir}/hp-testpage
+%{_bindir}/hp-timedate
+%{_bindir}/hp-unload
+
 %exclude %{_datadir}/hplip/data/models
-%{_datadir}/hplip/[e-z]*
 # C libraries for Python
 %{_libdir}/python*/*/*.so*
 # CUPS backends (0700 permissions, so that CUPS 1.2 runs these backends
 # as root)
-%attr(0700,root,root) %{_prefix}/lib*/cups/backend/hp*
+# Note: this must be /usr/lib not %{_libdir}, since that's the
+# CUPS serverbin directory.
+%attr(0700,root,root) %{_prefix}/lib/cups/backend/hp*
 %{_prefix}/lib/cups/filter/hplipjs
 %{_datadir}/cups/drv/hp/hpijs.drv
-%{_datadir}/ppd/HP/HP-Fax*.ppd*
-# menu entry
-#%{_iconsdir}/*.png
-#%{_iconsdir}/*/*.png
-%{_datadir}/applications/*
-%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
-%{_datadir}/hplip/devicesetup.py
+# Files
+%dir %{_datadir}/hplip
+%{_datadir}/hplip/align.py*
+%{_datadir}/hplip/clean.py*
+%{_datadir}/hplip/colorcal.py*
+%{_datadir}/hplip/devicesetup.py*
+%{_datadir}/hplip/fab.py*
+%{_datadir}/hplip/fax
+%{_datadir}/hplip/faxsetup.py*
+%{_datadir}/hplip/firmware.py*
+%{_datadir}/hplip/hpdio.py*
+%{_datadir}/hplip/hpssd*
+%{_datadir}/hplip/info.py*
+%{_datadir}/hplip/__init__.py*
+%{_datadir}/hplip/levels.py*
+%{_datadir}/hplip/linefeedcal.py*
+%{_datadir}/hplip/makecopies.py*
+%{_datadir}/hplip/makeuri.py*
+%{_datadir}/hplip/plugin.py*
+%{_datadir}/hplip/pqdiag.py*
+%{_datadir}/hplip/printsettings.py*
+%{_datadir}/hplip/probe.py*
+%{_datadir}/hplip/scan.py*
+%{_datadir}/hplip/sendfax.py*
+%{_datadir}/hplip/setup.py*
+%{_datadir}/hplip/testpage.py*
+%{_datadir}/hplip/timedate.py*
+%{_datadir}/hplip/unload.py*
+# Directories
+%{_datadir}/hplip/base
+%{_datadir}/hplip/copier
+%dir %{_datadir}/hplip/data
+%{_datadir}/hplip/data/ldl
+%{_datadir}/hplip/data/localization
+%{_datadir}/hplip/data/models
+%{_datadir}/hplip/data/pcl
+%{_datadir}/hplip/data/ps
+%{_datadir}/hplip/installer
+%{_datadir}/hplip/pcard
+%{_datadir}/hplip/prnt
+%{_datadir}/hplip/scan
 
 
 %files doc
@@ -438,6 +514,21 @@ rm -rf %{buildroot}
 %files model-data
 %defattr(-,root,root)
 %{_datadir}/hplip/data/models
+
+%files gui
+%{_bindir}/hp-check
+%{_bindir}/hp-print
+%{_bindir}/hp-systray
+%{_bindir}/hp-toolbox
+%{_datadir}/applications/*.desktop
+# Files
+%{_datadir}/hplip/check.py*
+%{_datadir}/hplip/print.py*
+%{_datadir}/hplip/systray.py*
+%{_datadir}/hplip/toolbox.py*
+# Directories
+%{_datadir}/hplip/data/images
+%{_datadir}/hplip/ui4
 
 %files hpijs
 %defattr(-,root,root)
