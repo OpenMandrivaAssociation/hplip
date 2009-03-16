@@ -17,24 +17,33 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	2.8.12
-Release:	%mkrel 4  
+Version:	3.9.2
+Release:	%mkrel 1 
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+# Taken from Fedora, ensures correct permissions on devices
+Source1: hplip.fdi
 Patch5: hplip-2.8.12-string-format.patch
-Patch6: hplip-2.8.12-unresolved-sym.patch
+Patch6: hplip-3.9.2-unresolved-sym.patch
 Patch11: hplip-2.7.6-14_charsign_fixes.patch
-Patch14: hplip-2.8.12-force-utf8.patch
 
 # Fedora patches
 Patch101: hplip-desktop.patch
 Patch102: hplip-segfault.patch
-Patch103: hplip-quit.patch
 Patch104: hplip-marker-supply.patch
 Patch105: hplip-dbus.patch
+Patch106: hplip-strstr-const.patch
 Patch112: hplip-no-root-config.patch
 Patch113: hplip-ui-optional.patch
+
+# Debian/Ubuntu patches
+Patch201: hplip-hpdio_settings_dialog.patch
+Patch202: hplip-hpinfo-query-without-cups-queue.patch
+Patch203: hplip-pjl-duplex-binding.patch
+Patch204: hplip-photosmart_b9100_support.patch
+Patch205: hplip-rebuild_python_ui.patch
+Patch206: hplip-rss.patch
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -202,7 +211,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch5 -p1 -b .stringformat
 %patch6 -p1 -b .unresolved-sym
 %patch11 -p1 -b .14charsign
-%patch14 -p1 -b .force-utf8
 
 # apply fedora patches
 # Fix desktop file.
@@ -212,21 +220,44 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # set (RH bug #479808 comment 6).
 %patch102 -p1 -b .segfault
 
-# Fixed Quit menu item in device manager (RH bug #479751).
-%patch103 -p1 -b .quit
-
-
 # Low ink is a warning condition, not an error.
 %patch104 -p1 -b .marker-supply
 
 # Prevent backend crash when D-Bus not running (bug #474362).
 %patch105 -p1 -b .dbus
 
+# Fix compilation.
+%patch106 -p1 -b .strstr-const
+
 # Prevent SELinux audit message from the CUPS backends (bug #241776)
 %patch112 -p1 -b .no-root-config
 
 # Make utils.checkPyQtImport() look for the gui sub-package (bug #243273).
 %patch113 -p1 -b .ui-optional
+
+# Debian/Ubuntu patches
+# Bug fix patch from upstream, fixes busy loop when switching to another
+# user and crash of settings dialog (Debian bugs #503723, #519696)
+%patch201 -p1 -b .settings
+
+# Allow hp-info to query URIs for which there is no CUPS queue
+# (Launchpad bug #329220)
+%patch202 -p1 -b .query
+
+# FixsShort-edge duplex printing if duplex is PJL-controlled
+# https://bugs.launchpad.net/hplip/+bug/244295
+%patch203 -p1 -b .pjl-duplex
+
+# Corrections on the models.dat entry for the HP PhotoSmart Pro B9100,
+# especially for the correct color calibration mode.
+%patch204 -p1 -b .b9100
+
+# compiling ui files to py
+%patch205 -p1 -b .rebuildui
+
+# This patch tries to make sure that black is printed with just
+# the black pen, if the printer supports it
+%patch206 -p1 -b .rss
 
 # Make all files in the source user-writable
 chmod -R u+w .
@@ -312,7 +343,17 @@ Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
 EOF
 #' #Fix vim's stupid syntax
 
-rm -f $RPM_BUILD_ROOT%_sysconfdir/xdg/autostart/hplip-systray.desktop
+rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
+# Remove default udev rules because they create several problems
+# (writing to fs while it's still read only when udev is run, setting 
+# owner of devices while group is enough,...)
+# Launchpad bugs #319660, #319661, #319662, #319665
+rm -f %{buildroot}%{_sysconfdir}/udev/rules.d/*
+
+# Remove the hal preprobe rules as they were causing breakage (RH bug #479648)
+rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
+mkdir -p %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/
+install -p -m644 %{SOURCE1} %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/10-hplip.fdi
 
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
@@ -394,8 +435,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 #doc COPYING doc/*
 %config(noreplace) %{_sysconfdir}/hp
-%config(noreplace) %{_sysconfdir}/udev/rules.d/55-hpmud.rules
-%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
+%{_datadir}/hal/fdi/policy/10osvendor/10-hplip.fdi
 %dir /var/run/hplip/
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
@@ -414,6 +454,7 @@ rm -rf %{buildroot}
 %{_bindir}/hp-pqdiag
 %{_bindir}/hp-printsettings
 %{_bindir}/hp-probe
+%{_bindir}/hp-query
 %{_bindir}/hp-scan
 %{_bindir}/hp-sendfax
 %{_bindir}/hp-setup
@@ -453,6 +494,7 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/pqdiag.py*
 %{_datadir}/hplip/printsettings.py*
 %{_datadir}/hplip/probe.py*
+%{_datadir}/hplip/query.py*
 %{_datadir}/hplip/scan.py*
 %{_datadir}/hplip/sendfax.py*
 %{_datadir}/hplip/setup.py*
@@ -472,7 +514,7 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/pcard
 %{_datadir}/hplip/prnt
 %{_datadir}/hplip/scan
-
+%{_localstatedir}/lib/hp/hplip.state
 
 %files doc
 %defattr(-,root,root)
