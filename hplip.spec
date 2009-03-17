@@ -481,6 +481,7 @@ rm -rf %{buildroot}
 %attr(0700,root,root) %{_prefix}/lib/cups/backend/hp*
 %{_prefix}/lib/cups/filter/hplipjs
 %{_datadir}/cups/drv/hp/hpijs.drv
+%{_datadir}/ppd/HP/HP-Fax*.ppd*
 # Files
 %dir %{_datadir}/hplip
 %{_datadir}/hplip/align.py*
