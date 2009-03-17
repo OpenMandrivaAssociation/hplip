@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.9.2
-Release:	%mkrel 1 
+Release:	%mkrel 2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -27,7 +27,7 @@ Source1: hplip.fdi
 
 Patch5: hplip-2.8.12-string-format.patch
 Patch6: hplip-3.9.2-unresolved-sym.patch
-Patch7: hplip-3.9.2-kdesu.patch
+Patch7: hplip-3.9.2-consolehelper.patch
 
 # Fedora patches
 Patch101: hplip-desktop.patch
@@ -212,11 +212,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 %patch5 -p1 -b .stringformat
 %patch6 -p1 -b .unresolved-sym
-
-# kde4's kdesu is not in PATH
-%patch7 -p1 -b .kdesu
-sed -i -e "s|@LIBDIR@|%{_libdir}|" ui4/ui_utils.py
-
+%patch7 -p1 -b .consolehelper
 
 # apply fedora patches
 # Fix desktop file.
@@ -364,6 +360,20 @@ rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 mkdir -p %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/
 install -p -m644 %{SOURCE1} %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/10-hplip.fdi
 
+# set up consolehelper
+mkdir -p %{buildroot}%{_sbindir}
+mv %{buildroot}%{_bindir}/hp-setup %{buildroot}%{_sbindir}/hp-setup
+ln -s consolehelper %{buildroot}%{_bindir}/hp-setup
+
+mv %{buildroot}%{_bindir}/hp-plugin %{buildroot}%{_sbindir}/hp-plugin
+ln -s consolehelper %{buildroot}%{_bindir}/hp-plugin
+
+# Make sure pyc files are generated, otherwise we can get
+# difficult to debug problems
+pushd %{buildroot}%{_datadir}/%{name}
+python -m compileall .
+popd
+
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
 
@@ -439,7 +449,6 @@ fi
 %clean
 rm -rf %{buildroot}
 
-
 %files
 %defattr(-,root,root)
 #doc COPYING doc/*
@@ -470,6 +479,8 @@ rm -rf %{buildroot}
 %{_bindir}/hp-testpage
 %{_bindir}/hp-timedate
 %{_bindir}/hp-unload
+%{_sbindir}/hp-setup
+%{_sbindir}/hp-plugin
 
 %exclude %{_datadir}/hplip/data/models
 # C libraries for Python
