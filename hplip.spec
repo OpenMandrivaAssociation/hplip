@@ -24,9 +24,10 @@ Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 # Taken from Fedora, ensures correct permissions on devices
 Source1: hplip.fdi
+
 Patch5: hplip-2.8.12-string-format.patch
 Patch6: hplip-3.9.2-unresolved-sym.patch
-Patch11: hplip-2.7.6-14_charsign_fixes.patch
+Patch7: hplip-3.9.2-kdesu.patch
 
 # Fedora patches
 Patch101: hplip-desktop.patch
@@ -44,6 +45,7 @@ Patch203: hplip-pjl-duplex-binding.patch
 Patch204: hplip-photosmart_b9100_support.patch
 Patch205: hplip-rebuild_python_ui.patch
 Patch206: hplip-rss.patch
+Patch207: hplip-2.7.6-14_charsign_fixes.patch
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -210,7 +212,11 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 %patch5 -p1 -b .stringformat
 %patch6 -p1 -b .unresolved-sym
-%patch11 -p1 -b .14charsign
+
+# kde4's kdesu is not in PATH
+%patch7 -p1 -b .kdesu
+sed -i -e "s|@LIBDIR@|%{_libdir}|" ui4/ui_utils.py
+
 
 # apply fedora patches
 # Fix desktop file.
@@ -258,6 +264,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # This patch tries to make sure that black is printed with just
 # the black pen, if the printer supports it
 %patch206 -p1 -b .rss
+
+# code cleanup related to char signedness
+%patch207 -p1 -b .14charsign
 
 # Make all files in the source user-writable
 chmod -R u+w .
