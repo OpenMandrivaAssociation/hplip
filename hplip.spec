@@ -17,29 +17,29 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.9.2
-Release:	%mkrel 2
+Version:	3.9.6b
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 # Taken from Fedora, ensures correct permissions on devices
 Source1: hplip.fdi
-
-Patch5: hplip-2.8.12-string-format.patch
-Patch6: hplip-3.9.2-unresolved-sym.patch
-Patch7: hplip-3.9.2-consolehelper.patch
+Patch5: hplip-3.9.4b-string-format.patch
 
 # Fedora patches
 Patch101: hplip-desktop.patch
 Patch102: hplip-segfault.patch
+Patch103: hplip-device-id.patch
 Patch104: hplip-marker-supply.patch
 Patch105: hplip-dbus.patch
 Patch106: hplip-strstr-const.patch
+Patch108: hplip-libsane.patch
 Patch112: hplip-no-root-config.patch
 Patch113: hplip-ui-optional.patch
+Patch114: hplip-disc-media.patch
+Patch115: hplip-resolution-405400.patch
 
 # Debian/Ubuntu patches
-Patch201: hplip-hpdio_settings_dialog.patch
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
 Patch203: hplip-pjl-duplex-binding.patch
 Patch204: hplip-photosmart_b9100_support.patch
@@ -75,6 +75,7 @@ Requires:	net-snmp-mibs
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
 Requires:	python-dbus
+Requires:	policykit
 # Required by hp-scan for command line scanning
 Suggests:	python-imaging
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (bug #47415)
@@ -210,9 +211,7 @@ flash memory cards.
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 
-%patch5 -p1 -b .stringformat
-%patch6 -p1 -b .unresolved-sym
-%patch7 -p1 -b .consolehelper
+%patch5 -p1 -b .strfmt
 
 # apply fedora patches
 # Fix desktop file.
@@ -222,25 +221,36 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # set (RH bug #479808 comment 6).
 %patch102 -p1 -b .segfault
 
+# Fixed device-id attributes reported by backend.
+%patch103 -p1 -b .device-id
+
 # Low ink is a warning condition, not an error.
 %patch104 -p1 -b .marker-supply
 
-# Prevent backend crash when D-Bus not running (bug #474362).
+# Prevent backend crash when D-Bus not running (RH bug #474362).
 %patch105 -p1 -b .dbus
 
 # Fix compilation.
 %patch106 -p1 -b .strstr-const
 
-# Prevent SELinux audit message from the CUPS backends (bug #241776)
+# Link libsane-hpaio against libsane (RH bug #234813).
+%patch108 -p1 -b .libsane
+
+# Prevent SELinux audit message from the CUPS backends (RH bug #241776)
 %patch112 -p1 -b .no-root-config
 
-# Make utils.checkPyQtImport() look for the gui sub-package (bug #243273).
+# Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
 %patch113 -p1 -b .ui-optional
 
+# Set disc media for disc page sizes (RH bug #495672).
+%patch114 -p1 -b .disc-media
+
+# Fixed HWResolution for 'Normal' output from the hpcups driver
+# (laundpad bug #405400).
+%patch115 -p1 -b .resolution-405400
+
+
 # Debian/Ubuntu patches
-# Bug fix patch from upstream, fixes busy loop when switching to another
-# user and crash of settings dialog (Debian bugs #503723, #519696)
-%patch201 -p1 -b .settings
 
 # Allow hp-info to query URIs for which there is no CUPS queue
 # (Launchpad bug #329220)
@@ -270,14 +280,25 @@ chmod -R u+w .
 %build
 %serverbuild
 
-autoreconf -f
-libtoolize
+autoconf -f
+
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
 %configure2_5x $WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
-	--enable-qt4 --disable-qt3
+	--disable-foomatic-xml-install \
+	--disable-cups-install \
+	--enable-scan-build \
+	--enable-gui-build \
+	--enable-fax-build \
+	--enable-qt4 --disable-qt3 \
+	--enable-dbus \
+	--enable-hpcups-install \
+	--enable-cups-drv-install \
+	--enable-hpijs-install \
+	--enable-policykit
+
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
@@ -458,7 +479,7 @@ rm -rf %{buildroot}
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
-%{_bindir}/hp-devicesetup
+%{_bindir}/hp-devicesettings
 %{_bindir}/hp-fab
 %{_bindir}/hp-faxsetup
 %{_bindir}/hp-firmware
@@ -468,6 +489,7 @@ rm -rf %{buildroot}
 %{_bindir}/hp-makecopies
 %{_bindir}/hp-makeuri
 %{_bindir}/hp-mkuri
+%{_bindir}/hp-pkservice
 %{_bindir}/hp-plugin
 %{_bindir}/hp-pqdiag
 %{_bindir}/hp-printsettings
@@ -479,6 +501,7 @@ rm -rf %{buildroot}
 %{_bindir}/hp-testpage
 %{_bindir}/hp-timedate
 %{_bindir}/hp-unload
+%{_bindir}/hp-wificonfig
 %{_sbindir}/hp-setup
 %{_sbindir}/hp-plugin
 
@@ -491,14 +514,17 @@ rm -rf %{buildroot}
 # CUPS serverbin directory.
 %attr(0700,root,root) %{_prefix}/lib/cups/backend/hp*
 %{_prefix}/lib/cups/filter/hplipjs
-%{_datadir}/cups/drv/hp/hpijs.drv
+%{_prefix}/lib/cups/filter/hpcac
+%{_prefix}/lib/cups/filter/hpcups
+%{_prefix}/lib/cups/filter/hpcupsfax
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
+%{_datadir}/cups/drv/hp/hpcups.drv
 # Files
 %dir %{_datadir}/hplip
 %{_datadir}/hplip/align.py*
 %{_datadir}/hplip/clean.py*
 %{_datadir}/hplip/colorcal.py*
-%{_datadir}/hplip/devicesetup.py*
+%{_datadir}/hplip/devicesettings.py*
 %{_datadir}/hplip/fab.py*
 %{_datadir}/hplip/fax
 %{_datadir}/hplip/faxsetup.py*
@@ -511,6 +537,7 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/linefeedcal.py*
 %{_datadir}/hplip/makecopies.py*
 %{_datadir}/hplip/makeuri.py*
+%{_datadir}/hplip/pkservice.py*
 %{_datadir}/hplip/plugin.py*
 %{_datadir}/hplip/pqdiag.py*
 %{_datadir}/hplip/printsettings.py*
@@ -522,6 +549,7 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/testpage.py*
 %{_datadir}/hplip/timedate.py*
 %{_datadir}/hplip/unload.py*
+%{_datadir}/hplip/wificonfig.py*
 # Directories
 %{_datadir}/hplip/base
 %{_datadir}/hplip/copier
@@ -535,7 +563,10 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/pcard
 %{_datadir}/hplip/prnt
 %{_datadir}/hplip/scan
+%{_datadir}/PolicyKit/policy/com.hp.hplip.policy
+%{_datadir}/dbus-1/system-services/com.hp.hplip.service
 %{_localstatedir}/lib/hp/hplip.state
+%config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
 
 %files doc
 %defattr(-,root,root)
