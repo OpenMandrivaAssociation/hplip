@@ -62,6 +62,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	python-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	libdbus-devel
+BuildRequires:	udev-devel
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	cupsddk-drivers >= 1.2.3-2mdv
