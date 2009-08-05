@@ -17,7 +17,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.9.6b
+Version:	3.9.8
 Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -27,17 +27,8 @@ Source1: hplip.fdi
 Patch5: hplip-3.9.4b-string-format.patch
 
 # Fedora patches
-Patch101: hplip-desktop.patch
-Patch102: hplip-segfault.patch
-Patch103: hplip-device-id.patch
-Patch104: hplip-marker-supply.patch
-Patch105: hplip-dbus.patch
-Patch106: hplip-strstr-const.patch
-Patch108: hplip-libsane.patch
-Patch112: hplip-no-root-config.patch
-Patch113: hplip-ui-optional.patch
-Patch114: hplip-disc-media.patch
-Patch115: hplip-resolution-405400.patch
+Patch101: hplip-strstr-const.patch
+Patch102: hplip-ui-optional.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -214,41 +205,11 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 %patch5 -p1 -b .strfmt
 
-# apply fedora patches
-# Fix desktop file.
-%patch101 -p1 -b .desktop
-
-# Prevent crash when DEVICE_URI/PRINTER environment variables are not
-# set (RH bug #479808 comment 6).
-%patch102 -p1 -b .segfault
-
-# Fixed device-id attributes reported by backend.
-%patch103 -p1 -b .device-id
-
-# Low ink is a warning condition, not an error.
-%patch104 -p1 -b .marker-supply
-
-# Prevent backend crash when D-Bus not running (RH bug #474362).
-%patch105 -p1 -b .dbus
-
 # Fix compilation.
-%patch106 -p1 -b .strstr-const
-
-# Link libsane-hpaio against libsane (RH bug #234813).
-%patch108 -p1 -b .libsane
-
-# Prevent SELinux audit message from the CUPS backends (RH bug #241776)
-%patch112 -p1 -b .no-root-config
+%patch101 -p1 -b .strstr-const
 
 # Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
-%patch113 -p1 -b .ui-optional
-
-# Set disc media for disc page sizes (RH bug #495672).
-%patch114 -p1 -b .disc-media
-
-# Fixed HWResolution for 'Normal' output from the hpcups driver
-# (laundpad bug #405400).
-%patch115 -p1 -b .resolution-405400
+%patch102 -p1 -b .ui-optional
 
 
 # Debian/Ubuntu patches
