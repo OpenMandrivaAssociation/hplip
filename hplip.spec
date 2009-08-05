@@ -382,14 +382,6 @@ rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 mkdir -p %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/
 install -p -m644 %{SOURCE1} %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/10-hplip.fdi
 
-# set up consolehelper
-mkdir -p %{buildroot}%{_sbindir}
-mv %{buildroot}%{_bindir}/hp-setup %{buildroot}%{_sbindir}/hp-setup
-ln -s consolehelper %{buildroot}%{_bindir}/hp-setup
-
-mv %{buildroot}%{_bindir}/hp-plugin %{buildroot}%{_sbindir}/hp-plugin
-ln -s consolehelper %{buildroot}%{_bindir}/hp-plugin
-
 # Make sure pyc files are generated, otherwise we can get
 # difficult to debug problems
 pushd %{buildroot}%{_datadir}/%{name}
@@ -503,8 +495,6 @@ rm -rf %{buildroot}
 %{_bindir}/hp-timedate
 %{_bindir}/hp-unload
 %{_bindir}/hp-wificonfig
-%{_sbindir}/hp-setup
-%{_sbindir}/hp-plugin
 
 %exclude %{_datadir}/hplip/data/models
 # C libraries for Python
