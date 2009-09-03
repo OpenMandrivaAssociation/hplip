@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.9.8
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -259,6 +259,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-hpcups-install \
 	--enable-cups-drv-install \
 	--enable-hpijs-install \
+	--enable-udev-acl-rules \
 	--enable-policykit
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
@@ -332,16 +333,9 @@ EOF
 #' #Fix vim's stupid syntax
 
 rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
-# Remove default udev rules because they create several problems
-# (writing to fs while it's still read only when udev is run, setting 
-# owner of devices while group is enough,...)
-# Launchpad bugs #319660, #319661, #319662, #319665
-rm -f %{buildroot}%{_sysconfdir}/udev/rules.d/*
 
-# Remove the hal preprobe rules as they were causing breakage (RH bug #479648)
-rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
-mkdir -p %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/
-install -p -m644 %{SOURCE1} %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/10-hplip.fdi
+# switched to udev, no need for hal information
+rm -rf %{buildroot}%{_datadir}/hal/fdi
 
 # Make sure pyc files are generated, otherwise we can get
 # difficult to debug problems
@@ -428,7 +422,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 #doc COPYING doc/*
 %config(noreplace) %{_sysconfdir}/hp
-%{_datadir}/hal/fdi/policy/10osvendor/10-hplip.fdi
 %dir /var/run/hplip/
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
@@ -559,6 +552,7 @@ rm -rf %{buildroot}
 
 %files model-data
 %defattr(-,root,root)
+%{_sysconfdir}/udev/rules.d/*.rules
 %{_datadir}/hplip/data/models
 
 %files gui
