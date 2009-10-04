@@ -27,8 +27,17 @@ Source1: hplip.fdi
 Patch5: hplip-3.9.4b-string-format.patch
 
 # Fedora patches
-Patch101: hplip-strstr-const.patch
-Patch102: hplip-ui-optional.patch
+Patch101: hplip-hpcups-reorder.patch
+Patch102: hplip-strstr-const.patch
+Patch103: hplip-ui-optional.patch
+Patch104: hplip-no-asm.patch
+Patch105: hplip-clear-previous-state-reasons.patch
+Patch106: hplip-state-reasons-newline.patch
+Patch107: hplip-parenths.patch
+Patch108: hplip-non-scripts.patch
+Patch109: hplip-requirespageregion.patch
+Patch110: hplip-discovery-method.patch
+Patch111: hplip-device-reconnected.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -37,6 +46,13 @@ Patch204: hplip-photosmart_b9100_support.patch
 Patch205: hplip-rebuild_python_ui.patch
 Patch206: hplip-rss.patch
 Patch207: hplip-2.7.6-14_charsign_fixes.patch
+Patch208: 10_shebang_fixes.dpatch
+Patch210: 87_move_documentation.dpatch
+Patch211: hp-check_debian.dpatch
+Patch212: delayed-hp-systray-start.dpatch
+Patch213: hpcups-drv-page-sizes-order.dpatch
+Patch214: hplip-polkit-1-migration.dpatch
+
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -54,6 +70,7 @@ BuildRequires:	python-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	libdbus-devel
 BuildRequires:	udev-devel
+BuildRequires:	polkit
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	cupsddk-drivers >= 1.2.3-2mdv
@@ -67,7 +84,7 @@ Requires:	net-snmp-mibs
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
 Requires:	python-dbus
-Requires:	policykit
+Requires:	polkit
 # Required by hp-scan for command line scanning
 Suggests:	python-imaging
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (bug #47415)
@@ -205,11 +222,39 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 %patch5 -p1 -b .strfmt
 
+# Fedora patches
+# Upstream patch to fix paper size order and LJColor device class color space.
+%patch101 -p1 -b .hpcups-reorder
+
 # Fix compilation.
-%patch101 -p1 -b .strstr-const
+%patch102 -p1 -b .strstr-const
 
 # Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
-%patch102 -p1 -b .ui-optional
+%patch103 -p1 -b .ui-optional
+
+# Make sure to avoid handwritten asm.
+%patch104 -p1 -b .no-asm
+
+# Clear previous state reasons in the hp backend (RH bug #501338).
+%patch105 -p1 -b .clear-previous-state-reasons
+
+# Don't hide state reason changes by missing out newlines in stderr.
+%patch106 -p1 -b .state-reasons-newline
+
+# Fixed typos in page sizes (RH bug #515469).
+%patch107 -p1 -b .parenths
+
+# Don't install base/*.py with executable bit set.
+%patch108 -p1 -b .non-scripts
+
+# Set RequiresPageRegion in hpcups PPDs (RH bug #518756).
+%patch109 -p1 -b .requirespageregion
+
+# Fixed hp-setup traceback when discovery page is skipped (RH bug #523685).
+%patch110 -p1 -b .discovery-method
+
+# Give up trying to print a job to a reconnected device (RH bug #515481).
+%patch111 -p1 -b .device-reconnected
 
 
 # Debian/Ubuntu patches
@@ -236,6 +281,28 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # code cleanup related to char signedness
 %patch207 -p1 -b .14charsign
 
+# shebang fixes
+%patch208 -p1
+
+# place html documentation under hplip-doc/HTML/
+%patch210 -p1
+
+# Check for hpaio module in /etc/sane.d/dll.d/hplip too
+%patch211 -p1
+
+# Delay start-up of notification utility
+%patch212 -p1
+
+# Upstream patch to improve
+# the order of the page sizes in the user interface menus. Now the margin
+# variants of the same size (for duplex and full bleed) stand together.
+# disabled for now because it conflicts with Fedora patches
+# Only a cosmetic fix anyway
+#%patch213 -p1
+
+# Upstream patch to make HPLIP supporting Policy Kit 1.0
+%patch214 -p1 -b .pk1
+
 # Make all files in the source user-writable
 chmod -R u+w .
 
@@ -254,6 +321,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-scan-build \
 	--enable-gui-build \
 	--enable-fax-build \
+	--enable-pp-build \
 	--enable-qt4 --disable-qt3 \
 	--enable-dbus \
 	--enable-hpcups-install \
