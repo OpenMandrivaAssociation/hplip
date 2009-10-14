@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.9.8
-Release:	%mkrel 4
+Release:	%mkrel 5
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -96,6 +96,10 @@ Conflicts:	cups < 1.2.0-0.5361.0mdk
 %endif
 # Due to fax ppds.
 Conflicts:	hplip-hpijs-ppds <= 2.8.2-1mdv
+# foomatic-db-hpijs drivers are provided by hp and by this package now
+# NOTE: remove the foomatic-db-hpijs deps sometime in 2010-10-?? ?
+Provides:	foomatic-db-hpijs = %{version}-%{release}
+Obsoletes:	foomatic-db-hpijs
 BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 %description
