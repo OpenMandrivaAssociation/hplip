@@ -24,6 +24,9 @@ Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 # Taken from Fedora, ensures correct permissions on devices
 Source1: hplip.fdi
+# dlopen libhpmud.so.0 instad of libhpmud.so, in order not to depend on
+# devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
+Patch0:	hplip-3.9.8-dlopen-libhpmud.patch
 Patch5: hplip-3.9.4b-string-format.patch
 
 # Fedora patches
@@ -225,6 +228,7 @@ flash memory cards.
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 
+%patch0 -p1 -b .dlopen
 %patch5 -p1 -b .strfmt
 
 # Fedora patches
