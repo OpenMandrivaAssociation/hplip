@@ -317,8 +317,9 @@ chmod -R u+w .
 
 %build
 %serverbuild
-
+aclocal --force
 autoconf -f
+automake -f --foreign
 
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
@@ -585,7 +586,7 @@ rm -rf %{buildroot}
 %{_datadir}/hplip/pcard
 %{_datadir}/hplip/prnt
 %{_datadir}/hplip/scan
-%{_datadir}/PolicyKit/policy/com.hp.hplip.policy
+%{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
 %{_localstatedir}/lib/hp/hplip.state
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
