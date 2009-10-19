@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.9.8
-Release:	%mkrel 6
+Release:	%mkrel 7
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -89,6 +89,7 @@ Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
 Requires:	python-dbus
 Requires:	polkit
+Requires:	usermode-consoleonly
 # Required by hp-scan for command line scanning
 Suggests:	python-imaging
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (bug #47415)
@@ -183,6 +184,7 @@ Summary: HPLIP graphical tools
 Group: System/Printing
 Requires:python-qt4-gui
 Requires: %{name} = %{version}-%{release}
+Requires: usermode
 Conflicts: hplip < 2.8.12-4
 
 %description gui
@@ -415,6 +417,11 @@ rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
 # switched to udev, no need for hal information
 rm -rf %{buildroot}%{_datadir}/hal/fdi
 
+# set up consolehelper
+mkdir -p %{buildroot}%{_sbindir}
+mv %{buildroot}%{_bindir}/hp-setup %{buildroot}%{_sbindir}/hp-setup
+ln -s consolehelper %{buildroot}%{_bindir}/hp-setup
+
 # Make sure pyc files are generated, otherwise we can get
 # difficult to debug problems
 pushd %{buildroot}%{_datadir}/%{name}
@@ -523,6 +530,7 @@ rm -rf %{buildroot}
 %{_bindir}/hp-scan
 %{_bindir}/hp-sendfax
 %{_bindir}/hp-setup
+%{_sbindir}/hp-setup
 %{_bindir}/hp-testpage
 %{_bindir}/hp-timedate
 %{_bindir}/hp-unload
