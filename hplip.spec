@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.9.8
-Release:	%mkrel 7
+Release:	%mkrel 8
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -338,6 +338,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-dbus \
 	--enable-hpcups-install \
 	--enable-cups-drv-install \
+    --enable-cups-ppd-install \
 	--enable-hpijs-install \
 	--enable-udev-acl-rules \
 	--enable-policykit
