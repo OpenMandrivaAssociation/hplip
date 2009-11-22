@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.9.8
-Release:	%mkrel 8
+Version:	3.9.10
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -27,20 +27,16 @@ Source1: hplip.fdi
 # dlopen libhpmud.so.0 instad of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
 Patch0:	hplip-3.9.8-dlopen-libhpmud.patch
-Patch5: hplip-3.9.4b-string-format.patch
 
 # Fedora patches
-Patch101: hplip-hpcups-reorder.patch
+Patch101: hplip-duplex-vs-number-up.patch
 Patch102: hplip-strstr-const.patch
 Patch103: hplip-ui-optional.patch
 Patch104: hplip-no-asm.patch
-Patch105: hplip-clear-previous-state-reasons.patch
-Patch106: hplip-state-reasons-newline.patch
-Patch107: hplip-parenths.patch
-Patch108: hplip-non-scripts.patch
-Patch109: hplip-requirespageregion.patch
 Patch110: hplip-discovery-method.patch
 Patch111: hplip-device-reconnected.patch
+Patch114: hplip-hpcups-sigpipe.patch
+Patch115: hplip-hpcups-plugin.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -53,8 +49,6 @@ Patch208: 10_shebang_fixes.dpatch
 Patch210: 87_move_documentation.dpatch
 Patch211: hp-check_debian.dpatch
 Patch212: delayed-hp-systray-start.dpatch
-Patch213: hpcups-drv-page-sizes-order.dpatch
-Patch214: hplip-polkit-1-migration.dpatch
 
 
 Url:		http://hplip.sourceforge.net/
@@ -231,11 +225,10 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 
 %patch0 -p1 -b .dlopen
-%patch5 -p1 -b .strfmt
 
 # Fedora patches
-# Upstream patch to fix paper size order and LJColor device class color space.
-%patch101 -p1 -b .hpcups-reorder
+# Fixed duplex handling in hpcups.drv (bug #533462).
+%patch101 -p1 -b .duplex-vs-number-up
 
 # Fix compilation.
 %patch102 -p1 -b .strstr-const
@@ -246,26 +239,19 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # Make sure to avoid handwritten asm.
 %patch104 -p1 -b .no-asm
 
-# Clear previous state reasons in the hp backend (RH bug #501338).
-%patch105 -p1 -b .clear-previous-state-reasons
-
-# Don't hide state reason changes by missing out newlines in stderr.
-%patch106 -p1 -b .state-reasons-newline
-
-# Fixed typos in page sizes (RH bug #515469).
-%patch107 -p1 -b .parenths
-
-# Don't install base/*.py with executable bit set.
-%patch108 -p1 -b .non-scripts
-
-# Set RequiresPageRegion in hpcups PPDs (RH bug #518756).
-%patch109 -p1 -b .requirespageregion
-
 # Fixed hp-setup traceback when discovery page is skipped (RH bug #523685).
 %patch110 -p1 -b .discovery-method
 
 # Give up trying to print a job to a reconnected device (RH bug #515481).
 %patch111 -p1 -b .device-reconnected
+
+# Avoid busy loop in hpcups when backend has exited (RH bug #525944).
+%patch114 -p1 -b .hpcups-sigpipe
+
+# Added 'requires proprietary plugin' to appropriate model names
+# (RH bug #513283).
+%patch115 -p1 -b .hpcups-plugin
+
 
 
 # Debian/Ubuntu patches
@@ -303,16 +289,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 # Delay start-up of notification utility
 %patch212 -p1
-
-# Upstream patch to improve
-# the order of the page sizes in the user interface menus. Now the margin
-# variants of the same size (for duplex and full bleed) stand together.
-# disabled for now because it conflicts with Fedora patches
-# Only a cosmetic fix anyway
-#%patch213 -p1
-
-# Upstream patch to make HPLIP supporting Policy Kit 1.0
-%patch214 -p1 -b .pk1
 
 # Make all files in the source user-writable
 chmod -R u+w .
