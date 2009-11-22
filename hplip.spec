@@ -88,7 +88,7 @@ Requires:	net-snmp-mibs
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
 Requires:	python-dbus
-Requires:	polkit
+Requires:	polkit-agent
 Requires:	usermode-consoleonly
 # Required by hp-scan for command line scanning
 Suggests:	python-imaging
