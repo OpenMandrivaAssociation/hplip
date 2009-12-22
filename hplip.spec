@@ -17,7 +17,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.9.10
+Version:	3.9.12
 Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -29,14 +29,12 @@ Source1: hplip.fdi
 Patch0:	hplip-3.9.8-dlopen-libhpmud.patch
 
 # Fedora patches
-Patch101: hplip-duplex-vs-number-up.patch
 Patch102: hplip-strstr-const.patch
 Patch103: hplip-ui-optional.patch
 Patch104: hplip-no-asm.patch
 Patch110: hplip-discovery-method.patch
 Patch111: hplip-device-reconnected.patch
 Patch114: hplip-hpcups-sigpipe.patch
-Patch115: hplip-hpcups-plugin.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -227,9 +225,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch0 -p1 -b .dlopen
 
 # Fedora patches
-# Fixed duplex handling in hpcups.drv (bug #533462).
-%patch101 -p1 -b .duplex-vs-number-up
-
 # Fix compilation.
 %patch102 -p1 -b .strstr-const
 
@@ -247,12 +242,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
-
-# Added 'requires proprietary plugin' to appropriate model names
-# (RH bug #513283).
-%patch115 -p1 -b .hpcups-plugin
-
-
 
 # Debian/Ubuntu patches
 
@@ -295,8 +284,11 @@ chmod -R u+w .
 
 %build
 %serverbuild
+#needed by patch205
+libtoolize --copy --force
 aclocal --force
 autoconf -f
+#needed by patches 205 and 210
 automake -f --foreign
 
 %if !%{sane_backend}
