@@ -296,17 +296,14 @@ WITHOUT_SANE="--without-sane"
 %endif
 %configure2_5x $WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
-	--disable-foomatic-xml-install \
-	--disable-cups-install \
 	--enable-scan-build \
 	--enable-gui-build \
 	--enable-fax-build \
 	--enable-pp-build \
 	--enable-qt4 --disable-qt3 \
-	--enable-dbus \
 	--enable-hpcups-install \
 	--enable-cups-drv-install \
-    --enable-cups-ppd-install \
+	--enable-cups-ppd-install \
 	--enable-hpijs-install \
 	--enable-udev-acl-rules \
 	--enable-policykit
