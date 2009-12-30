@@ -415,6 +415,9 @@ if [ -f /etc/init.d/cups ]; then
 	/sbin/service cups condrestart || :
 fi
 
+%post -n hplip-model-data
+/sbin/udevadm trigger --subsystem-match=usb --attr-match=idVendor=03f0
+
 %if %mdkversion < 200900
 %post -n %{hpip_libname} -p /sbin/ldconfig
 %endif
