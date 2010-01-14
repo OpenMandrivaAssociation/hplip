@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.9.12
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -382,6 +382,9 @@ rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
 
 # switched to udev, no need for hal information
 rm -rf %{buildroot}%{_datadir}/hal/fdi
+
+# fix obsolete syntax in udev rules
+sed -i -e 's/SYSFS/ATTRS/g' %{buildroot}%{_sysconfdir}/udev/rules.d/56-hpmud_support.rules
 
 # set up consolehelper
 mkdir -p %{buildroot}%{_sbindir}
