@@ -17,24 +17,28 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.9.12
-Release:	%mkrel 3
+Version:	3.10.2
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
-# Taken from Fedora, ensures correct permissions on devices
-Source1: hplip.fdi
 # dlopen libhpmud.so.0 instad of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
 Patch0:	hplip-3.9.8-dlopen-libhpmud.patch
 
 # Fedora patches
+Patch101: hplip-pstotiff-is-rubbish.patch
 Patch102: hplip-strstr-const.patch
 Patch103: hplip-ui-optional.patch
 Patch104: hplip-no-asm.patch
+Patch105: hplip-device-ids.patch
+Patch106: hplip-mucks-with-spooldir.patch
+Patch107: hplip-udev-rules.patch
+Patch108: hplip-retry-open.patch
 Patch110: hplip-discovery-method.patch
 Patch111: hplip-device-reconnected.patch
 Patch114: hplip-hpcups-sigpipe.patch
+Patch116: hplip-bad-low-ink-warning.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -225,6 +229,10 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch0 -p1 -b .dlopen
 
 # Fedora patches
+
+# The pstotiff filter is rubbish so replace it (launchpad #528394).
+%patch101 -p1 -b .pstotiff-is-rubbish
+
 # Fix compilation.
 %patch102 -p1 -b .strstr-const
 
@@ -234,6 +242,20 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # Make sure to avoid handwritten asm.
 %patch104 -p1 -b .no-asm
 
+# Corrected several IEEE 1284 Device IDs using foomatic data.
+%patch105 -p1 -b .device-ids
+
+# Stopped hpcups pointlessly trying to read spool files
+# directly (RH bug #552572).
+%patch106 -p1 -b .mucks-with-spooldir
+
+# Removed SYSFS use in udev rules and actually made them work
+# (RH bug #560754).
+%patch107 -p1 -b .udev-rules
+
+# Retry when connecting to device fails (RH bug #532112).
+%patch108 -p1 -b .retry-open
+
 # Fixed hp-setup traceback when discovery page is skipped (RH bug #523685).
 %patch110 -p1 -b .discovery-method
 
@@ -242,6 +264,10 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
+
+# Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
+%patch116 -p1 -b .bad-low-ink-warning
+
 
 # Debian/Ubuntu patches
 
@@ -383,8 +409,9 @@ rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
 # switched to udev, no need for hal information
 rm -rf %{buildroot}%{_datadir}/hal/fdi
 
-# fix obsolete syntax in udev rules
-sed -i -e 's/SYSFS/ATTRS/g' %{buildroot}%{_sysconfdir}/udev/rules.d/56-hpmud_support.rules
+
+# Fedora pstotiff
+rm -f %{buildroot}%{_sysconfdir}/cups/pstotiff.types
 
 # set up consolehelper
 mkdir -p %{buildroot}%{_sbindir}
@@ -520,6 +547,9 @@ rm -rf %{buildroot}
 %{_prefix}/lib/cups/filter/hpcac
 %{_prefix}/lib/cups/filter/hpcups
 %{_prefix}/lib/cups/filter/hpcupsfax
+%{_prefix}/lib/cups/filter/pstotiff
+%{_datadir}/hplip/fax/pstotiff.convs
+%config(noreplace) %{_sysconfdir}/cups/pstotiff.convs
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
 # Files
