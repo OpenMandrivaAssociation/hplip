@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.10.2
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -538,11 +538,11 @@ rm -rf %{buildroot}
 %exclude %{_datadir}/hplip/data/models
 # C libraries for Python
 %{_libdir}/python*/*/*.so*
-# CUPS backends (0700 permissions, so that CUPS 1.2 runs these backends
-# as root)
+# CUPS backends (0755 permissions, so that CUPS 1.2 runs these backends
+# as lp user)
 # Note: this must be /usr/lib not %{_libdir}, since that's the
 # CUPS serverbin directory.
-%attr(0700,root,root) %{_prefix}/lib/cups/backend/hp*
+%attr(0755,root,root) %{_prefix}/lib/cups/backend/hp*
 %{_prefix}/lib/cups/filter/hplipjs
 %{_prefix}/lib/cups/filter/hpcac
 %{_prefix}/lib/cups/filter/hpcups
