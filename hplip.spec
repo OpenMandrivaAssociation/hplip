@@ -32,7 +32,7 @@ Patch101: hplip-pstotiff-is-rubbish.patch
 Patch102: hplip-strstr-const.patch
 Patch103: hplip-ui-optional.patch
 Patch104: hplip-no-asm.patch
-Patch105: hplip-device-ids.patch
+Patch105: hplip-deviceIDs-drv.patch
 Patch106: hplip-mucks-with-spooldir.patch
 Patch107: hplip-udev-rules.patch
 Patch108: hplip-retry-open.patch
@@ -40,6 +40,7 @@ Patch110: hplip-discovery-method.patch
 Patch111: hplip-device-reconnected.patch
 Patch114: hplip-hpcups-sigpipe.patch
 Patch116: hplip-bad-low-ink-warning.patch
+Patch117: hplip-deviceIDs-ppd.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -268,6 +269,21 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
+
+# Add Device ID for
+# HP LaserJet 1200 (bug #577308)
+# HP LaserJet 1320 series (bug #579920)
+# HP LaserJet 2300 (bug #576928)
+# HP LaserJet P2015 Series (bug #580231)
+for ppd_file in $(grep '^diff' %{PATCH117} | cut -d " " -f 4);
+do
+  gunzip ${ppd_file#*/}.gz
+done
+%patch117 -p1 -b .deviceIDs-ppd
+for ppd_file in $(grep '^diff' %{PATCH117} | cut -d " " -f 4);
+do
+  gzip -n ${ppd_file#*/}
+done
 
 
 # Debian/Ubuntu patches
