@@ -41,6 +41,7 @@ Patch111: hplip-device-reconnected.patch
 Patch114: hplip-hpcups-sigpipe.patch
 Patch116: hplip-bad-low-ink-warning.patch
 Patch117: hplip-deviceIDs-ppd.patch
+Patch118: hplip-skip-blank-lines.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -285,6 +286,8 @@ do
   gzip -n ${ppd_file#*/}
 done
 
+# Hpcups (ljcolor) was putting black lines where should be blank lines (RH bug #579461).
+%patch118 -p1 -b .skip-blank-lines
 
 # Debian/Ubuntu patches
 
