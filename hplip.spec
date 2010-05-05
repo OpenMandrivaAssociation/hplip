@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.10.2
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -42,6 +42,7 @@ Patch114: hplip-hpcups-sigpipe.patch
 Patch116: hplip-bad-low-ink-warning.patch
 Patch117: hplip-deviceIDs-ppd.patch
 Patch118: hplip-skip-blank-lines.patch
+Patch119: hplip-dbglog-newline.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -293,6 +294,10 @@ done
 
 # Hpcups (ljcolor) was putting black lines where should be blank lines (RH bug #579461).
 %patch118 -p1 -b .skip-blank-lines
+
+# Added missing newline to string argument in dbglog() call (bug #585275).
+%patch19 -p1 -b .dbglog-newline
+
 
 # Debian/Ubuntu patches
 
