@@ -296,7 +296,7 @@ done
 %patch118 -p1 -b .skip-blank-lines
 
 # Added missing newline to string argument in dbglog() call (bug #585275).
-%patch19 -p1 -b .dbglog-newline
+%patch119 -p1 -b .dbglog-newline
 
 
 # Debian/Ubuntu patches
