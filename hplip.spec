@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.10.2
-Release:	%mkrel 4
+Release:	%mkrel 5
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -38,6 +38,7 @@ Patch107: hplip-udev-rules.patch
 Patch108: hplip-retry-open.patch
 Patch110: hplip-discovery-method.patch
 Patch111: hplip-device-reconnected.patch
+Patch112: hplip-clear-old-state-reasons.patch
 Patch114: hplip-hpcups-sigpipe.patch
 Patch116: hplip-bad-low-ink-warning.patch
 Patch117: hplip-deviceIDs-ppd.patch
@@ -268,6 +269,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 # Give up trying to print a job to a reconnected device (RH bug #515481).
 %patch111 -p1 -b .device-reconnected
+
+# Clear old printer-state-reasons we used to manage (bug #510926).
+%patch12 -p1 -b .clear-old-state-reasons
 
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
