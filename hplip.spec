@@ -271,7 +271,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch111 -p1 -b .device-reconnected
 
 # Clear old printer-state-reasons we used to manage (bug #510926).
-%patch12 -p1 -b .clear-old-state-reasons
+%patch112 -p1 -b .clear-old-state-reasons
 
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
