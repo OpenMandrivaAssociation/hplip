@@ -246,6 +246,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch104 -p1 -b .no-asm
 
 # Corrected several IEEE 1284 Device IDs using foomatic data.
+# HP Color LaserJet CM1312nfi (bug #581005).
+# HP Color LaserJet 3800 (bug #581935).
+# HP Color LaserJet 2840 (bug #582215).
 %patch105 -p1 -b .device-ids
 
 # Stopped hpcups pointlessly trying to read spool files
@@ -276,6 +279,8 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # HP LaserJet 1320 series (bug #579920)
 # HP LaserJet 2300 (bug #576928)
 # HP LaserJet P2015 Series (bug #580231)
+# HP Color LaserJet 3800 (bug #581935).
+# HP Color LaserJet 2840 (bug #582215).
 for ppd_file in $(grep '^diff' %{PATCH117} | cut -d " " -f 4);
 do
   gunzip ${ppd_file#*/}.gz
