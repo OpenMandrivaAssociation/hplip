@@ -18,10 +18,11 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.10.2
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPLv2+ and MIT
 Group:		System/Printing
-Source: http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source1:    hpcups-update-ppds.sh
 # dlopen libhpmud.so.0 instad of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
 Patch0:	hplip-3.9.8-dlopen-libhpmud.patch
@@ -442,6 +443,9 @@ if [ -f /etc/init.d/cups ]; then
 	/sbin/service cups condrestart || :
 fi
 
+%post -n hplip-hpijs
+%{_bindir}/hpcups-update-ppds &>/dev/null ||:
+
 %post -n hplip-model-data
 /sbin/udevadm trigger --subsystem-match=usb --attr-match=idVendor=03f0
 
@@ -665,6 +669,7 @@ rm -rf %{buildroot}
 # the link is here
 %dir %{_datadir}/ppd
 %dir %{_datadir}/ppd/HP
+%{_bindir}/hpcups-update-ppds
 
 %files hpijs-ppds
 %defattr(-,root,root)
