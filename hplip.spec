@@ -590,7 +590,7 @@ rm -rf %{buildroot}
 %{_prefix}/lib/cups/filter/hpcupsfax
 %{_prefix}/lib/cups/filter/pstotiff
 %{_datadir}/hplip/fax/pstotiff.convs
-%config(noreplace) %{_datadir}/cups/mime/pstotiff.convs
+%config(noreplace) %{_sysconfdir}/cups/pstotiff.convs
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
 # Files
