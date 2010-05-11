@@ -76,6 +76,7 @@ BuildRequires:	libdbus-devel
 BuildRequires:	udev-devel
 BuildRequires:	polkit
 BuildRequires:	gphoto2-devel
+BuildRequires:  libv4l-devel
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	cupsddk-drivers >= 1.2.3-2mdv
