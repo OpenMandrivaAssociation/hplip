@@ -443,9 +443,12 @@ rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
 # switched to udev, no need for hal information
 rm -rf %{buildroot}%{_datadir}/hal/fdi
 
+# Regenerate hpcups PPDs on upgrade if necessary (bug #579355).
+install -p -m755 %{SOURCE1} %{buildroot}%{_bindir}/hpcups-update-ppds 
 
 # Fedora pstotiff
 rm -f %{buildroot}%{_sysconfdir}/cups/pstotiff.types
+rm -f %{buildroot}%{_datadir}/cups/mime/pstotiff.types 
 
 # set up consolehelper
 mkdir -p %{buildroot}%{_sbindir}
@@ -586,7 +589,7 @@ rm -rf %{buildroot}
 %{_prefix}/lib/cups/filter/hpcupsfax
 %{_prefix}/lib/cups/filter/pstotiff
 %{_datadir}/hplip/fax/pstotiff.convs
-%config(noreplace) %{_sysconfdir}/cups/pstotiff.convs
+%config(noreplace) %{_datadir}/cups/mime/pstotiff.convs
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
 # Files
