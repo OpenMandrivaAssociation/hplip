@@ -44,6 +44,8 @@ Patch116: hplip-bad-low-ink-warning.patch
 Patch117: hplip-deviceIDs-ppd.patch
 Patch118: hplip-skip-blank-lines.patch
 Patch119: hplip-dbglog-newline.patch
+Patch120: hplip-no-system-tray.patch
+Patch121: hplip-openPPD.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -303,6 +305,11 @@ done
 # Added missing newline to string argument in dbglog() call (bug #585275).
 %patch119 -p0 -b .dbglog-newline
 
+# Wait for max 30s to see if a system tray becomes available (bug #569969).
+%patch20 -p1 -b .no-system-tray
+  
+# Prevent segfault in cupsext when opening PPD file (bug #572775).
+%patch21 -p1 -b .openPPD 
 
 # Debian/Ubuntu patches
 
