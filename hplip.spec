@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.10.2
-Release:	%mkrel 5
+Version:	3.10.6
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -306,10 +306,10 @@ done
 %patch119 -p0 -b .dbglog-newline
 
 # Wait for max 30s to see if a system tray becomes available (bug #569969).
-%patch20 -p1 -b .no-system-tray
+%patch120 -p1 -b .no-system-tray
   
 # Prevent segfault in cupsext when opening PPD file (bug #572775).
-%patch21 -p1 -b .openPPD 
+%patch121 -p1 -b .openPPD 
 
 # Debian/Ubuntu patches
 
