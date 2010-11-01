@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.10.6
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -717,5 +717,6 @@ rm -rf %{buildroot}
 
 %files hpijs-ppds
 %defattr(-,root,root)
-%{_datadir}/ppd/HP/*.ppd*
-%exclude %{_datadir}/ppd/HP/HP-Fax*.ppd*
+%{_datadir}/ppd/HP/apollo*.ppd*
+%{_datadir}/ppd/HP/hp-*.ppd*
+
