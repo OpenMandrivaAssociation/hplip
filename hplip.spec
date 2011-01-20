@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.10.6
-Release:	%mkrel 4
+Version:	3.10.9
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -46,6 +46,20 @@ Patch118: hplip-skip-blank-lines.patch
 Patch119: hplip-dbglog-newline.patch
 Patch120: hplip-no-system-tray.patch
 Patch121: hplip-openPPD.patch
+Patch122: hplip-hpijs-marker-supply.patch
+Patch123: hplip-addgroup.patch
+Patch124: hplip-raw_deviceID-traceback.patch
+Patch125: hplip-UnicodeDecodeError.patch
+Patch126: hplip-emit-SIGNAL.patch
+Patch127: hplip-fab-root-crash.patch
+Patch128: hplip-addprinter.patch
+Patch129: hplip-dbus-exception.patch
+Patch130: hplip-hpaio-segfault.patch
+Patch131: hplip-newline.patch
+Patch132: hplip-dbus-threads.patch
+Patch133: hplip-notification-exception.patch
+Patch134: hplip-cups-web.patch
+Patch135: hplip-CVE-2010-4267.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -58,7 +72,7 @@ Patch208: 10_shebang_fixes.dpatch
 Patch210: 87_move_documentation.dpatch
 Patch211: hp-check_debian.dpatch
 Patch212: delayed-hp-systray-start.dpatch
-
+Patch213: hplip-3.10.9-alt-undefined-DBG.patch
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -94,6 +108,7 @@ Requires:	python-reportlab
 Requires:	python-dbus
 Requires:	polkit-agent
 Requires:	usermode-consoleonly
+Requires:	pygobject2
 # Required by hp-scan for command line scanning
 Suggests:	python-imaging
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (bug #47415)
@@ -303,13 +318,58 @@ done
 %patch118 -p1 -b .skip-blank-lines
 
 # Added missing newline to string argument in dbglog() call (bug #585275).
-%patch119 -p0 -b .dbglog-newline
+%patch119 -p1 -b .dbglog-newline
 
 # Wait for max 30s to see if a system tray becomes available (bug #569969).
 %patch120 -p1 -b .no-system-tray
-  
+
 # Prevent segfault in cupsext when opening PPD file (bug #572775).
 %patch121 -p1 -b .openPPD 
+
+# Fixed bogus low ink warnings from hpijs driver (bug #643643).
+%patch122 -p1 -b .hpijs-marker-supply
+
+
+# utils.addgroup() was returning string instead of array (bug #642771).
+%patch123 -p1 -b .addgroup
+
+# Fixed traceback on error condition in device.py (bug #628125).
+%patch124 -p1 -b .raw_deviceID-traceback
+
+# Avoid UnicodeDecodeError in printsettingstoolbox.py (bug #645739).
+%patch125 -p1 -b .UnicodeDecodeError
+
+# Don't emit SIGNALs in ui4.setupdialog.SetupDialog the PyQt3 way (bug #623834).
+%patch126 -p1 -b .emit-SIGNAL
+
+# Prevent hp-fab traceback when run as root.
+%patch127 -p1 -b .fab-root-crash
+
+# Call cupsSetUser in cupsext's addPrinter method before connecting so
+# that we can get an authentication callback (bug #538352).
+%patch128 -p1 -b .addprinter
+
+# Catch D-Bus exceptions in fax dialog (bug #645316).
+%patch129 -p1 -b .dbus-exception
+
+# Prevent hpaio segfaulting on invalid URIs (bug #649092).
+%patch130 -p1 -b .hpaio-segfault
+
+# Another missing newline in filter output (Ubuntu #418053).
+%patch131 -p1 -b .newline
+
+# Enable D-Bus threading (and require pygobject2) (bug #600932).
+%patch132 -p1 -b .dbus-threads
+
+# Catch GError exception when notification showing failed (bug #665577).
+%patch133 -p1 -b .notification-exception
+
+# Fixed "CUPS Web Interface" button (bug #633899).
+%patch134 -p1 -b .cups-web
+
+# Applied patch to fix CVE-2010-4267, remote stack overflow
+# vulnerability (bug #670252).
+%patch135 -p1 -b .CVE-2010-4267
 
 # Debian/Ubuntu patches
 
@@ -347,6 +407,8 @@ done
 # Delay start-up of notification utility
 %patch212 -p1
 
+%patch213 -p0
+
 # Make all files in the source user-writable
 chmod -R u+w .
 
@@ -374,7 +436,8 @@ WITHOUT_SANE="--without-sane"
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
 	--enable-udev-acl-rules \
-	--enable-policykit
+	--enable-policykit \
+	--with-mimedir=%{_datadir}/cups/mime
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -452,11 +515,17 @@ rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
 rm -rf %{buildroot}%{_datadir}/hal/fdi
 
 # Regenerate hpcups PPDs on upgrade if necessary (bug #579355).
-install -p -m755 %{SOURCE1} %{buildroot}%{_bindir}/hpcups-update-ppds 
+install -p -m755 %{SOURCE1} %{buildroot}%{_bindir}/hpcups-update-ppds
 
 # Fedora pstotiff
 rm -f %{buildroot}%{_sysconfdir}/cups/pstotiff.types
-rm -f %{buildroot}%{_datadir}/cups/mime/pstotiff.types 
+rm -f %{buildroot}%{_datadir}/cups/mime/pstotiff.types
+rm -f %{buildroot}%{_datadir}/hplip/fax/pstotiff*
+rm -f %{buildroot}%{_prefix}/lib/cups/filter/hpcac
+
+# bork?
+install -d %{buildroot}%{_sysconfdir}/cups
+cp -p %{buildroot}%{_datadir}/cups/mime/pstotiff.convs %{buildroot}%{_sysconfdir}/cups/pstotiff.convs
 
 # set up consolehelper
 mkdir -p %{buildroot}%{_sbindir}
@@ -546,7 +615,6 @@ fi
 %endif
 %endif
 
-
 %clean
 rm -rf %{buildroot}
 
@@ -592,11 +660,10 @@ rm -rf %{buildroot}
 # CUPS serverbin directory.
 %attr(0755,root,root) %{_prefix}/lib/cups/backend/hp*
 %{_prefix}/lib/cups/filter/hplipjs
-%{_prefix}/lib/cups/filter/hpcac
 %{_prefix}/lib/cups/filter/hpcups
 %{_prefix}/lib/cups/filter/hpcupsfax
 %{_prefix}/lib/cups/filter/pstotiff
-%{_datadir}/hplip/fax/pstotiff.convs
+%{_datadir}/cups/mime/pstotiff.convs
 %config(noreplace) %{_sysconfdir}/cups/pstotiff.convs
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
@@ -719,4 +786,3 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_datadir}/ppd/HP/apollo*.ppd*
 %{_datadir}/ppd/HP/hp-*.ppd*
-
