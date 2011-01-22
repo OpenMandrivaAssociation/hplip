@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.10.9
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -108,7 +108,7 @@ Requires:	python-reportlab
 Requires:	python-dbus
 Requires:	polkit-agent
 Requires:	usermode-consoleonly
-Requires:	pygobject2
+Requires:	python-gobject2
 # Required by hp-scan for command line scanning
 Suggests:	python-imaging
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (bug #47415)
