@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.10.9
-Release:	%mkrel 3
+Version:	3.11.1
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -45,9 +45,7 @@ Patch117: hplip-deviceIDs-ppd.patch
 Patch118: hplip-skip-blank-lines.patch
 Patch119: hplip-dbglog-newline.patch
 Patch120: hplip-no-system-tray.patch
-Patch121: hplip-openPPD.patch
 Patch122: hplip-hpijs-marker-supply.patch
-Patch123: hplip-addgroup.patch
 Patch124: hplip-raw_deviceID-traceback.patch
 Patch125: hplip-UnicodeDecodeError.patch
 Patch126: hplip-emit-SIGNAL.patch
@@ -58,21 +56,19 @@ Patch130: hplip-hpaio-segfault.patch
 Patch131: hplip-newline.patch
 Patch132: hplip-dbus-threads.patch
 Patch133: hplip-notification-exception.patch
-Patch134: hplip-cups-web.patch
 Patch135: hplip-CVE-2010-4267.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
 Patch203: hplip-pjl-duplex-binding.patch
 Patch204: hplip-photosmart_b9100_support.patch
-Patch205: hplip-rebuild_python_ui.patch
+Patch205: 85_rebuild_python_ui.dpatch
 Patch206: hplip-rss.patch
 Patch207: hplip-2.7.6-14_charsign_fixes.patch
 Patch208: 10_shebang_fixes.dpatch
 Patch210: 87_move_documentation.dpatch
 Patch211: hp-check_debian.dpatch
 Patch212: delayed-hp-systray-start.dpatch
-Patch213: hplip-3.10.9-alt-undefined-DBG.patch
 
 Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
@@ -323,15 +319,8 @@ done
 # Wait for max 30s to see if a system tray becomes available (bug #569969).
 %patch120 -p1 -b .no-system-tray
 
-# Prevent segfault in cupsext when opening PPD file (bug #572775).
-%patch121 -p1 -b .openPPD 
-
 # Fixed bogus low ink warnings from hpijs driver (bug #643643).
 %patch122 -p1 -b .hpijs-marker-supply
-
-
-# utils.addgroup() was returning string instead of array (bug #642771).
-%patch123 -p1 -b .addgroup
 
 # Fixed traceback on error condition in device.py (bug #628125).
 %patch124 -p1 -b .raw_deviceID-traceback
@@ -363,9 +352,6 @@ done
 
 # Catch GError exception when notification showing failed (bug #665577).
 %patch133 -p1 -b .notification-exception
-
-# Fixed "CUPS Web Interface" button (bug #633899).
-%patch134 -p1 -b .cups-web
 
 # Applied patch to fix CVE-2010-4267, remote stack overflow
 # vulnerability (bug #670252).
@@ -406,8 +392,6 @@ done
 
 # Delay start-up of notification utility
 %patch212 -p1
-
-%patch213 -p0
 
 # Make all files in the source user-writable
 chmod -R u+w .
