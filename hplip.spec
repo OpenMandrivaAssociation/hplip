@@ -643,6 +643,7 @@ rm -rf %{buildroot}
 # Note: this must be /usr/lib not %{_libdir}, since that's the
 # CUPS serverbin directory.
 %attr(0755,root,root) %{_prefix}/lib/cups/backend/hp*
+%{_prefix}/lib/cups/filter/hpps
 %{_prefix}/lib/cups/filter/hplipjs
 %{_prefix}/lib/cups/filter/hpcups
 %{_prefix}/lib/cups/filter/hpcupsfax
