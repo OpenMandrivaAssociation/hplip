@@ -26,6 +26,7 @@ Source1:    hpcups-update-ppds.sh
 # dlopen libhpmud.so.0 instad of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
 Patch0:	hplip-3.9.8-dlopen-libhpmud.patch
+Patch1:		hplip-3.11.3-link.patch
 
 # Fedora patches
 Patch101: hplip-pstotiff-is-rubbish.patch
@@ -246,6 +247,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 
 %patch0 -p1 -b .dlopen
+%patch1 -p0 -b .link
 
 # Fedora patches
 
