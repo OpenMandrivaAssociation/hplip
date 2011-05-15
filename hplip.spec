@@ -17,7 +17,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.11.3
+Version:	3.11.5
 Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
