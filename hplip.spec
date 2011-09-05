@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.11.5
-Release:	%mkrel 2
+Version:	3.11.7
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -58,6 +58,7 @@ Patch131: hplip-newline.patch
 Patch132: hplip-dbus-threads.patch
 Patch133: hplip-notification-exception.patch
 Patch135: hplip-CVE-2010-4267.patch
+Patch136: hplip-CVE-2011-2722.patch
 
 # Debian/Ubuntu patches
 Patch202: hplip-hpinfo-query-without-cups-queue.patch
@@ -252,7 +253,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 # Fedora patches
 
 # The pstotiff filter is rubbish so replace it (launchpad #528394).
-%patch101 -p1 -b .pstotiff-is-rubbish
+%patch101 -p0 -b .pstotiff-is-rubbish
 
 # Fix compilation.
 %patch102 -p1 -b .strstr-const
@@ -275,7 +276,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 # Removed SYSFS use in udev rules and actually made them work
 # (RH bug #560754).
-%patch107 -p1 -b .udev-rules
+%patch107 -p0 -b .udev-rules
 
 # Retry when connecting to device fails (RH bug #532112).
 %patch108 -p1 -b .retry-open
@@ -358,6 +359,9 @@ done
 # Applied patch to fix CVE-2010-4267, remote stack overflow
 # vulnerability (bug #670252).
 %patch135 -p1 -b .CVE-2010-4267
+
+# http://www.openwall.com/lists/oss-security/2011/07/26/14
+%patch136 -p1 -b .CVE-2011-2722
 
 # Debian/Ubuntu patches
 
