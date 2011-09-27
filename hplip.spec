@@ -18,15 +18,15 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.11.7
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+ and MIT
 Group:		System/Printing
-Source:     http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
-Source1:    hpcups-update-ppds.sh
+Source:		http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source1:	hpcups-update-ppds.sh
 # dlopen libhpmud.so.0 instad of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
 Patch0:	hplip-3.9.8-dlopen-libhpmud.patch
-Patch1:		hplip-3.11.3-link.patch
+Patch1: hplip-3.11.3-link.patch
 
 # Fedora patches
 Patch101: hplip-pstotiff-is-rubbish.patch
@@ -90,7 +90,7 @@ BuildRequires:	libdbus-devel
 BuildRequires:	udev-devel
 BuildRequires:	polkit
 BuildRequires:	gphoto2-devel
-BuildRequires:  libv4l-devel
+BuildRequires:	libv4l-devel
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	cupsddk-drivers >= 1.2.3-2mdv
@@ -399,6 +399,14 @@ done
 # Delay start-up of notification utility
 %patch212 -p1
 
+# Use filter foomatic-rip instead of foomatic-rip-hplip
+for PPDGZ in ppd/hpijs/*.ppd.gz
+do
+mv -T "$PPDGZ" "$PPDGZ.old"
+zcat "$PPDGZ.old" | sed -e 's/foomatic-rip-hplip/foomatic-rip/' | gzip -c > "$PPDGZ"
+rm -f "$PPDGZ.old"
+done
+
 # Make all files in the source user-writable
 chmod -R u+w .
 
@@ -435,9 +443,9 @@ sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %make
 
 # convert icons to required sizes
-#convert data/images/print.png -resize 16x16 %{name}.mini.png
-#convert data/images/print.png -resize 32x32 %{name}.png
-#convert data/images/print.png -resize 48x48 %{name}.large.png
+#convert data/images/print.png -resize 16x16 % {name}.mini.png
+#convert data/images/print.png -resize 32x32 % {name}.png
+#convert data/images/print.png -resize 48x48 % {name}.large.png
 
 %install
 rm -rf %{buildroot}
@@ -449,7 +457,7 @@ mkdir -p %{buildroot}/var/run/hplip
 
 # Do not use the macro here, use the standard DESTDIR method as it works
 # with HPLIP, in contrary to the non-standard Mandriva method
-#make test-destdir DESTDIR=%{buildroot}
+#make test-destdir DESTDIR=% {buildroot}
 make install DESTDIR=%{buildroot}
 
 # Install files which the "make install" missed to install
@@ -468,10 +476,10 @@ rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 rm -f %{buildroot}%{py_platsitedir}/*.la
 
 # install menu icons
-#mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
-#install -m 644 %{name}.png -D %{buildroot}%{_iconsdir}/%{name}.png
-#install -m 644 %{name}.mini.png -D %{buildroot}%{_miconsdir}/%{name}.png
-#install -m 644 %{name}.large.png -D %{buildroot}%{_liconsdir}/%{name}.png
+#mkdir -p % {buildroot}% {_iconsdir}/locolor/16x16/apps/
+#install -m 644 % {name}.png -D % {buildroot}% {_iconsdir}/% {name}.png
+#install -m 644 % {name}.mini.png -D % {buildroot}% {_miconsdir}/% {name}.png
+#install -m 644 % {name}.large.png -D % {buildroot}% {_liconsdir}/% {name}.png
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
 desktop-file-install --vendor='' \
@@ -481,11 +489,11 @@ desktop-file-install --vendor='' \
 	--add-category='System' \
 	--add-category='Settings' \
 	--add-category='Printing' \
-        --add-category='Qt' \
-        --add-category='HardwareSettings' \
-        --add-category='X-MandrivaLinux-CrossDesktop' \
+	--add-category='Qt' \
+	--add-category='HardwareSettings' \
+	--add-category='X-MandrivaLinux-CrossDesktop' \
 	--remove-key='Version' \
-        %{buildroot}%{_datadir}/applications/hplip.desktop
+	%{buildroot}%{_datadir}/applications/hplip.desktop
 
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 [Desktop Entry]
@@ -646,7 +654,7 @@ rm -rf %{buildroot}
 %{_libdir}/python*/*/*.so*
 # CUPS backends (0755 permissions, so that CUPS 1.2 runs these backends
 # as lp user)
-# Note: this must be /usr/lib not %{_libdir}, since that's the
+# Note: this must be /usr/lib not % {_libdir}, since that's the
 # CUPS serverbin directory.
 %attr(0755,root,root) %{_prefix}/lib/cups/backend/hp*
 %{_prefix}/lib/cups/filter/hpps
@@ -734,12 +742,12 @@ rm -rf %{buildroot}
 %if 0
 %files -n %{sane_hpaio_libname}-devel
 %defattr(-,root,root)
-#%{_libdir}/libsane-hpaio*.so
-#%{_libdir}/libsane-hpaio*.a
-#%{_libdir}/libsane-hpaio*.la
-#%{_libdir}/sane/libsane-hpaio*.so
-#%{_libdir}/sane/libsane-hpaio*.a
-#%{_libdir}/sane/libsane-hpaio*.la
+#{_libdir}/libsane-hpaio*.so
+#{_libdir}/libsane-hpaio*.a
+#{_libdir}/libsane-hpaio*.la
+#{_libdir}/sane/libsane-hpaio*.so
+#{_libdir}/sane/libsane-hpaio*.a
+#{_libdir}/sane/libsane-hpaio*.la
 %endif
 
 %endif
