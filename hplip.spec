@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.11.7
-Release:	%mkrel 2
+Version:	3.11.10
+Release:	%mkrel 1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source:		http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -361,7 +361,7 @@ done
 %patch135 -p1 -b .CVE-2010-4267
 
 # http://www.openwall.com/lists/oss-security/2011/07/26/14
-%patch136 -p1 -b .CVE-2011-2722
+#% patch136 -p1 -b .CVE-2011-2722
 
 # Debian/Ubuntu patches
 
@@ -394,7 +394,7 @@ done
 %patch210 -p1
 
 # Check for hpaio module in /etc/sane.d/dll.d/hplip too
-%patch211 -p1
+#% patch211 -p1
 
 # Delay start-up of notification utility
 %patch212 -p1
