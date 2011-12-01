@@ -244,7 +244,7 @@ Peripherals or MFPs), which can print, scan, copy, fax, and/or access
 flash memory cards.
 
 %prep
-rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
+rm -rf %{_builddir}/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 
 %patch0 -p1 -b .dlopen
