@@ -481,7 +481,7 @@ rm -f %{buildroot}%{py_platsitedir}/*.la
 #install -m 644 % {name}.mini.png -D % {buildroot}% {_miconsdir}/% {name}.png
 #install -m 644 % {name}.large.png -D % {buildroot}% {_liconsdir}/% {name}.png
 
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+mkdir -p %{buildroot}%{_datadir}/applications
 desktop-file-install --vendor='' \
 	--dir=%{buildroot}%{_datadir}/applications \
 	--remove-category='Application' \
@@ -495,7 +495,7 @@ desktop-file-install --vendor='' \
 	--remove-key='Version' \
 	%{buildroot}%{_datadir}/applications/hplip.desktop
 
-cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
+cat > %{buildroot}%{_datadir}/applications/mandriva-hp-sendfax.desktop << EOF
 [Desktop Entry]
 Name=HP Sendfax
 Comment=Utility for sending faxes with HP's multi-function devices
