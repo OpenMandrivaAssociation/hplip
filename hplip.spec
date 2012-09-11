@@ -105,7 +105,7 @@ BuildRequires:	desktop-file-utils
 BuildRequires:	dbus-devel
 BuildRequires:	udev-devel
 BuildRequires:	polkit
-BuildRequires:	gphoto2-devel
+BuildRequires:	pkgconfig(libgphoto2)
 BuildRequires:  libv4l-devel
 Requires:	cups
 # For dynamic ppd generation.
