@@ -17,7 +17,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.12.6
+Version:	3.12.9
 Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -52,13 +52,13 @@ Patch119: hplip-dbglog-newline.patch
 Patch121: hplip-ppd-ImageableArea.patch
 Patch122: hplip-raw_deviceID-traceback.patch
 Patch123: hplip-UnicodeDecodeError.patch
-Patch124: hplip-addprinter.patch
+Patch124: hplip-3.12.9-addprinter.patch
 Patch125: hplip-dbus-exception.patch
 Patch126: hplip-notification-exception.patch
 Patch127: hplip-CVE-2010-4267.patch
 Patch128: hplip-wifisetup.patch
 # recreated from makefile-chgrp.patch against Makefile.am 
-Patch129: hplip-3.11.12-mga-makefile-chgrp.patch
+Patch129: hplip-3.12.9-makefile-chgrp.patch
 Patch130: hplip-hpaio-localonly.patch
 
 # Debian/Ubuntu patches
@@ -83,7 +83,7 @@ Patch217: hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
 Patch219: try_libhpmud.so.0.dpatch
 Patch220: add-lidil-two-cartridge-modes.dpatch
 Patch221: add_missing_newline_for_error_log.dpatch
-Patch224: hplip-syslog-fix-debug-messages-to-error.dpatch
+Patch224: hplip-3.12.9-syslog-fix-debug-messages-to-error.dpatch
 Patch225: hpfax-bug-function-used-before-importing-log.dpatch
 Patch226: hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227: hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
@@ -299,7 +299,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %patch114 -p1 -b .hpcups-sigpipe
 
 # Use correct fax PPD name for Qt3 UI.
-%patch115 -p1 -b .fax-ppd
+#patch115 -p1 -b .fax-ppd
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
@@ -627,6 +627,7 @@ fi
 %{_bindir}/hp-info
 %{_bindir}/hp-levels
 %{_bindir}/hp-linefeedcal
+%{_bindir}/hp-logcapture
 %{_bindir}/hp-makecopies
 %{_bindir}/hp-makeuri
 %{_bindir}/hp-mkuri
@@ -684,6 +685,7 @@ fi
 %{_datadir}/hplip/__init__.py*
 %{_datadir}/hplip/levels.py*
 %{_datadir}/hplip/linefeedcal.py*
+%{_datadir}/hplip/logcapture.py*
 %{_datadir}/hplip/makecopies.py*
 %{_datadir}/hplip/makeuri.py*
 %{_datadir}/hplip/pkservice.py*
@@ -718,6 +720,7 @@ fi
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
 #%{_localstatedir}/lib/hp/hplip.state
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
+%{_sysconfdir}/cron.daily/hplip_cron
 
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
