@@ -1,0 +1,38 @@
+--- Makefile.am.link	2011-03-14 08:59:11.000000000 +0100
++++ Makefile.am	2011-05-07 07:24:25.111390562 +0200
+@@ -213,6 +217,7 @@
+ pcardextdir = $(pyexecdir)
+ pcardext_LTLIBRARIES = pcardext.la
+ pcardext_la_LDFLAGS = -module -avoid-version
++pcardext_la_LIBADD = -lpython$(PYTHON_VERSION)
+ pcardext_la_SOURCES = pcard/pcardext/pcardext.c pcard/fat.c
+ pcardext_la_CFLAGS = -I$(PYTHONINCLUDEDIR)
+ 
+@@ -226,7 +231,7 @@
+ cupsext_la_LDFLAGS = -module -avoid-version
+ cupsext_la_SOURCES =  prnt/cupsext/cupsext.c
+ cupsext_la_CFLAGS = -I$(PYTHONINCLUDEDIR)
+-cupsext_la_LIBADD = -lcups
++cupsext_la_LIBADD = -lcups -lpython$(PYTHON_VERSION)
+ 
+ if SCAN_BUILD
+ # scan
+@@ -236,7 +241,8 @@
+ # scanext
+ scanextdir = $(pyexecdir)
+ scanext_LTLIBRARIES = scanext.la
+-scanext_la_LDFLAGS = -module -avoid-version -lsane
++scanext_la_LDFLAGS = -module -avoid-version
++scanext_la_LIBADD = -lsane -lpython$(PYTHON_VERSION)
+ scanext_la_SOURCES =  scan/scanext/scanext.c
+ scanext_la_CFLAGS = -I$(PYTHONINCLUDEDIR)
+ endif
+@@ -246,7 +252,7 @@
+ hpmudext_LTLIBRARIES = hpmudext.la
+ hpmudext_la_LDFLAGS = -module -avoid-version
+ hpmudext_la_SOURCES = io/mudext/hpmudext.c
+-hpmudext_la_LIBADD = libhpmud.la
++hpmudext_la_LIBADD = libhpmud.la -lpython$(PYTHON_VERSION)
+ hpmudext_la_CFLAGS = -I$(PYTHONINCLUDEDIR)
+ # ui (qt3)
+ if GUI_BUILD

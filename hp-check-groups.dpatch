@@ -1,0 +1,19 @@
+--- hplip-3.12.6/check.py.hp-check-groups	2012-06-18 12:44:13.000000000 +0200
++++ hplip-3.12.6/check.py	2012-06-26 18:24:26.417226100 +0200
+@@ -918,6 +918,16 @@ try:
+                 if disable_selinux == False:
+                     log.info("%-15s %-15s %-10s %-3s %-3s %-8s %s"\
+                                               %("SELinux",  "disabled", "Optional", "-", "-", "OK", "-"))
++
++        if "lp " in output:
++            log.info(log.green("User member of group 'lp'. Enables print/ scan/ fax."))
++        else:
++            log.error("User needs to be member of group 'lp' to enable print, scan & fax.")
++
++        if "lpadmin" in output:
++            log.info(log.green("User member of group 'lpadmin'."))
++        else:
++            log.error("User needs to be member of group 'lpadmin' to manage printers.")
+                                               
+         package_mgr_cmd = core.get_distro_data('package_mgr_cmd')
+         pre_depend_cmd  = core.get_distro_data('pre_depend_cmd')

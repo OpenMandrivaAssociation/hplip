@@ -1,0 +1,23 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## hp_photosmart_pro_b9100_support.dpatch by  <till.kamppeter@gmail.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad hplip-3.9.10~55~/data/models/models.dat hplip-3.9.10~55/data/models/models.dat
+--- hplip-3.9.10~55~/data/models/models.dat	2009-11-04 11:06:38.000000000 +0100
++++ hplip-3.9.10~55/data/models/models.dat	2009-11-10 10:11:32.000000000 +0100
+@@ -40174,9 +40174,9 @@
+ status-type=2
+ support-released=True
+ support-subtype=219b2b
+-support-type=0
+-support-ver=0.0.0
+-tech-class=Undefined
++support-type=2
++support-ver=2.8.4
++tech-class=PSB9100
+ tech-subclass=Normal
+ tech-type=2
+ usb-pid=bd02
