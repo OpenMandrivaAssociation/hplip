@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.12.10
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source0:	http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -127,6 +127,8 @@ Requires:	python-imaging
 Requires:	sane-backends-hpaio
 # Needed to avoid misleading errors about network connectivity (RH bug #705843)
 Requires:	wget
+# hplip tools use internal symbols from libhplip that can change among versions
+Requires:   %{hpip_libname} = %{version}
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 
