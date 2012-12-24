@@ -17,11 +17,11 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.12.10
-Release:	2
+Version:	3.12.11
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
-Source0:	http://heanet.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
 
 
@@ -58,7 +58,7 @@ Patch126: hplip-notification-exception.patch
 Patch127: hplip-CVE-2010-4267.patch
 Patch128: hplip-wifisetup.patch
 # recreated from makefile-chgrp.patch against Makefile.am 
-Patch129: hplip-3.12.9-makefile-chgrp.patch
+Patch129: hplip-3.12.11-makefile-chgrp.patch
 Patch130: hplip-hpaio-localonly.patch
 
 # Debian/Ubuntu patches
