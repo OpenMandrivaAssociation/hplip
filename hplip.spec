@@ -17,7 +17,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.12.11
+Version:	3.13.2
 Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -83,7 +83,6 @@ Patch217: hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
 Patch219: try_libhpmud.so.0.dpatch
 Patch220: add-lidil-two-cartridge-modes.dpatch
 Patch221: add_missing_newline_for_error_log.dpatch
-Patch224: hplip-3.12.9-syslog-fix-debug-messages-to-error.dpatch
 Patch225: hpfax-bug-function-used-before-importing-log.dpatch
 Patch226: hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227: hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
@@ -99,7 +98,7 @@ BuildRequires:	libusb-devel >= 0.1.8
 BuildRequires:	imagemagick
 BuildRequires:	autoconf
 BuildRequires:	cups-devel
-BuildRequires:	libjpeg-devel
+BuildRequires:	jpeg-devel
 BuildRequires:	python-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	dbus-devel
@@ -407,8 +406,6 @@ sed -i.duplex-constraints \
 
 %patch220 -p1 -b .add-lidil-two-cartridge-modes
 
-%patch224 -p1 -b .hplip-syslog-fix-debug-messages-to-error
-
 %patch225 -p1 -b .hpfax-bug-function-used-before-importing-log
 
 %patch226 -p1 -b .hp-systray-make-menu-title-visible-in-sni-qt-indicator
@@ -616,13 +613,14 @@ fi
 %config(noreplace) %{_sysconfdir}/hp
 %dir /var/run/hplip/
 %{_bindir}/hp-align
-%{_bindir}/hp-check-plugin
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
 %_bindir/hp-config_usb_printer
 %{_bindir}/hp-devicesettings
 %{_bindir}/hp-diagnose_plugin
 %_bindir/hp-diagnose_queues
+%{_bindir}/hp-doctor
+%_datadir/hplip/doctor.py*
 %{_bindir}/hp-fab
 %{_bindir}/hp-faxsetup
 %{_bindir}/hp-firmware

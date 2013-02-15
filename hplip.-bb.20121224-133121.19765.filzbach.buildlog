@@ -1,9 +1,0 @@
-Fetching(Source0): http://heanet.dl.sourceforge.net/sourceforge/hplip/hplip-3.12.11.tar.gz
-error: Fetching Source0 failed: Unknown or unexpected error
-error: Missing Source0: hplip-3.12.11.tar.gz: No such file or directory
-error: Failed build dependencies:
-	libsane-devel is needed by hplip-3.12.11-1.src
-	xsane is needed by hplip-3.12.11-1.src
-	net-snmp-devel is needed by hplip-3.12.11-1.src
-	libusb-devel >= 0.1.8 is needed by hplip-3.12.11-1.src
-	pkgconfig(libgphoto2) is needed by hplip-3.12.11-1.src

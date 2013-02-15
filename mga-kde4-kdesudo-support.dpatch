@@ -1,26 +1,13 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## kde4-kdesudo-support.dpatch by  <till.kamppeter@gmail.com>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: No description.
-
-@DPATCH@
-diff -urNad hplip-3.9.4b~/base/utils.py hplip-3.9.4b/base/utils.py
---- hplip-3.9.4b~/base/utils.py	2009-04-29 22:39:01.000000000 +0200
-+++ hplip-3.9.4b/base/utils.py	2009-05-16 00:06:50.000000000 +0200
-@@ -1572,6 +1572,15 @@
-     if which('kdesu'):
-         su_sudo_str = 'kdesu -- %s'
+--- hplip-3.13.2/base/password.py.bero	2013-02-15 21:33:22.979592197 +0100
++++ hplip-3.13.2/base/password.py	2013-02-15 21:34:34.965736488 +0100
+@@ -270,6 +270,10 @@ class Password(object):
  
-+    elif utils.which('/usr/lib/kde4/libexec/kdesu'):
-+        su_sudo_str = '/usr/lib/kde4/libexec/kdesu -- %s'
-+
-+    elif utils.which('/usr/lib64/kde4/libexec/kdesu'):
-+        su_sudo_str = '/usr/lib/kde4/libexec/kdesu -- %s'
-+
-+    elif utils.which('kdesudo'):
-+        su_sudo_str = 'kdesudo -- %s'
-+
-     elif which('gnomesu'):
-         su_sudo_str = 'gnomesu -c "%s"'
- 
+         if utils.which('kdesu'):
+             AuthType, AuthCmd = 'kdesu', 'kdesu -- %s'
++	elif utils.which('/usr/lib64/kde4/libexec/kdesu'):
++            AuthType, AuthCmd = '/usr/lib64/kde4/libexec/kdesu', 'kdesu -- %s'
++	elif utils.which('/usr/lib/kde4/libexec/kdesu'):
++            AuthType, AuthCmd = '/usr/lib/kde4/libexec/kdesu', 'kdesu -- %s'
+         elif utils.which('gnomesu'):
+             AuthType, AuthCmd = 'gnomesu', 'gnomesu -c "%s"'
+         elif utils.which('gksu'):

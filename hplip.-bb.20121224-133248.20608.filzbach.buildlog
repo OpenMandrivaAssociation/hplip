@@ -1,7 +1,0 @@
-Fetching(Source0): http://heanet.dl.sourceforge.net/sourceforge/hplip/hplip-3.12.11.tar.gz
-error: Fetching Source0 failed: Unknown or unexpected error
-error: Missing Source0: hplip-3.12.11.tar.gz: No such file or directory
-Executing(%prep): /bin/sh -e /var/tmp/rpm-tmp.1988
-+ umask 022
-+ cd /home/bero/abf/hplip/BUILD
-+ exit 0

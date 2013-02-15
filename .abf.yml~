@@ -1,0 +1,4 @@
+removed_sources:
+  hplip-3.12.10.tar.gz: de6c47c3503ca96de0f4ef4182d5a84f5c9e429e
+sources:
+  hplip-3.12.11.tar.gz: f8637e742ec506b30d4d22ca21ea2727619791be

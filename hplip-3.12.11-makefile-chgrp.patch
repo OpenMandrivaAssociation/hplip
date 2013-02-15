@@ -1,48 +1,48 @@
---- hplip-3.12.11/Makefile.am.chgrp	2012-11-20 10:55:15.000000000 +0100
-+++ hplip-3.12.11/Makefile.am	2012-12-24 13:34:17.869235802 +0100
-@@ -552,24 +552,20 @@ endif
+--- hplip-3.13.2/Makefile.am.chgrp	2013-02-15 21:28:12.474283887 +0100
++++ hplip-3.13.2/Makefile.am	2013-02-15 21:30:07.979908499 +0100
+@@ -563,24 +563,20 @@ endif
  install-dist_hplip_LogDATA:
  if FULL_BUILD
  	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
 -	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
- 	chmod 777 $(DESTDIR)$(hplip_Logdir)
+ 	chmod 775 $(DESTDIR)$(hplip_Logdir)
  endif	#FULL_BUILD
  if HPLIP_BUILD
  	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
 -	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
- 	chmod 777 $(DESTDIR)$(hplip_Logdir)
+ 	chmod 775 $(DESTDIR)$(hplip_Logdir)
  endif	#FULL_BUILD
  
  install-dist_hplip_tmpDATA:
  if FULL_BUILD
  	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
 -	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
- 	chmod 1777 $(DESTDIR)$(hplip_tmpdir)
+ 	chmod 1775 $(DESTDIR)$(hplip_tmpdir)
  endif	#FULL_BUILD
  if HPLIP_BUILD
  	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
 -	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
- 	chmod 1777 $(DESTDIR)$(hplip_tmpdir)
+ 	chmod 1775 $(DESTDIR)$(hplip_tmpdir)
  endif	#FULL_BUILD
  
---- hplip-3.12.11/Makefile.in.chgrp	2012-11-20 10:55:50.000000000 +0100
-+++ hplip-3.12.11/Makefile.in	2012-12-24 13:34:28.512104719 +0100
-@@ -8866,18 +8866,14 @@ uninstall-am: uninstall-binPROGRAMS unin
+--- hplip-3.13.2/Makefile.in.chgrp	2013-02-15 21:28:12.475283875 +0100
++++ hplip-3.13.2/Makefile.in	2013-02-15 21:30:16.656806043 +0100
+@@ -8952,18 +8952,14 @@ uninstall-am: uninstall-binPROGRAMS unin
  
  install-dist_hplip_LogDATA:
  @FULL_BUILD_TRUE@	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
 -@FULL_BUILD_TRUE@	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
- @FULL_BUILD_TRUE@	chmod 777 $(DESTDIR)$(hplip_Logdir)
+ @FULL_BUILD_TRUE@	chmod 775 $(DESTDIR)$(hplip_Logdir)
  @HPLIP_BUILD_TRUE@	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
 -@HPLIP_BUILD_TRUE@	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
- @HPLIP_BUILD_TRUE@	chmod 777 $(DESTDIR)$(hplip_Logdir)
+ @HPLIP_BUILD_TRUE@	chmod 775 $(DESTDIR)$(hplip_Logdir)
  
  install-dist_hplip_tmpDATA:
  @FULL_BUILD_TRUE@	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
 -@FULL_BUILD_TRUE@	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
- @FULL_BUILD_TRUE@	chmod 1777 $(DESTDIR)$(hplip_tmpdir)
+ @FULL_BUILD_TRUE@	chmod 1775 $(DESTDIR)$(hplip_tmpdir)
  @HPLIP_BUILD_TRUE@	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
 -@HPLIP_BUILD_TRUE@	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
- @HPLIP_BUILD_TRUE@	chmod 1777 $(DESTDIR)$(hplip_tmpdir)
+ @HPLIP_BUILD_TRUE@	chmod 1775 $(DESTDIR)$(hplip_tmpdir)
  
  install-dist_cronDATA:$(dist_cron_DATA)
