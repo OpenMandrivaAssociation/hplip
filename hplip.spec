@@ -1,13 +1,13 @@
 # Define if you want to build the sane backend (default)
-%define sane_backend		1
-%{?_with_sane:			%global sane_backend 1}
-%{?_without_sane:		%global sane_backend 0}
+%define sane_backend 1
+%{?_with_sane: %global sane_backend 1}
+%{?_without_sane: %global sane_backend 0}
 
-%define hpip_major		0
-%define hpip_libname		%mklibname hpip %{hpip_major}
+%define hpip_major 0
+%define hpip_libname %mklibname hpip %{hpip_major}
 
-%define sane_hpaio_major	1
-%define sane_hpaio_libname	%mklibname sane-hpaio %{sane_hpaio_major}
+%define sane_hpaio_major 1
+%define sane_hpaio_libname %mklibname sane-hpaio %{sane_hpaio_major}
 
 # Suppress automatically generated Requires for devel packages
 %define __noautoreq 'devel\(.*\)'
@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.2
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
@@ -27,7 +27,7 @@ Source1:	hpcups-update-ppds.sh
 
 # (doktor5000) fix linking with python and libsane
 # taken from mandriva
-Patch1: hplip-3.11.3-mdv-link.patch
+Patch1:	hplip-3.11.3-mdv-link.patch
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
 Patch2:	hplip-apply-udev-rules-on-action-change.patch
