@@ -24,7 +24,8 @@ Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
 Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
-
+# http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
+Source3:	hp-sendfax.png
 
 # (doktor5000) fix linking with python and libsane
 # taken from mandriva
@@ -475,11 +476,19 @@ cat > %{buildroot}%{_datadir}/applications/%{_vendor}-hp-sendfax.desktop << EOF
 Name=HP Sendfax
 Comment=Utility for sending faxes with HP's multi-function devices
 Exec=%{_bindir}/hp-sendfax
-Icon=%{_datadir}/%{name}/data/images/32x32/fax_machine.png
+Icon=hp-sendfax
 Terminal=false
 Type=Application
 Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
 EOF
+
+# install menu icons
+for N in 16 32 48 64; do convert %{SOURCE3} -resize ${N}x${N} $N.png; done
+install -D -m 0644 16.png %{buildroot}%{_iconsdir}/hicolor/16x16/apps/hp-sendfax.png
+install -D -m 0644 32.png %{buildroot}%{_iconsdir}/hicolor/32x32/apps/hp-sendfax.png
+install -D -m 0644 48.png %{buildroot}%{_iconsdir}/hicolor/48x48/apps/hp-sendfax.png
+install -D -m 0644 64.png %{buildroot}%{_iconsdir}/hicolor/64x64/apps/hp-sendfax.png
+install -D -m 0644 %{SOURCE3} %{buildroot}%{_iconsdir}/hicolor/128x128/apps/hp-sendfax.png
 
 # switched to udev, no need for hal information
 rm -rf  %{buildroot}%{_datadir}/hal/fdi
@@ -708,6 +717,7 @@ fi
 %{_bindir}/hp-systray
 %{_bindir}/hp-toolbox
 %{_datadir}/applications/*.desktop
+%{_iconsdir}/hicolor/*/apps/hp-sendfax.png
 %{_sysconfdir}/xdg/autostart/hplip-systray.desktop
 # Files
 %{_datadir}/hplip/check.py*
