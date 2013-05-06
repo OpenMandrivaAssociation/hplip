@@ -18,76 +18,75 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.2
-Release:	2
+Release:	3
 License:	GPLv2+ and MIT
 Group:		System/Printing
+Url:		http://hplip.sourceforge.net/
 Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
 
 
 # (doktor5000) fix linking with python and libsane
 # taken from mandriva
-Patch1:	hplip-3.11.3-mdv-link.patch
+Patch1:		hplip-3.11.3-mdv-link.patch
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
-Patch2:	hplip-apply-udev-rules-on-action-change.patch
+Patch2:		hplip-apply-udev-rules-on-action-change.patch
 
 # Fedora patches
-Patch101: hplip-pstotiff-is-rubbish.patch
-Patch102: hplip-strstr-const.patch
-Patch103: hplip-ui-optional.patch
-Patch104: hplip-no-asm.patch
-Patch106: hplip-mucks-with-spooldir.patch
-Patch107: hplip-udev-rules.patch
-Patch108: hplip-retry-open.patch
-Patch109: hplip-snmp-quirks.patch
-Patch110: hplip-discovery-method.patch
-Patch111: hplip-hpijs-marker-supply.patch
-Patch112: hplip-clear-old-state-reasons.patch
-Patch114: hplip-hpcups-sigpipe.patch
-Patch115: hplip-fax-ppd.patch
-Patch116: hplip-bad-low-ink-warning.patch
-Patch118: hplip-skip-blank-lines.patch
-Patch119: hplip-dbglog-newline.patch
-Patch121: hplip-ppd-ImageableArea.patch
-Patch122: hplip-raw_deviceID-traceback.patch
-Patch123: hplip-UnicodeDecodeError.patch
-Patch124: hplip-3.12.9-addprinter.patch
-Patch125: hplip-dbus-exception.patch
-Patch126: hplip-notification-exception.patch
-Patch127: hplip-CVE-2010-4267.patch
-Patch128: hplip-wifisetup.patch
+Patch101:	hplip-pstotiff-is-rubbish.patch
+Patch102:	hplip-strstr-const.patch
+Patch103:	hplip-ui-optional.patch
+Patch104:	hplip-no-asm.patch
+Patch106:	hplip-mucks-with-spooldir.patch
+Patch107:	hplip-udev-rules.patch
+Patch108:	hplip-retry-open.patch
+Patch109:	hplip-snmp-quirks.patch
+Patch110:	hplip-discovery-method.patch
+Patch111:	hplip-hpijs-marker-supply.patch
+Patch112:	hplip-clear-old-state-reasons.patch
+Patch114:	hplip-hpcups-sigpipe.patch
+Patch116:	hplip-bad-low-ink-warning.patch
+Patch118:	hplip-skip-blank-lines.patch
+Patch119:	hplip-dbglog-newline.patch
+Patch121:	hplip-ppd-ImageableArea.patch
+Patch122:	hplip-raw_deviceID-traceback.patch
+Patch123:	hplip-UnicodeDecodeError.patch
+Patch124:	hplip-3.12.9-addprinter.patch
+Patch125:	hplip-dbus-exception.patch
+Patch126:	hplip-notification-exception.patch
+Patch127:	hplip-CVE-2010-4267.patch
+Patch128:	hplip-wifisetup.patch
 # recreated from makefile-chgrp.patch against Makefile.am 
-Patch129: hplip-3.12.11-makefile-chgrp.patch
-Patch130: hplip-hpaio-localonly.patch
+Patch129:	hplip-3.12.11-makefile-chgrp.patch
+Patch130:	hplip-hpaio-localonly.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
-Patch201: 01_rss.dpatch
-Patch202: 10_shebang_fixes.dpatch
-Patch203: 14_charsign_fixes.dpatch
-Patch204: 85_rebuild_python_ui.dpatch
-Patch205: 87_move_documentation.dpatch
-Patch206: hplip-photosmart_b9100_support.patch
-Patch207: hplip-pjl-duplex-binding.patch
-Patch208: mga-kde4-kdesudo-support.dpatch
-Patch209: hp-check-groups.dpatch
-Patch210: hp-check_debian.dpatch
-Patch211: hp-setup-prompt-for-custom-PPD.dpatch
-Patch213: hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value.dpatch
-Patch214: ubuntu-hp-mkuri-notification-text.dpatch
-Patch215: simple-scan-as-default.dpatch
-Patch216: make-commafy-correctly-work-with-python-2.dpatch
+Patch201:	01_rss.dpatch
+Patch202:	10_shebang_fixes.dpatch
+Patch203:	14_charsign_fixes.dpatch
+Patch204:	85_rebuild_python_ui.dpatch
+Patch205:	87_move_documentation.dpatch
+Patch206:	hplip-photosmart_b9100_support.patch
+Patch207:	hplip-pjl-duplex-binding.patch
+Patch208:	mga-kde4-kdesudo-support.dpatch
+Patch209:	hp-check-groups.dpatch
+Patch210:	hp-check_debian.dpatch
+Patch211:	hp-setup-prompt-for-custom-PPD.dpatch
+Patch213:	hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value.dpatch
+Patch214:	ubuntu-hp-mkuri-notification-text.dpatch
+Patch215:	simple-scan-as-default.dpatch
+Patch216:	make-commafy-correctly-work-with-python-2.dpatch
 # (doktor5000) rediff original debian patch for hplip 3.11.10
-Patch217: hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
-Patch219: try_libhpmud.so.0.dpatch
-Patch220: add-lidil-two-cartridge-modes.dpatch
-Patch221: add_missing_newline_for_error_log.dpatch
-Patch225: hpfax-bug-function-used-before-importing-log.dpatch
-Patch226: hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
-Patch227: hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
+Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
+Patch219:	try_libhpmud.so.0.dpatch
+Patch220:	add-lidil-two-cartridge-modes.dpatch
+Patch221:	add_missing_newline_for_error_log.dpatch
+Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
+Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
+Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 
-Url:		http://hplip.sourceforge.net/
 %if %{sane_backend}
 BuildRequires:	libsane-devel, xsane
 %endif
@@ -105,7 +104,7 @@ BuildRequires:	dbus-devel
 BuildRequires:	udev-devel
 BuildRequires:	polkit
 BuildRequires:	pkgconfig(libgphoto2)
-BuildRequires:  libv4l-devel
+BuildRequires:	libv4l-devel
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
@@ -127,15 +126,13 @@ Requires:	sane-backends-hpaio
 # Needed to avoid misleading errors about network connectivity (RH bug #705843)
 Requires:	wget
 # hplip tools use internal symbols from libhplip that can change among versions
-Requires:   %{hpip_libname} = %{version}
+Requires:	%{hpip_libname} = %{version}
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 
 # foomatic-db-hpijs drivers are provided by hp and by this package now
 # NOTE: remove the foomatic-db-hpijs deps sometime in 2010-10-?? ?
 Provides:	foomatic-db-hpijs = %{version}-%{release}
-Obsoletes:	foomatic-db-hpijs
-
 
 %description
 This is the HP driver package to supply Linux support for most
@@ -155,17 +152,17 @@ there is the graphical tool "hp-toolbox" available (Menu:
 "System"/"Monitoring"/"HP Printer Toolbox").
 
 %package -n %{hpip_libname}
-Summary: Dynamic library for the "hplip" HP printer/all-in-one drivers
-Group: System/Printing
+Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
+Group:		System/Printing
 
 %description -n %{hpip_libname}
 Library needed for the "hplip" HP printer/all-in-one drivers
 
 %package -n %{hpip_libname}-devel
-Summary: Headers and links to compile against the "%{hpip_libname}" ("hplip") library
-Group: Development/C
-Requires: %{hpip_libname} >= %{version}-%{release}
-Provides: libhpip-devel = %{version}-%{release}
+Summary:	Headers and links to compile against the "%{hpip_libname}" ("hplip") library
+Group:		Development/C
+Requires:	%{hpip_libname} >= %{version}-%{release}
+Provides:	libhpip-devel = %{version}-%{release}
 
 %description -n %{hpip_libname}-devel
 This package contains all files which one needs to compile programs using
@@ -173,39 +170,21 @@ the "%{hpip_libname}" library.
 
 %if %{sane_backend}
 %package -n %{sane_hpaio_libname}
-Summary: SANE driver for scanners in HP's multi-function devices (from HPLIP)
-Group: System/Printing
-Requires: sane-backends
-Provides: sane-backends-hpaio = %{version}-%{release}
+Summary:	SANE driver for scanners in HP's multi-function devices (from HPLIP)
+Group:		System/Printing
+Requires:	sane-backends
+Provides:	sane-backends-hpaio = %{version}-%{release}
 # (cjw) for system-config-printer
-Provides: libsane-hpaio
+Provides:	libsane-hpaio
 %define __noautoreq 'devel(libcrypto)\\|devel(libdl)\\|devel(libhpip)\\|devel(libm)\\|devel(libsnmp)'
-%endif
 
-%if %{sane_backend}
 %description -n %{sane_hpaio_libname}
 SANE driver for scanners in HP's multi-function devices (from HPLIP)
 %endif
 
-%if 0
-%if %{sane_backend}
-%package -n %{sane_hpaio_libname}-devel
-Summary: Headers and links to compile against the "%{sane_hpaio_libname}" ("sane-hpaio") library
-Group: Development/C
-Requires: %{sane_hpaio_libname} >= %{version}-%{release}
-Provides: libsane-hpaio-devel = %{version}-%{release}
-%endif
-
-%if %{sane_backend}
-%description -n %{sane_hpaio_libname}-devel
-This package contains all files which one needs to compile programs using
-the "%{sane_hpaio_libname}" library.
-%endif
-%endif
-
 %package model-data
-Summary: Data file listing the HP printer models supported by HPLIP
-Group: System/Printing
+Summary:	Data file listing the HP printer models supported by HPLIP
+Group:		System/Printing
 
 %description model-data
 HPLIP supports most current HP printers and multifunction devices, but
@@ -214,21 +193,20 @@ list of supported models. Printerdrake installs it automatically to
 determine whether HPLIP has to be installed or not.
 
 %package gui
-Summary: HPLIP graphical tools
-Group: System/Printing
-Requires:python-qt4-gui
-Requires: %{name} = %{version}-%{release}
-Requires: usermode
+Summary:	HPLIP graphical tools
+Group:		System/Printing
+Requires:	python-qt4-gui
+Requires:	%{name} = %{version}-%{release}
+Requires:	usermode
 
 %description gui
 HPLIP graphical tools.
 
-
 %package hpijs
-Summary: HPs printer driver IJS plug-in for GhostScript
-Group: System/Printing
-Requires: ghostscript
-Provides: hpijs
+Summary:	HPs printer driver IJS plug-in for GhostScript
+Group:		System/Printing
+Requires:	ghostscript
+Provides:	hpijs = %{EVRD}
 
 %description hpijs
 HPs printer driver IJS plug-in for GhostScript. This driver gives full
@@ -236,9 +214,10 @@ printing support for nearly all non-PostScript inkjet and laser
 printers made by HP.
 
 %package hpijs-ppds
-Summary: PPD files for the HPIJS printer driver
-Group: System/Printing
-Requires: foomatic-filters, hplip-hpijs
+Summary:	PPD files for the HPIJS printer driver
+Group:		System/Printing
+Requires:	foomatic-filters
+Requires:	hplip-hpijs
 
 %description hpijs-ppds
 PPD files to use the HPIJS printer driver with foomatic-rip and a
@@ -258,7 +237,6 @@ Peripherals or MFPs), which can print, scan, copy, fax, and/or access
 flash memory cards.
 
 %prep
-rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 %setup -q -n %{name}-%{version}%{extraversion}
 
 %patch2 -p1 -b .udev~
@@ -298,9 +276,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}%{extraversion}
 
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
-
-# Use correct fax PPD name for Qt3 UI.
-#patch115 -p1 -b .fax-ppd
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
@@ -433,8 +408,6 @@ autoconf -f
 #needed by patches 204 and 205
 automake -f --foreign
 
-
-
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
@@ -458,11 +431,6 @@ sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 %make
 
-# convert icons to required sizes
-#convert data/images/print.png -resize 16x16 %{name}.mini.png
-#convert data/images/print.png -resize 32x32 %{name}.png
-#convert data/images/print.png -resize 48x48 %{name}.large.png
-
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_bindir}
@@ -471,10 +439,7 @@ mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
 mkdir -p %{buildroot}/var/run/hplip
 
-# Do not use the macro here, use the standard DESTDIR method as it works
-# with HPLIP, in contrary to the non-standard Mandriva method
-#make test-destdir DESTDIR=%{buildroot}
-make install DESTDIR=%{buildroot}
+%makeinstall_std
 
 # Install files which the "make install" missed to install
 install -m 644 ip/hpip.h %{buildroot}%{_includedir}
@@ -491,13 +456,7 @@ rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 # Remove other unneeded files
 rm -f %{buildroot}%{py_platsitedir}/*.la
 
-# install menu icons
-#mkdir -p %{buildroot}%{_iconsdir}/locolor/16x16/apps/
-#install -m 644 %{name}.png -D %{buildroot}%{_iconsdir}/%{name}.png
-#install -m 644 %{name}.mini.png -D %{buildroot}%{_miconsdir}/%{name}.png
-#install -m 644 %{name}.large.png -D %{buildroot}%{_liconsdir}/%{name}.png
-
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+mkdir -p %{buildroot}%{_datadir}/applications
 desktop-file-install --vendor='' \
 	--dir=%{buildroot}%{_datadir}/applications \
 	--remove-category='Application' \
@@ -505,13 +464,13 @@ desktop-file-install --vendor='' \
 	--add-category='System' \
 	--add-category='Settings' \
 	--add-category='Printing' \
-        --add-category='Qt' \
-        --add-category='HardwareSettings' \
-        --add-category='X-MandrivaLinux-CrossDesktop' \
+	--add-category='Qt' \
+	--add-category='HardwareSettings' \
+	--add-category='X-MandrivaLinux-CrossDesktop' \
 	--remove-key='Version' \
-        %{buildroot}%{_datadir}/applications/hplip.desktop
+	%{buildroot}%{_datadir}/applications/hplip.desktop
 
-cat > $RPM_BUILD_ROOT%{_datadir}/applications/%{_vendor}-hp-sendfax.desktop << EOF
+cat > %{buildroot}%{_datadir}/applications/%{_vendor}-hp-sendfax.desktop << EOF
 [Desktop Entry]
 Name=HP Sendfax
 Comment=Utility for sending faxes with HP's multi-function devices
@@ -523,7 +482,7 @@ Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
 EOF
 
 # switched to udev, no need for hal information
-rm -rf  %{buildroot}%{_datadir}/hal/fdi 
+rm -rf  %{buildroot}%{_datadir}/hal/fdi
 
 rm -f   %{buildroot}%{_libdir}/*.la \
         %{buildroot}%{python_sitearch}/*.la \
@@ -609,18 +568,17 @@ if [ -f /etc/init.d/cups ]; then
 fi
 
 %files
-#doc COPYING doc/*
 %config(noreplace) %{_sysconfdir}/hp
 %dir /var/run/hplip/
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
-%_bindir/hp-config_usb_printer
+%{_bindir}/hp-config_usb_printer
 %{_bindir}/hp-devicesettings
 %{_bindir}/hp-diagnose_plugin
-%_bindir/hp-diagnose_queues
+%{_bindir}/hp-diagnose_queues
 %{_bindir}/hp-doctor
-%_datadir/hplip/doctor.py*
+%{_datadir}/hplip/doctor.py*
 %{_bindir}/hp-fab
 %{_bindir}/hp-faxsetup
 %{_bindir}/hp-firmware
@@ -643,9 +601,9 @@ fi
 %{_sbindir}/hp-setup
 %{_bindir}/hp-testpage
 %{_bindir}/hp-timedate
-%_bindir/hp-uninstall
+%{_bindir}/hp-uninstall
 %{_bindir}/hp-unload
-%_bindir/hp-upgrade
+%{_bindir}/hp-upgrade
 %{_bindir}/hp-wificonfig
 
 %exclude %{_datadir}/hplip/data/models
@@ -671,10 +629,10 @@ fi
 %{_datadir}/hplip/check-plugin.py*
 %{_datadir}/hplip/clean.py*
 %{_datadir}/hplip/colorcal.py*
-%_datadir/hplip/config_usb_printer.py*
+%{_datadir}/hplip/config_usb_printer.py*
 %{_datadir}/hplip/devicesettings.py*
 %{_datadir}/hplip/diagnose_plugin.py*
-%_datadir/hplip/diagnose_queues.py*
+%{_datadir}/hplip/diagnose_queues.py*
 %{_datadir}/hplip/fab.py*
 %{_datadir}/hplip/fax
 %{_datadir}/hplip/faxsetup.py*
@@ -699,9 +657,9 @@ fi
 %{_datadir}/hplip/setup.py*
 %{_datadir}/hplip/testpage.py*
 %{_datadir}/hplip/timedate.py*
-%_datadir/hplip/uninstall.py*
+%{_datadir}/hplip/uninstall.py*
 %{_datadir}/hplip/unload.py*
-%_datadir/hplip/upgrade.py*
+%{_datadir}/hplip/upgrade.py*
 %{_datadir}/hplip/wificonfig.py*
 # Directories
 %{_datadir}/hplip/base
@@ -736,10 +694,8 @@ fi
 %{_libdir}/libhpmud.so
 
 %if %{sane_backend}
-
 %files -n %{sane_hpaio_libname}
 %{_libdir}/sane/libsane-hpaio*.so.*
-
 %endif
 
 %files model-data
