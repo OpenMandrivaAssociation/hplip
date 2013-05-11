@@ -3,22 +3,22 @@
 %{?_with_sane: %global sane_backend 1}
 %{?_without_sane: %global sane_backend 0}
 
-%define hpip_major 0
-%define hpip_libname %mklibname hpip %{hpip_major}
-
-%define sane_hpaio_major 1
-%define sane_hpaio_libname %mklibname sane-hpaio %{sane_hpaio_major}
+%define major	0
+%define libhpip	%mklibname hpip %{major}
+%define libhpmud %mklibname hpmud %{major}
+%define sanemaj	1
+%define libsane %mklibname sane-hpaio %{sanemaj}
+%define devname %mklibname hpip -d
 
 # Suppress automatically generated Requires for devel packages
 %define __noautoreq 'devel\(.*\)'
 
-#define extraversion -RC1
 %define extraversion %nil
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.2
-Release:	3
+Release:	4
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -88,24 +88,23 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 
-%if %{sane_backend}
-BuildRequires:	libsane-devel, xsane
-%endif
-%py_requires -d
+BuildRequires:	desktop-file-utils
+BuildRequires:	imagemagick
+BuildRequires:	polkit
 BuildRequires:	python-sip >= 4.1.1
 BuildRequires:	net-snmp-devel
-BuildRequires:	libusb-devel >= 0.1.8
-BuildRequires:	imagemagick
-BuildRequires:	autoconf
 BuildRequires:	cups-devel
 BuildRequires:	jpeg-devel
-BuildRequires:	python-devel
-BuildRequires:	desktop-file-utils
-BuildRequires:	dbus-devel
-BuildRequires:	udev-devel
-BuildRequires:	polkit
+BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libgphoto2)
-BuildRequires:	libv4l-devel
+BuildRequires:	pkgconfig(libusb)
+BuildRequires:	pkgconfig(libv4l1)
+BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(udev)
+%if %{sane_backend}
+BuildRequires:	pkgconfig(sane-backends)
+BuildRequires:	xsane
+%endif
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
@@ -127,7 +126,8 @@ Requires:	sane-backends-hpaio
 # Needed to avoid misleading errors about network connectivity (RH bug #705843)
 Requires:	wget
 # hplip tools use internal symbols from libhplip that can change among versions
-Requires:	%{hpip_libname} = %{version}
+Requires:	%{libhpip} = %{version}
+%py_requires -d
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 
@@ -152,34 +152,44 @@ For status and consumable checking and also for inkjet maintenance
 there is the graphical tool "hp-toolbox" available (Menu:
 "System"/"Monitoring"/"HP Printer Toolbox").
 
-%package -n %{hpip_libname}
+%package -n %{libhpip}
 Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
 Group:		System/Printing
 
-%description -n %{hpip_libname}
+%description -n %{libhpip}
 Library needed for the "hplip" HP printer/all-in-one drivers
 
-%package -n %{hpip_libname}-devel
-Summary:	Headers and links to compile against the "%{hpip_libname}" ("hplip") library
-Group:		Development/C
-Requires:	%{hpip_libname} >= %{version}-%{release}
-Provides:	libhpip-devel = %{version}-%{release}
+%package -n %{libhpmud}
+Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
+Group:		System/Printing
+Conflicts:	%{_lib}hpip0 < 3.13.2-4
 
-%description -n %{hpip_libname}-devel
+%description -n %{libhpmud}
+Library needed for the "hplip" HP printer/all-in-one drivers
+
+%package -n %{devname}
+Summary:	Headers and links to compile against the "%{libhpip}" ("hplip") library
+Group:		Development/C
+Requires:	%{libhpip} >= %{version}-%{release}
+Requires:	%{libhpmud} >= %{version}-%{release}
+Requires:	%{libsane} >= %{version}-%{release}
+Provides:	libhpip-devel = %{version}-%{release}
+Obsoletes:	%{_lib}hpip0-devel < 3.13.2-4
+
+%description -n %{devname}
 This package contains all files which one needs to compile programs using
-the "%{hpip_libname}" library.
+the "%{libhpip}" library.
 
 %if %{sane_backend}
-%package -n %{sane_hpaio_libname}
+%package -n %{libsane}
 Summary:	SANE driver for scanners in HP's multi-function devices (from HPLIP)
 Group:		System/Printing
-Requires:	sane-backends
+Suggests:	sane-backends
 Provides:	sane-backends-hpaio = %{version}-%{release}
 # (cjw) for system-config-printer
 Provides:	libsane-hpaio
-%define __noautoreq 'devel(libcrypto)\\|devel(libdl)\\|devel(libhpip)\\|devel(libm)\\|devel(libsnmp)'
 
-%description -n %{sane_hpaio_libname}
+%description -n %{libsane}
 SANE driver for scanners in HP's multi-function devices (from HPLIP)
 %endif
 
@@ -238,7 +248,7 @@ Peripherals or MFPs), which can print, scan, copy, fax, and/or access
 flash memory cards.
 
 %prep
-%setup -q -n %{name}-%{version}%{extraversion}
+%setup -qn %{name}-%{version}%{extraversion}
 
 %patch2 -p1 -b .udev~
 
@@ -375,7 +385,7 @@ sed -i.duplex-constraints \
 
 %patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
 
-# dlopen libhpmud.so.0 instad of libhpmud.so, in order not to depend on
+# dlopen libhpmud.so.0 instead of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
 # obsoletes hplip-3.9.8-dlopen-libhpmud.patch, newer & extended version
 %patch219 -p1 -b .try_libhpmud.so.0
@@ -412,7 +422,8 @@ automake -f --foreign
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
-%configure2_5x $WITHOUT_SANE \
+%configure2_5x \
+	$WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
 	--enable-scan-build \
 	--enable-gui-build \
@@ -433,7 +444,6 @@ sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %make
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_includedir}
 mkdir -p %{buildroot}%{_initrddir}
@@ -450,12 +460,7 @@ install -m 644 ip/xform.h %{buildroot}%{_includedir}
 mv %{buildroot}%{_docdir}/%{name}-%{version}%{extraversion} %{buildroot}%{_docdir}/%{name}-doc-%{version}%{extraversion}
 
 # Remove static libraries of SANE driver
-rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.so
-rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.la
 rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
-
-# Remove other unneeded files
-rm -f %{buildroot}%{py_platsitedir}/*.la
 
 mkdir -p %{buildroot}%{_datadir}/applications
 desktop-file-install --vendor='' \
@@ -474,7 +479,7 @@ desktop-file-install --vendor='' \
 cat > %{buildroot}%{_datadir}/applications/%{_vendor}-hp-sendfax.desktop << EOF
 [Desktop Entry]
 Name=HP Sendfax
-Comment=Utility for sending faxes with HP's multi-function devices
+Comment=Utility for sending faxes with HPs multi-function devices
 Exec=%{_bindir}/hp-sendfax
 Icon=hp-sendfax
 Terminal=false
@@ -492,10 +497,6 @@ install -D -m 0644 %{SOURCE3} %{buildroot}%{_iconsdir}/hicolor/128x128/apps/hp-s
 
 # switched to udev, no need for hal information
 rm -rf  %{buildroot}%{_datadir}/hal/fdi
-
-rm -f   %{buildroot}%{_libdir}/*.la \
-        %{buildroot}%{python_sitearch}/*.la \
-        %{buildroot}%{_libdir}/sane/*.la
 
 # Regenerate hpcups PPDs on upgrade if necessary (bug #579355).
 install -p -m755 %{SOURCE1} %{buildroot}%{_bindir}/hpcups-update-ppds
@@ -545,7 +546,7 @@ fi
 :
 
 %if %{sane_backend}
-%post -n %{sane_hpaio_libname}
+%post -n %{libsane}
 
 # Add HPLIP driver to /etc/sane.d/dll.conf
 if ! grep ^hpaio /etc/sane.d/dll.conf >/dev/null 2>/dev/null ; then \
@@ -554,7 +555,7 @@ fi
 %endif
 
 %if %{sane_backend}
-%preun -n %{sane_hpaio_libname}
+%preun -n %{libsane}
 # Remove HPLIP driver from /etc/sane.d/dll.conf
 if [ "$1" = 0 ]; then \
 	if grep ^hpaio /etc/sane.d/dll.conf >/dev/null 2>/dev/null ; then \
@@ -692,19 +693,22 @@ fi
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
 
-%files -n %{hpip_libname}
-%{_libdir}/libhpip*.so.*
-%{_libdir}/libhpmud.so.*
+%files -n %{libhpip}
+%{_libdir}/libhpip.so.%{major}*
 
-%files -n %{hpip_libname}-devel
+%files -n %{libhpmud}
+%{_libdir}/libhpmud.so.%{major}*
+
+%files -n %{devname}
 %{_includedir}/hpip.h
 %{_includedir}/xform.h
-%{_libdir}/libhpip*.so
+%{_libdir}/libhpip.so
 %{_libdir}/libhpmud.so
-
 %if %{sane_backend}
-%files -n %{sane_hpaio_libname}
-%{_libdir}/sane/libsane-hpaio*.so.*
+%{_libdir}/sane/libsane-hpaio.so
+
+%files -n %{libsane}
+%{_libdir}/sane/libsane-hpaio.so.%{sanemaj}*
 %endif
 
 %files model-data
@@ -739,3 +743,4 @@ fi
 %files hpijs-ppds
 %{_datadir}/ppd/HP/apollo*.ppd*
 %{_datadir}/ppd/HP/hp-*.ppd*
+
