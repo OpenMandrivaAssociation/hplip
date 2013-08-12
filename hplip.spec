@@ -26,7 +26,7 @@ Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{ex
 Source1:	hpcups-update-ppds.sh
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
 Source3:	hp-sendfax.png
-
+Source4:	hplip.rpmlintrc
 # (doktor5000) fix linking with python and libsane
 # taken from mandriva
 Patch1:		hplip-3.11.3-mdv-link.patch
