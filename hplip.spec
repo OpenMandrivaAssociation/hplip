@@ -689,6 +689,8 @@ fi
 %{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
 #%{_localstatedir}/lib/hp/hplip.state
+%dir %attr(0774,root,lp) %{_localstatedir}/log/hp
+%dir %attr(1774,root,lp) %{_localstatedir}/log/hp/tmp
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
 %{_sysconfdir}/cron.daily/hplip_cron
 
