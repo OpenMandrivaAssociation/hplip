@@ -24,6 +24,7 @@ Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
 Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
+Source2:	%{name}-tmpfiles.conf
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
 Source3:	hp-sendfax.png
 Source4:	hplip.rpmlintrc
@@ -450,7 +451,6 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_includedir}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
-mkdir -p %{buildroot}/var/run/hplip
 
 %makeinstall_std
 
@@ -488,6 +488,8 @@ Terminal=false
 Type=Application
 Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
 EOF
+
+install -D -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
 
 # install menu icons
 for N in 16 32 48 64; do convert %{SOURCE3} -resize ${N}x${N} $N.png; done
@@ -531,6 +533,9 @@ chkconfig --del hplip
 if [ -f /etc/init.d/cups ]; then
 	/sbin/service cups condrestart || :
 fi
+
+%post
+%tmpfiles_create %{name}
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
@@ -688,6 +693,7 @@ fi
 %{_datadir}/hplip/scan
 %{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
+%{_tmpfilesdir}/%{name}.conf
 #%{_localstatedir}/lib/hp/hplip.state
 %dir %attr(0774,root,lp) %{_localstatedir}/log/hp
 %dir %attr(1774,root,lp) %{_localstatedir}/log/hp/tmp
