@@ -41,7 +41,6 @@ Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
 Patch104:	hplip-no-asm.patch
 Patch106:	hplip-mucks-with-spooldir.patch
-Patch107:	hplip-udev-rules.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
 Patch110:	hplip-discovery-method.patch
@@ -285,8 +284,6 @@ flash memory cards.
 # directly (RH bug #552572).
 %patch106 -p1 -b .mucks-with-spooldir
 
-%patch107 -p1 -b .udev-rules
-
 # Retry when connecting to device fails (RH bug #532112).
 %patch108 -p1 -b .retry-open
 
@@ -307,7 +304,7 @@ flash memory cards.
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
 
-%patch115 -p1 -b .logdir
+#patch115 -p1 -b .logdir
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
@@ -316,7 +313,7 @@ flash memory cards.
 %patch118 -p1 -b .skip-blank-lines
 
 # Added missing newline to string argument in dbglog() call (RH bug #585275).
-%patch119 -p1 -b .dbglog-newline
+#patch119 -p1 -b .dbglog-newline
 
 # Fix ImageableArea for Laserjet 8150/9000 (RH bug #596298).
 for ppd_file in $(grep '^diff' %{PATCH121} | cut -d " " -f 4);
@@ -343,11 +340,11 @@ done
 %patch125 -p1 -b .dbus-exception
 
 # Catch GError exception when notification showing failed (RH bug #665577).
-%patch126 -p1 -b .notification-exception
+#patch126 -p1 -b .notification-exception
 
 # Applied patch to fix CVE-2010-4267, remote stack overflow
 # vulnerability (RH bug #670252).
-%patch127 -p1 -b .CVE-2010-4267
+#patch127 -p1 -b .CVE-2010-4267
 
 # Avoid KeyError in ui4/wifisetupdialog.py (RH bug #680939).
 %patch128 -p1 -b .wifisetup
@@ -362,9 +359,9 @@ sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
-%patch131 -p1 -b .ipp-accessors
-%patch132 -p1 -b .hplip-IEEE-1284-4
-%patch133 -p1 -b .check
+#patch131 -p1 -b .ipp-accessors
+#patch132 -p1 -b .hplip-IEEE-1284-4
+#patch133 -p1 -b .check
 
 # Debian/Ubuntu patches
 
@@ -408,7 +405,7 @@ sed -i.duplex-constraints \
 
 %patch216 -p1 -b .make-commafy-correctly-work-with-python-2
 
-%patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
+#patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
 
 # dlopen libhpmud.so.0 instead of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
@@ -416,8 +413,8 @@ sed -i.duplex-constraints \
 %patch219 -p1 -b .try_libhpmud.so.0
 
 %patch220 -p1 -b .add-lidil-two-cartridge-modes
-
-%patch224 -p1 -b .hplip-syslog-fix-debug-messages-to-error
+# fixed by upstream
+#patch224 -p1 -b .hplip-syslog-fix-debug-messages-to-error
 
 %patch225 -p1 -b .hpfax-bug-function-used-before-importing-log
 
