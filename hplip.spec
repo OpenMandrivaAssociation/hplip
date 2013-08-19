@@ -417,6 +417,8 @@ chmod -R u+w .
 %build
 %serverbuild
 #needed by patches 204 and 205
+# create required files as placeholder, otherwise autoreconf fails
+touch NEWS README AUTHORS ChangeLog
 autoreconf -ifv
 
 %if !%{sane_backend}
