@@ -105,10 +105,12 @@ BuildRequires:	pkgconfig(udev)
 BuildRequires:	pkgconfig(sane-backends)
 BuildRequires:	xsane
 %endif
+Requires(post):	systemd
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
-Requires:	hplip-model-data hplip-hpijs
+Requires:	hplip-model-data
+Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
 Requires:	python-sip >= 4.1.1
 # Needed for communicating with ethernet-connected printers
@@ -125,6 +127,8 @@ Requires:	python-imaging
 Requires:	sane-backends-hpaio
 # Needed to avoid misleading errors about network connectivity (RH bug #705843)
 Requires:	wget
+# (tpg) hp-check needs this
+Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
 Requires:	%{libhpip} = %{version}
 %py_requires -d
@@ -412,12 +416,8 @@ chmod -R u+w .
 
 %build
 %serverbuild
-#needed by patch204
-libtoolize --copy --force
-aclocal --force
-autoconf -f
 #needed by patches 204 and 205
-automake -f --foreign
+autoreconf -ifv
 
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
