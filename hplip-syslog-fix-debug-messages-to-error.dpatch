@@ -1,0 +1,13 @@
+Index: hplip-3.12.9/prnt/hpcups/CommonDefinitions.h
+===================================================================
+--- hplip-3.12.9/prnt/hpcups/CommonDefinitions.h
++++ hplip-3.12.9/prnt/hpcups/CommonDefinitions.h	2012-09-19 23:22:28.839354278 +0200
+@@ -68,7 +68,7 @@
+ #define _STRINGIZE(x) #x
+ #define STRINGIZE(x) _STRINGIZE(x)
+ 
+-#define dbglog(args...) {syslog(LOG_ERR, __FILE__ " " STRINGIZE(__LINE__) ": " args); \
++#define dbglog(args...) {syslog(LOG_DEBUG, __FILE__ " " STRINGIZE(__LINE__) ": " args); \
+ fprintf(stderr, __FILE__ " " STRINGIZE(__LINE__) ": " args);}
+ 
+ 

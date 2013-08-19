@@ -1,5 +1,7 @@
---- hplip-3.12.6/data/rules/40-hplip.rules.udev~	2012-06-18 12:43:22.000000000 +0200
-+++ hplip-3.12.6/data/rules/40-hplip.rules	2012-06-26 18:09:27.640268427 +0200
+Index: hplip-3.12.6/data/rules/40-hplip.rules
+===================================================================
+--- hplip-3.12.6/data/rules/40-hplip.rules
++++ hplip-3.12.6/data/rules/40-hplip.rules	2012-09-19 22:33:00.601844136 +0200
 @@ -4,7 +4,7 @@
  # For older distros that use HAL ACL support use the 55-hpmud.rules. 
  #
@@ -9,8 +11,10 @@
  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GOTO="pid_test"
  SUBSYSTEM!="usb_device", GOTO="hpmud_rules_end"
  
---- hplip-3.12.6/data/rules/55-hpmud.rules.udev~	2012-06-18 12:43:22.000000000 +0200
-+++ hplip-3.12.6/data/rules/55-hpmud.rules	2012-06-26 18:09:27.640268427 +0200
+Index: hplip-3.12.6/data/rules/55-hpmud.rules
+===================================================================
+--- hplip-3.12.6/data/rules/55-hpmud.rules
++++ hplip-3.12.6/data/rules/55-hpmud.rules	2012-09-19 22:33:00.601844136 +0200
 @@ -13,7 +13,7 @@
  #      changes are not distro specific please send your patch to us. 2/11/2009, D Suffield
  #
@@ -20,8 +24,10 @@
  SUBSYSTEM=="ppdev", OWNER="root", GROUP="lp", MODE="0660"
  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GOTO="hplip_pid_test"
  SUBSYSTEM!="usb_device", GOTO="hpmud_rules_end"
---- hplip-3.12.6/data/rules/56-hpmud_support.rules.udev~	2012-06-18 12:43:22.000000000 +0200
-+++ hplip-3.12.6/data/rules/56-hpmud_support.rules	2012-06-26 18:09:27.640268427 +0200
+Index: hplip-3.12.6/data/rules/56-hpmud_support.rules
+===================================================================
+--- hplip-3.12.6/data/rules/56-hpmud_support.rules
++++ hplip-3.12.6/data/rules/56-hpmud_support.rules	2012-09-19 22:33:00.601844136 +0200
 @@ -1,6 +1,6 @@
  # HPLIP udev rules file. Notify console user if plugin support is required for this device.
  
@@ -30,8 +36,10 @@
  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GOTO="pid_test"
  SUBSYSTEM!="usb_device", GOTO="hpmud_rules_end"
  
---- hplip-3.12.6/data/rules/86-hpmud_plugin.rules.udev~	2012-06-18 12:43:22.000000000 +0200
-+++ hplip-3.12.6/data/rules/86-hpmud_plugin.rules	2012-06-26 18:10:47.103264684 +0200
+Index: hplip-3.12.6/data/rules/86-hpmud_plugin.rules
+===================================================================
+--- hplip-3.12.6/data/rules/86-hpmud_plugin.rules
++++ hplip-3.12.6/data/rules/86-hpmud_plugin.rules	2012-09-19 22:33:00.601844136 +0200
 @@ -1,6 +1,6 @@
  # Load hp firmware for this printer.
  
