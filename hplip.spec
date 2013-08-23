@@ -564,7 +564,7 @@ mkdir -p %{buildroot}%{_localstatedir}/lib/hp/
 touch %{buildroot}%{_localstatedir}/lib/hp/hplip.state
 
 mkdir -p %{buildroot}%{_unitdir}
-mv -f %{buildroot}%{_libdir}/systemd/system/hplip-printer@.service %{buildroot}%{_unitdir}/hplip-printer@.service
+mv -f %{buildroot}/usr/lib/systemd/system/hplip-printer@.service %{buildroot}%{_unitdir}/hplip-printer@.service
 
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
