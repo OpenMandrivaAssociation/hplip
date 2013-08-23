@@ -3,10 +3,10 @@
 %{?_with_sane: %global sane_backend 1}
 %{?_without_sane: %global sane_backend 0}
 
-%define major	0
-%define libhpip	%mklibname hpip %{major}
+%define major 0
+%define libhpip %mklibname hpip %{major}
 %define libhpmud %mklibname hpmud %{major}
-%define sanemaj	1
+%define sanemaj 1
 %define libsane %mklibname sane-hpaio %{sanemaj}
 %define devname %mklibname hpip -d
 
@@ -17,16 +17,17 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.13.2
-Release:	4
+Version:	3.13.8
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
 Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
+Source2:	%{name}-tmpfiles.conf
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
 Source3:	hp-sendfax.png
-
+Source4:	hplip.rpmlintrc
 # (doktor5000) fix linking with python and libsane
 # taken from mandriva
 Patch1:		hplip-3.11.3-mdv-link.patch
@@ -40,13 +41,14 @@ Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
 Patch104:	hplip-no-asm.patch
 Patch106:	hplip-mucks-with-spooldir.patch
-Patch107:	hplip-udev-rules.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
 Patch110:	hplip-discovery-method.patch
 Patch111:	hplip-hpijs-marker-supply.patch
 Patch112:	hplip-clear-old-state-reasons.patch
+Patch113:	hplip-systray-dbus-exception.patch
 Patch114:	hplip-hpcups-sigpipe.patch
+Patch115:	hplip-logdir.patch
 Patch116:	hplip-bad-low-ink-warning.patch
 Patch118:	hplip-skip-blank-lines.patch
 Patch119:	hplip-dbglog-newline.patch
@@ -58,9 +60,12 @@ Patch125:	hplip-dbus-exception.patch
 Patch126:	hplip-notification-exception.patch
 Patch127:	hplip-CVE-2010-4267.patch
 Patch128:	hplip-wifisetup.patch
-# recreated from makefile-chgrp.patch against Makefile.am 
-Patch129:	hplip-3.12.11-makefile-chgrp.patch
+# fedora patch not necessary. done via sed call
+#Patch129: hplip-makefile-chgrp.patch
 Patch130:	hplip-hpaio-localonly.patch
+Patch131:	hplip-ipp-accessors.patch
+Patch132: hplip-IEEE-1284-4.patch
+Patch133: hplip-check.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
@@ -70,13 +75,14 @@ Patch203:	14_charsign_fixes.dpatch
 Patch204:	85_rebuild_python_ui.dpatch
 Patch205:	87_move_documentation.dpatch
 Patch206:	hplip-photosmart_b9100_support.patch
-Patch207:	hplip-pjl-duplex-binding.patch
+Patch207:	pjl-duplex-binding.dpatch
+#hplip-pjl-duplex-binding.patch
 Patch208:	mga-kde4-kdesudo-support.dpatch
 Patch209:	hp-check-groups.dpatch
-Patch210:	hp-check_debian.dpatch
+#Patch210:	hp-check_debian.dpatch
 Patch211:	hp-setup-prompt-for-custom-PPD.dpatch
 Patch213:	hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value.dpatch
-Patch214:	ubuntu-hp-mkuri-notification-text.dpatch
+#Patch214:	ubuntu-hp-mkuri-notification-text.dpatch
 Patch215:	simple-scan-as-default.dpatch
 Patch216:	make-commafy-correctly-work-with-python-2.dpatch
 # (doktor5000) rediff original debian patch for hplip 3.11.10
@@ -84,9 +90,13 @@ Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
 Patch219:	try_libhpmud.so.0.dpatch
 Patch220:	add-lidil-two-cartridge-modes.dpatch
 Patch221:	add_missing_newline_for_error_log.dpatch
+Patch224:	hplip-syslog-fix-debug-messages-to-error.dpatch
 Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
+Patch228:	hpaio-option-duplex.diff
+
+Patch301: fix-uninitialized-variables.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -105,10 +115,12 @@ BuildRequires:	pkgconfig(udev)
 BuildRequires:	pkgconfig(sane-backends)
 BuildRequires:	xsane
 %endif
+Requires(post):	systemd
 Requires:	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
-Requires:	hplip-model-data hplip-hpijs
+Requires:	hplip-model-data
+Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
 Requires:	python-sip >= 4.1.1
 # Needed for communicating with ethernet-connected printers
@@ -125,6 +137,8 @@ Requires:	python-imaging
 Requires:	sane-backends-hpaio
 # Needed to avoid misleading errors about network connectivity (RH bug #705843)
 Requires:	wget
+# (tpg) hp-check needs this
+Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
 Requires:	%{libhpip} = %{version}
 %py_requires -d
@@ -285,8 +299,12 @@ flash memory cards.
 # Clear old printer-state-reasons we used to manage (RH bug #510926).
 %patch112 -p1 -b .clear-old-state-reasons
 
+%patch113 -p1 -b .systray-dbus-exception
+
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
+
+#patch115 -p1 -b .logdir
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
@@ -295,7 +313,7 @@ flash memory cards.
 %patch118 -p1 -b .skip-blank-lines
 
 # Added missing newline to string argument in dbglog() call (RH bug #585275).
-%patch119 -p1 -b .dbglog-newline
+#patch119 -p1 -b .dbglog-newline
 
 # Fix ImageableArea for Laserjet 8150/9000 (RH bug #596298).
 for ppd_file in $(grep '^diff' %{PATCH121} | cut -d " " -f 4);
@@ -322,17 +340,17 @@ done
 %patch125 -p1 -b .dbus-exception
 
 # Catch GError exception when notification showing failed (RH bug #665577).
-%patch126 -p1 -b .notification-exception
+#patch126 -p1 -b .notification-exception
 
 # Applied patch to fix CVE-2010-4267, remote stack overflow
 # vulnerability (RH bug #670252).
-%patch127 -p1 -b .CVE-2010-4267
+#patch127 -p1 -b .CVE-2010-4267
 
 # Avoid KeyError in ui4/wifisetupdialog.py (RH bug #680939).
 %patch128 -p1 -b .wifisetup
 
-# Don't run 'chgrp lp /var/log/hp' in makefile
-%patch129 -p1 -b .chgrp
+# Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
+sed -i '/chgrp/d' Makefile.am
 
 # Pay attention to the SANE localOnly flag in hpaio (RH bug #743593).
 %patch130 -p1 -b .hpaio-localonly
@@ -340,6 +358,10 @@ done
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
+
+#patch131 -p1 -b .ipp-accessors
+#patch132 -p1 -b .hplip-IEEE-1284-4
+#patch133 -p1 -b .check
 
 # Debian/Ubuntu patches
 
@@ -383,7 +405,7 @@ sed -i.duplex-constraints \
 
 %patch216 -p1 -b .make-commafy-correctly-work-with-python-2
 
-%patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
+#patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
 
 # dlopen libhpmud.so.0 instead of libhpmud.so, in order not to depend on
 # devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
@@ -391,6 +413,8 @@ sed -i.duplex-constraints \
 %patch219 -p1 -b .try_libhpmud.so.0
 
 %patch220 -p1 -b .add-lidil-two-cartridge-modes
+# fixed by upstream
+#patch224 -p1 -b .hplip-syslog-fix-debug-messages-to-error
 
 %patch225 -p1 -b .hpfax-bug-function-used-before-importing-log
 
@@ -398,6 +422,9 @@ sed -i.duplex-constraints \
 
 %patch227 -p1 -b .hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde
 
+%patch228 -p1 -b .hpaio-option-duplex
+
+%patch301 -p0 -b .fix-uninitialized-variables
 
 # Use filter foomatic-rip instead of foomatic-rip-hplip (fix from Mandriva)
 for PPDGZ in ppd/hpijs/*.ppd.gz
@@ -412,12 +439,10 @@ chmod -R u+w .
 
 %build
 %serverbuild
-#needed by patch204
-libtoolize --copy --force
-aclocal --force
-autoconf -f
 #needed by patches 204 and 205
-automake -f --foreign
+# create required files as placeholder, otherwise autoreconf fails
+touch NEWS README AUTHORS ChangeLog
+autoreconf -ifv
 
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
@@ -448,7 +473,6 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_includedir}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
-mkdir -p %{buildroot}/var/run/hplip
 
 %makeinstall_std
 
@@ -460,7 +484,20 @@ install -m 644 ip/xform.h %{buildroot}%{_includedir}
 mv %{buildroot}%{_docdir}/%{name}-%{version}%{extraversion} %{buildroot}%{_docdir}/%{name}-doc-%{version}%{extraversion}
 
 # Remove static libraries of SANE driver
+rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.la
 rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
+
+# Remove other unneeded/unwanted files
+rm -f %{buildroot}%{py_platsitedir}/*.la
+rm -f %{buildroot}%{_datadir}/hplip/uninstall.*
+rm -f %{buildroot}%{_bindir}/hp-uninstall
+rm -f %{buildroot}%{_datadir}/hplip/upgrade.*
+rm -f %{buildroot}%{_bindir}/hp-upgrade
+rm -f %{buildroot}%{_bindir}/hp-config_usb_printer
+rm -f %{buildroot}%{_datadir}/hplip/config_usb_printer.*
+rm -f %{buildroot}%{_libdir}/*.la
+rm -rf %{buildroot}%{python_sitearch}/*.la
+rm -rf %{buildroot}%{_libdir}/sane/*.la
 
 mkdir -p %{buildroot}%{_datadir}/applications
 desktop-file-install --vendor='' \
@@ -472,7 +509,6 @@ desktop-file-install --vendor='' \
 	--add-category='Printing' \
 	--add-category='Qt' \
 	--add-category='HardwareSettings' \
-	--add-category='X-MandrivaLinux-CrossDesktop' \
 	--remove-key='Version' \
 	%{buildroot}%{_datadir}/applications/hplip.desktop
 
@@ -484,8 +520,10 @@ Exec=%{_bindir}/hp-sendfax
 Icon=hp-sendfax
 Terminal=false
 Type=Application
-Categories=TelephonyTools;Qt;Printing;Utility;X-MandrivaLinux-CrossDesktop;
+Categories=TelephonyTools;Qt;Printing;Utility;
 EOF
+
+install -D -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
 
 # install menu icons
 for N in 16 32 48 64; do convert %{SOURCE3} -resize ${N}x${N} $N.png; done
@@ -522,6 +560,12 @@ pushd %{buildroot}%{_datadir}/%{name}
 python -m compileall .
 popd
 
+mkdir -p %{buildroot}%{_localstatedir}/lib/hp/
+touch %{buildroot}%{_localstatedir}/lib/hp/hplip.state
+
+mkdir -p %{buildroot}%{_unitdir}
+mv -f %{buildroot}/usr/lib/systemd/system/hplip-printer@.service %{buildroot}%{_unitdir}/hplip-printer@.service
+
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
 
@@ -529,6 +573,9 @@ chkconfig --del hplip
 if [ -f /etc/init.d/cups ]; then
 	/sbin/service cups condrestart || :
 fi
+
+%post
+%tmpfiles_create %{name}
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
@@ -579,11 +626,11 @@ fi
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
-%dir /var/run/hplip/
+%dir %{_localstatedir}/lib/hp/
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
-%{_bindir}/hp-config_usb_printer
+#%{_bindir}/hp-config_usb_printer
 %{_bindir}/hp-devicesettings
 %{_bindir}/hp-diagnose_plugin
 %{_bindir}/hp-diagnose_queues
@@ -611,9 +658,9 @@ fi
 %{_sbindir}/hp-setup
 %{_bindir}/hp-testpage
 %{_bindir}/hp-timedate
-%{_bindir}/hp-uninstall
+#%{_bindir}/hp-uninstall
 %{_bindir}/hp-unload
-%{_bindir}/hp-upgrade
+#%{_bindir}/hp-upgrade
 %{_bindir}/hp-wificonfig
 
 %exclude %{_datadir}/hplip/data/models
@@ -639,7 +686,7 @@ fi
 %{_datadir}/hplip/check-plugin.py*
 %{_datadir}/hplip/clean.py*
 %{_datadir}/hplip/colorcal.py*
-%{_datadir}/hplip/config_usb_printer.py*
+#%{_datadir}/hplip/config_usb_printer.py*
 %{_datadir}/hplip/devicesettings.py*
 %{_datadir}/hplip/diagnose_plugin.py*
 %{_datadir}/hplip/diagnose_queues.py*
@@ -667,9 +714,9 @@ fi
 %{_datadir}/hplip/setup.py*
 %{_datadir}/hplip/testpage.py*
 %{_datadir}/hplip/timedate.py*
-%{_datadir}/hplip/uninstall.py*
+#%{_datadir}/hplip/uninstall.py*
 %{_datadir}/hplip/unload.py*
-%{_datadir}/hplip/upgrade.py*
+#%{_datadir}/hplip/upgrade.py*
 %{_datadir}/hplip/wificonfig.py*
 # Directories
 %{_datadir}/hplip/base
@@ -686,9 +733,14 @@ fi
 %{_datadir}/hplip/scan
 %{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
-#%{_localstatedir}/lib/hp/hplip.state
+%{_localstatedir}/lib/hp/hplip.state
+%dir %attr(0774,root,lp) %{_localstatedir}/log/hp
+%dir %attr(1774,root,lp) %{_localstatedir}/log/hp/tmp
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
-%{_sysconfdir}/cron.daily/hplip_cron
+#%{_sysconfdir}/cron.daily/hplip_cron
+%{_sysconfdir}/tmpfiles.d/hplip.conf
+%{_unitdir}/hplip-printer@.service
+%{_datadir}/hplip/hplip_clean.sh
 
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}

@@ -5,10 +5,9 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad hplip-3.10.2~/base/utils.py hplip-3.10.2/base/utils.py
---- hplip-3.10.2~/base/utils.py	2010-02-25 00:07:40.000000000 +0100
-+++ hplip-3.10.2/base/utils.py	2010-03-24 09:05:57.660740026 +0100
-@@ -450,18 +450,21 @@
+--- a/base/utils.py
++++ b/base/utils.py
+@@ -550,18 +550,21 @@
  
          # Scan
          self.cmd_scan = ''
@@ -37,10 +36,9 @@ diff -urNad hplip-3.10.2~/base/utils.py hplip-3.10.2/base/utils.py
  
          # Photo Card
          path = which('hp-unload')
-diff -urNad hplip-3.10.2~/ui4/ui_utils.py hplip-3.10.2/ui4/ui_utils.py
---- hplip-3.10.2~/ui4/ui_utils.py	2010-02-25 00:07:15.000000000 +0100
-+++ hplip-3.10.2/ui4/ui_utils.py	2010-03-24 09:07:08.200766557 +0100
-@@ -136,7 +136,7 @@
+--- a/ui4/ui_utils.py
++++ b/ui4/ui_utils.py
+@@ -141,7 +141,7 @@
  
  
      def loadDefaults(self):

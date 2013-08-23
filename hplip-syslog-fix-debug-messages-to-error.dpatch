@@ -1,5 +1,7 @@
---- hplip-3.12.9/prnt/hpcups/CommonDefinitions.h.hplip-syslog-fix-debug-messages-to-error	2012-09-04 14:31:10.000000000 +0200
-+++ hplip-3.12.9/prnt/hpcups/CommonDefinitions.h	2012-09-11 16:45:05.873220203 +0200
+Index: hplip-3.12.9/prnt/hpcups/CommonDefinitions.h
+===================================================================
+--- hplip-3.12.9/prnt/hpcups/CommonDefinitions.h
++++ hplip-3.12.9/prnt/hpcups/CommonDefinitions.h	2012-09-19 23:22:28.839354278 +0200
 @@ -68,7 +68,7 @@
  #define _STRINGIZE(x) #x
  #define STRINGIZE(x) _STRINGIZE(x)

@@ -1,6 +1,6 @@
---- hplip-3.13.2/base/password.py.bero	2013-02-15 21:33:22.979592197 +0100
-+++ hplip-3.13.2/base/password.py	2013-02-15 21:34:34.965736488 +0100
-@@ -270,6 +270,10 @@ class Password(object):
+--- hplip-3.13.8/base/password.py	2013-08-07 06:04:02.000000000 +0000
++++ hplip-3.13.8/base/password.py.tpg	2013-08-19 12:11:46.144834603 +0000
+@@ -271,6 +271,10 @@
  
          if utils.which('kdesu'):
              AuthType, AuthCmd = 'kdesu', 'kdesu -- %s'
@@ -8,6 +8,6 @@
 +            AuthType, AuthCmd = '/usr/lib64/kde4/libexec/kdesu', 'kdesu -- %s'
 +	elif utils.which('/usr/lib/kde4/libexec/kdesu'):
 +            AuthType, AuthCmd = '/usr/lib/kde4/libexec/kdesu', 'kdesu -- %s'
+         elif utils.which('kdesudo'):
+             AuthType, AuthCmd = 'kdesudo', 'kdesudo -- %s'
          elif utils.which('gnomesu'):
-             AuthType, AuthCmd = 'gnomesu', 'gnomesu -c "%s"'
-         elif utils.which('gksu'):

@@ -1,6 +1,13 @@
---- hplip-3.12.6/Makefile.am.87_move_documentation	2012-06-26 18:20:47.000000000 +0200
-+++ hplip-3.12.6/Makefile.am	2012-06-26 18:21:22.582234758 +0200
-@@ -27,11 +27,11 @@ include cups_drv.inc
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 87_move_documentation.dpatch by  <till.kamppeter@gmail.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: place html documentation under hplip-doc/HTML/
+
+@DPATCH@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -29,11 +29,11 @@
  
  if DOC_BUILD
  wwwsrc = doc

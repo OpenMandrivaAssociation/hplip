@@ -1,16 +1,12 @@
---- hplip-3.13.2/configure.in.85_rebuild_python_ui	2013-02-13 17:39:02.000000000 +0100
-+++ hplip-3.13.2/configure.in	2013-02-15 21:30:44.927470758 +0100
-@@ -536,6 +536,8 @@ if test "$hpijs_only_build" = "no" && te
-    AC_MSG_RESULT("using $PYTHONINCLUDEDIR")
-    AC_ARG_VAR(PYTHONINCLUDEDIR, [path to Python.h C header file])
-    AC_CHECK_HEADERS(python$PYTHON_VERSION/Python.h, ,[AC_MSG_ERROR([cannot find python-devel support], 6)])
-+   AC_ARG_VAR([PYUIC4], [PyQT pyuic4 .ui to .py compiler command])
-+   AC_CHECK_TOOLS([PYUIC4], [pyuic4])
- fi
- 
- if test "$hpijs_only_build" = "no" && test "$scan_build" = "yes" && test "$hpcups_only_build" = "no"; then
---- hplip-3.13.2/Makefile.am.85_rebuild_python_ui	2013-02-15 21:30:44.927470758 +0100
-+++ hplip-3.13.2/Makefile.am	2013-02-15 21:31:38.852829118 +0100
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 85_rebuild_python_ui.dpatch by  <till.kamppeter@gmail.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+--- a/Makefile.am
++++ b/Makefile.am
 @@ -3,6 +3,11 @@
  #
  #  (c) 2004-2015 Copyright Hewlett-Packard Development Company, LP
@@ -23,3 +19,14 @@
  INCLUDES = -Iip -Iio/hpmud -Iscan/sane -Iprnt/hpijs -Icommon/
  CFLAGS+= -DCONFDIR=\"$(hplip_confdir)\"
  CXXFLAGS+= -DCONFDIR=\"$(hplip_confdir)\"
+--- a/configure.in
++++ b/configure.in
+@@ -536,6 +536,8 @@
+    AC_MSG_RESULT("using $PYTHONINCLUDEDIR")
+    AC_ARG_VAR(PYTHONINCLUDEDIR, [path to Python.h C header file])
+    AC_CHECK_HEADERS(python$PYTHON_VERSION/Python.h, ,[AC_MSG_ERROR([cannot find python-devel support], 6)])
++   AC_ARG_VAR([PYUIC4], [PyQT pyuic4 .ui to .py compiler command])
++   AC_CHECK_TOOLS([PYUIC4], [pyuic4])
+ fi
+ 
+ if test "$hpijs_only_build" = "no" && test "$scan_build" = "yes" && test "$hpcups_only_build" = "no"; then
