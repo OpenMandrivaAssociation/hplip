@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.8
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -114,6 +114,7 @@ BuildRequires:	pkgconfig(udev)
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
 BuildRequires:	xsane
+Requires(post):	hplip
 %endif
 Requires(post):	systemd
 Requires:	cups
