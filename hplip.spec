@@ -563,6 +563,9 @@ popd
 mkdir -p %{buildroot}%{_localstatedir}/lib/hp/
 touch %{buildroot}%{_localstatedir}/lib/hp/hplip.state
 
+mkdir -p %{buildroot}%{_unitdir}
+mv -f %{buildroot}%{_libdir}/systemd/system/hplip-printer@.service %{buildroot}%{_unitdir}/hplip-printer@.service
+
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
 
@@ -730,7 +733,6 @@ fi
 %{_datadir}/hplip/scan
 %{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
-%{_tmpfilesdir}/%{name}.conf
 %{_localstatedir}/lib/hp/hplip.state
 %dir %attr(0774,root,lp) %{_localstatedir}/log/hp
 %dir %attr(1774,root,lp) %{_localstatedir}/log/hp/tmp
