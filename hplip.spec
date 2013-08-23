@@ -484,7 +484,6 @@ install -m 644 ip/xform.h %{buildroot}%{_includedir}
 mv %{buildroot}%{_docdir}/%{name}-%{version}%{extraversion} %{buildroot}%{_docdir}/%{name}-doc-%{version}%{extraversion}
 
 # Remove static libraries of SANE driver
-rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.so
 rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.la
 rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 
@@ -624,12 +623,11 @@ fi
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
-%dir %{_localstatedir}/run/hplip/
 %dir %{_localstatedir}/lib/hp/
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
-%{_bindir}/hp-config_usb_printer
+#%{_bindir}/hp-config_usb_printer
 %{_bindir}/hp-devicesettings
 %{_bindir}/hp-diagnose_plugin
 %{_bindir}/hp-diagnose_queues
@@ -657,9 +655,9 @@ fi
 %{_sbindir}/hp-setup
 %{_bindir}/hp-testpage
 %{_bindir}/hp-timedate
-%{_bindir}/hp-uninstall
+#%{_bindir}/hp-uninstall
 %{_bindir}/hp-unload
-%{_bindir}/hp-upgrade
+#%{_bindir}/hp-upgrade
 %{_bindir}/hp-wificonfig
 
 %exclude %{_datadir}/hplip/data/models
@@ -685,7 +683,7 @@ fi
 %{_datadir}/hplip/check-plugin.py*
 %{_datadir}/hplip/clean.py*
 %{_datadir}/hplip/colorcal.py*
-%{_datadir}/hplip/config_usb_printer.py*
+#%{_datadir}/hplip/config_usb_printer.py*
 %{_datadir}/hplip/devicesettings.py*
 %{_datadir}/hplip/diagnose_plugin.py*
 %{_datadir}/hplip/diagnose_queues.py*
@@ -713,9 +711,9 @@ fi
 %{_datadir}/hplip/setup.py*
 %{_datadir}/hplip/testpage.py*
 %{_datadir}/hplip/timedate.py*
-%{_datadir}/hplip/uninstall.py*
+#%{_datadir}/hplip/uninstall.py*
 %{_datadir}/hplip/unload.py*
-%{_datadir}/hplip/upgrade.py*
+#%{_datadir}/hplip/upgrade.py*
 %{_datadir}/hplip/wificonfig.py*
 # Directories
 %{_datadir}/hplip/base
@@ -737,7 +735,10 @@ fi
 %dir %attr(0774,root,lp) %{_localstatedir}/log/hp
 %dir %attr(1774,root,lp) %{_localstatedir}/log/hp/tmp
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
-%{_sysconfdir}/cron.daily/hplip_cron
+#%{_sysconfdir}/cron.daily/hplip_cron
+%{_sysconfdir}/tmpfiles.d/hplip.conf
+%{_unitdir}/hplip-printer@.service
+%{_datadir}/hplip/hplip_clean.sh
 
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
