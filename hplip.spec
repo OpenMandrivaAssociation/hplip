@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.8
-Release:	2
+Release:	3
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -495,6 +495,7 @@ rm -f %{buildroot}%{_bindir}/hp-uninstall
 rm -f %{buildroot}%{_datadir}/hplip/upgrade.*
 rm -f %{buildroot}%{_bindir}/hp-upgrade
 rm -f %{buildroot}%{_bindir}/hp-config_usb_printer
+rm -f %{buildroot}/usr/lib/systemd/system/hplip-printer@.service
 rm -f %{buildroot}%{_datadir}/hplip/config_usb_printer.*
 rm -f %{buildroot}%{_libdir}/*.la
 rm -rf %{buildroot}%{python_sitearch}/*.la
@@ -563,9 +564,6 @@ popd
 
 mkdir -p %{buildroot}%{_localstatedir}/lib/hp/
 touch %{buildroot}%{_localstatedir}/lib/hp/hplip.state
-
-mkdir -p %{buildroot}%{_unitdir}
-mv -f %{buildroot}/usr/lib/systemd/system/hplip-printer@.service %{buildroot}%{_unitdir}/hplip-printer@.service
 
 %triggerin -- hplip < 2.7.7
 chkconfig --del hplip
@@ -740,7 +738,6 @@ fi
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
 #%{_sysconfdir}/cron.daily/hplip_cron
 %{_sysconfdir}/tmpfiles.d/hplip.conf
-%{_unitdir}/hplip-printer@.service
 %{_datadir}/hplip/hplip_clean.sh
 
 %files doc
