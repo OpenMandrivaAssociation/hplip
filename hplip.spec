@@ -65,6 +65,7 @@ Patch128:	hplip-wifisetup.patch
 Patch130:	hplip-hpaio-localonly.patch
 Patch132:	hplip-IEEE-1284-4.patch
 Patch133:	hplip-check.patch
+Patch134:	hplip-3.13.8-fix-udev-rules.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
@@ -361,6 +362,7 @@ sed -i.duplex-constraints \
 
 %patch132 -p1 -b .hplip-IEEE-1284-4
 %patch133 -p1 -b .check
+%patch134 -p1 -b .rules-fix
 
 # Debian/Ubuntu patches
 
