@@ -444,6 +444,9 @@ chmod -R u+w .
 touch NEWS README AUTHORS ChangeLog
 autoreconf -ifv
 
+# (tpg) correct major
+sed -i -e "/libnotify.so./s/1/4/" io/hpmud/hp-mkuri.c
+
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
