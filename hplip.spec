@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.8
-Release:	3
+Release:	4
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -63,9 +63,8 @@ Patch128:	hplip-wifisetup.patch
 # fedora patch not necessary. done via sed call
 #Patch129: hplip-makefile-chgrp.patch
 Patch130:	hplip-hpaio-localonly.patch
-Patch131:	hplip-ipp-accessors.patch
-Patch132: hplip-IEEE-1284-4.patch
-Patch133: hplip-check.patch
+Patch132:	hplip-IEEE-1284-4.patch
+Patch133:	hplip-check.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
@@ -95,8 +94,8 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
-
-Patch301: fix-uninitialized-variables.patch
+Patch301:	fix-uninitialized-variables.patch
+Patch302:	deactivate-add_group-function.diff
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -305,7 +304,7 @@ flash memory cards.
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
 
-#patch115 -p1 -b .logdir
+%patch115 -p1 -b .logdir
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
@@ -314,7 +313,7 @@ flash memory cards.
 %patch118 -p1 -b .skip-blank-lines
 
 # Added missing newline to string argument in dbglog() call (RH bug #585275).
-#patch119 -p1 -b .dbglog-newline
+%patch119 -p1 -b .dbglog-newline
 
 # Fix ImageableArea for Laserjet 8150/9000 (RH bug #596298).
 for ppd_file in $(grep '^diff' %{PATCH121} | cut -d " " -f 4);
@@ -341,7 +340,7 @@ done
 %patch125 -p1 -b .dbus-exception
 
 # Catch GError exception when notification showing failed (RH bug #665577).
-#patch126 -p1 -b .notification-exception
+%patch126 -p1 -b .notification-exception
 
 # Applied patch to fix CVE-2010-4267, remote stack overflow
 # vulnerability (RH bug #670252).
@@ -360,9 +359,8 @@ sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
-#patch131 -p1 -b .ipp-accessors
-#patch132 -p1 -b .hplip-IEEE-1284-4
-#patch133 -p1 -b .check
+%patch132 -p1 -b .hplip-IEEE-1284-4
+%patch133 -p1 -b .check
 
 # Debian/Ubuntu patches
 
@@ -426,6 +424,7 @@ sed -i.duplex-constraints \
 %patch228 -p1 -b .hpaio-option-duplex
 
 %patch301 -p0 -b .fix-uninitialized-variables
+%patch302 -p0 -b .deactivate-add_group-function
 
 # Use filter foomatic-rip instead of foomatic-rip-hplip (fix from Mandriva)
 for PPDGZ in ppd/hpijs/*.ppd.gz

@@ -1,18 +1,18 @@
-diff -up hplip-3.12.11/fax/backend/hpfax.py.logdir hplip-3.12.11/fax/backend/hpfax.py
---- hplip-3.12.11/fax/backend/hpfax.py.logdir	2012-11-20 10:55:06.000000000 +0100
-+++ hplip-3.12.11/fax/backend/hpfax.py	2012-11-27 10:09:25.298698254 +0100
+diff -up hplip-3.13.5/fax/backend/hpfax.py.logdir hplip-3.13.5/fax/backend/hpfax.py
+--- hplip-3.13.5/fax/backend/hpfax.py.logdir	2013-05-10 12:09:22.000000000 +0200
++++ hplip-3.13.5/fax/backend/hpfax.py	2013-05-14 14:57:19.458942171 +0200
 @@ -244,7 +244,7 @@ else:
          input_fd = 0
  
      # REVISIT:
 -    tmp_dir = '/var/log/hp/tmp'
-+    tmp_dir = os.environ.get ('TMPDIR', '/var/log/hp/tmp')
++    tmp_dir = "/var/run/hplip"
  
  
      pipe_name = os.path.join(tmp_dir, "hpfax-pipe-%d" % job_id)
-diff -up hplip-3.12.11/logcapture.py.logdir hplip-3.12.11/logcapture.py
---- hplip-3.12.11/logcapture.py.logdir	2012-11-20 10:55:15.000000000 +0100
-+++ hplip-3.12.11/logcapture.py	2012-11-27 10:09:25.298698254 +0100
+diff -up hplip-3.13.5/logcapture.py.logdir hplip-3.13.5/logcapture.py
+--- hplip-3.13.5/logcapture.py.logdir	2013-05-10 12:09:32.000000000 +0200
++++ hplip-3.13.5/logcapture.py	2013-05-14 14:57:19.458942171 +0200
 @@ -39,7 +39,7 @@ CUPS_BACKUP_FILE='/etc/cups/cupsd.conf_o
  LOG_FOLDER_PATH='./'
  LOG_FOLDER_NAME='hplip_troubleshoot_logs'
@@ -22,18 +22,18 @@ diff -up hplip-3.12.11/logcapture.py.logdir hplip-3.12.11/logcapture.py
  ############ enable_log() function ############
  #This function changes CUPS conf log level to debug and restarts CUPS service.
  
-@@ -268,7 +268,7 @@ if os.path.exists('/var/log/cups/error_l
+@@ -266,7 +266,7 @@ if os.path.exists('/var/log/cups/error_l
+     if sts != 0:
        log.error("Failed to capture %s log file."%("/var/log/cups/error_log"))
- 
  
 -File_list, File_list_str = utils.expand_list('/var/log/hp/*.log')
 +File_list, File_list_str = utils.expand_list('%s/*.log'%TMP_DIR)
  if File_list:
      sts,out = utils.run('cp -f %s %s'%(File_list_str, LOG_FILES))
      if sts != 0:
-diff -up hplip-3.12.11/prnt/filters/hplipjs.c.logdir hplip-3.12.11/prnt/filters/hplipjs.c
---- hplip-3.12.11/prnt/filters/hplipjs.c.logdir	2012-11-20 10:50:44.000000000 +0100
-+++ hplip-3.12.11/prnt/filters/hplipjs.c	2012-11-27 10:09:25.299698225 +0100
+diff -up hplip-3.13.5/prnt/filters/hplipjs.c.logdir hplip-3.13.5/prnt/filters/hplipjs.c
+--- hplip-3.13.5/prnt/filters/hplipjs.c.logdir	2013-05-10 12:04:50.000000000 +0200
++++ hplip-3.13.5/prnt/filters/hplipjs.c	2013-05-14 14:57:19.459942157 +0200
 @@ -275,7 +275,8 @@ int main (int argc, char **argv)
      {
          fprintf (stderr, "DEBUG: HPLIPJS: argv[%d] = %s\n", i, argv[i]);
@@ -44,10 +44,10 @@ diff -up hplip-3.12.11/prnt/filters/hplipjs.c.logdir hplip-3.12.11/prnt/filters/
  
      HPFp = fopen (szPSFile, "w");
  #endif
-diff -up hplip-3.12.11/prnt/hpcups/HPCupsFilter.cpp.logdir hplip-3.12.11/prnt/hpcups/HPCupsFilter.cpp
---- hplip-3.12.11/prnt/hpcups/HPCupsFilter.cpp.logdir	2012-11-27 10:09:25.291698453 +0100
-+++ hplip-3.12.11/prnt/hpcups/HPCupsFilter.cpp	2012-11-27 10:13:34.958640524 +0100
-@@ -31,16 +31,24 @@
+diff -up hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp.logdir hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp
+--- hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp.logdir	2013-05-14 14:57:19.450942281 +0200
++++ hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp	2013-05-14 14:59:45.745927028 +0200
+@@ -31,7 +31,9 @@
  \*****************************************************************************/
  
  #include "HPCupsFilter.h"
@@ -57,22 +57,23 @@ diff -up hplip-3.12.11/prnt/hpcups/HPCupsFilter.cpp.logdir hplip-3.12.11/prnt/hp
  #include <sys/wait.h>
  #include <sys/utsname.h>
  #include <time.h>
+@@ -39,10 +41,15 @@
  
  #define HP_FILE_VERSION_STR    "03.09.08.0"
  
 +char *env_tmpdir = NULL;
-+
  static HPCupsFilter    filter;
+ 
  int main (int  argc, char *argv[])
  {
 +    env_tmpdir = getenv ("TMPDIR");
 +    if (!env_tmpdir)
-+	env_tmpdir = "/var/log/hp/tmp";
++        env_tmpdir = "/var/log/hp/tmp";
 +
      openlog("hpcups", LOG_PID,  LOG_DAEMON);
  
      if (argc < 6 || argc > 7) {
-@@ -583,9 +591,10 @@ int HPCupsFilter::processRasterData(cups
+@@ -610,9 +617,10 @@ int HPCupsFilter::processRasterData(cups
      DRIVER_ERROR           err;
      int                    ret_status = 0;
  
@@ -82,11 +83,11 @@ diff -up hplip-3.12.11/prnt/hpcups/HPCupsFilter.cpp.logdir hplip-3.12.11/prnt/hp
 -    strcpy(hpPreProcessedRasterFile, "/var/log/hp/tmp/hplipSwapedPagesXXXXXX");
 +    snprintf(hpPreProcessedRasterFile, sizeof (hpPreProcessedRasterFile),
 +	     "%s/hplipSwapedPagesXXXXXX", env_tmpdir);
-        
+ 
  
      while (cupsRasterReadHeader2(cups_raster, &cups_header))
-@@ -647,13 +656,13 @@ int HPCupsFilter::processRasterData(cups
-         
+@@ -675,14 +683,15 @@ int HPCupsFilter::processRasterData(cups
+         // Save Raster file for Debugging
          if (m_iLogLevel & SAVE_INPUT_RASTERS)
          {
 -            char    szFileName[64];
@@ -96,23 +97,25 @@ diff -up hplip-3.12.11/prnt/hpcups/HPCupsFilter.cpp.logdir hplip-3.12.11/prnt/hp
              if (cups_header.cupsColorSpace == CUPS_CSPACE_RGBW ||
                  cups_header.cupsColorSpace == CUPS_CSPACE_RGB)
              {
--                snprintf (szFileName, sizeof(szFileName), "/var/log/hp/tmp/hpcupsfilterc_%d.bmp", current_page_number);
-+                snprintf (szFileName, sizeof(szFileName), "%s/hpcupsfilterc_%d.bmp", env_tmpdir, current_page_number);
-                 cfp = fopen (szFileName, "w");
-                 chmod (szFileName, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-             }
-@@ -661,7 +670,7 @@ int HPCupsFilter::processRasterData(cups
+ 
+-                snprintf (szFileName, sizeof(szFileName), "/var/log/hp/tmp/hpcupsfilterc_bmp_%d_XXXXXX", current_page_number);
++                snprintf (szFileName, sizeof(szFileName), "%s/hpcupsfilterc_bmp_%d_XXXXXX", env_tmpdir, current_page_number);
++
+                 createTempFile(szFileName, &cfp);
+                 if (cfp)
+                 {
+@@ -693,7 +702,7 @@ int HPCupsFilter::processRasterData(cups
              if (cups_header.cupsColorSpace == CUPS_CSPACE_RGBW ||
                  cups_header.cupsColorSpace == CUPS_CSPACE_K)
              {
--                snprintf (szFileName, sizeof(szFileName), "/var/log/hp/tmp/hpcupsfilterk_%d.bmp", current_page_number);
-+                snprintf (szFileName, sizeof(szFileName), "%s/hpcupsfilterk_%d.bmp", env_tmpdir, current_page_number);
-                 kfp = fopen (szFileName, "w");
-                 chmod (szFileName, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-             }
-diff -up hplip-3.12.11/prnt/hpcups/LJZjStream.cpp.logdir hplip-3.12.11/prnt/hpcups/LJZjStream.cpp
---- hplip-3.12.11/prnt/hpcups/LJZjStream.cpp.logdir	2012-11-20 10:49:20.000000000 +0100
-+++ hplip-3.12.11/prnt/hpcups/LJZjStream.cpp	2012-11-27 10:16:24.878547224 +0100
+-                snprintf (szFileName, sizeof(szFileName), "/var/log/hp/tmp/hpcupsfilterk_bmp_%d_XXXXXX", current_page_number);
++                snprintf (szFileName, sizeof(szFileName), "%s/hpcupsfilterk_bmp_%d_XXXXXX", env_tmpdir, current_page_number);
+                 createTempFile(szFileName, &kfp);
+                 if (kfp)
+                 {
+diff -up hplip-3.13.5/prnt/hpcups/LJZjStream.cpp.logdir hplip-3.13.5/prnt/hpcups/LJZjStream.cpp
+--- hplip-3.13.5/prnt/hpcups/LJZjStream.cpp.logdir	2013-05-10 12:03:36.000000000 +0200
++++ hplip-3.13.5/prnt/hpcups/LJZjStream.cpp	2013-05-14 14:57:19.460942143 +0200
 @@ -42,9 +42,12 @@
  #include "LJZjStream.h"
  #include "Utils.h"
@@ -141,13 +144,13 @@ diff -up hplip-3.12.11/prnt/hpcups/LJZjStream.cpp.logdir hplip-3.12.11/prnt/hpcu
  	
  	if (1 != m_pJA->pre_process_raster || !firstpage_cups_header->Duplex){		                                  
  		return  NO_ERROR;                                  
-diff -up hplip-3.12.11/prnt/hpcups/SystemServices.cpp.logdir hplip-3.12.11/prnt/hpcups/SystemServices.cpp
---- hplip-3.12.11/prnt/hpcups/SystemServices.cpp.logdir	2012-11-20 10:49:20.000000000 +0100
-+++ hplip-3.12.11/prnt/hpcups/SystemServices.cpp	2012-11-27 10:09:25.300698197 +0100
-@@ -30,14 +30,17 @@
- 
+diff -up hplip-3.13.5/prnt/hpcups/SystemServices.cpp.logdir hplip-3.13.5/prnt/hpcups/SystemServices.cpp
+--- hplip-3.13.5/prnt/hpcups/SystemServices.cpp.logdir	2013-05-10 12:03:36.000000000 +0200
++++ hplip-3.13.5/prnt/hpcups/SystemServices.cpp	2013-05-14 14:57:19.460942143 +0200
+@@ -31,14 +31,17 @@
  #include "CommonDefinitions.h"
  #include "SystemServices.h"
+ #include "utils.h"
 +#include <limits.h>
 +
 +extern char *env_tmpdir;
@@ -158,15 +161,15 @@ diff -up hplip-3.12.11/prnt/hpcups/SystemServices.cpp.logdir hplip-3.12.11/prnt/
      if (iLogLevel & SAVE_PCL_FILE)
      {
 -        char    fname[64];
--	sprintf(fname, "%s/hpcups_job%d.out", "/var/log/hp/tmp",job_id);
+-        sprintf(fname, "%s/hpcups_out_job%d_XXXXXX", "/var/log/hp/tmp",job_id);
 +        char    fname[PATH_MAX];
-+	sprintf(fname, "%s/hpcups_job%d.out", env_tmpdir, job_id);
-         m_fp = fopen(fname, "w");
-         chmod(fname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-     }
-diff -up hplip-3.12.11/prnt/hpijs/hpcupsfax.cpp.logdir hplip-3.12.11/prnt/hpijs/hpcupsfax.cpp
---- hplip-3.12.11/prnt/hpijs/hpcupsfax.cpp.logdir	2012-11-20 10:50:48.000000000 +0100
-+++ hplip-3.12.11/prnt/hpijs/hpcupsfax.cpp	2012-11-27 10:09:25.300698197 +0100
++        sprintf(fname, "%s/hpcups_out_job%d_XXXXXX", env_tmpdir, job_id);
+         
+         createTempFile(fname, &m_fp);
+         if (m_fp)
+diff -up hplip-3.13.5/prnt/hpijs/hpcupsfax.cpp.logdir hplip-3.13.5/prnt/hpijs/hpcupsfax.cpp
+--- hplip-3.13.5/prnt/hpijs/hpcupsfax.cpp.logdir	2013-05-10 12:04:54.000000000 +0200
++++ hplip-3.13.5/prnt/hpijs/hpcupsfax.cpp	2013-05-14 14:57:19.461942130 +0200
 @@ -29,6 +29,7 @@
      POSSIBILITY OF SUCH DAMAGE.
  \*****************************************************************************/
@@ -175,7 +178,7 @@ diff -up hplip-3.12.11/prnt/hpijs/hpcupsfax.cpp.logdir hplip-3.12.11/prnt/hpijs/
  #include <sys/stat.h>
  #include <stdio.h>
  #include <stdlib.h>
-@@ -66,6 +67,7 @@ uint16_t (*convert_endian_s)(uint16_t);
+@@ -67,6 +68,7 @@ uint16_t (*convert_endian_s)(uint16_t);
  
  static int iLogLevel = 1;
  char hpFileName[64] ;
@@ -183,19 +186,20 @@ diff -up hplip-3.12.11/prnt/hpijs/hpcupsfax.cpp.logdir hplip-3.12.11/prnt/hpijs/
  
  #define TIFF_HDR_SIZE 8
  #define LITTLE_ENDIAN_MODE I
-@@ -439,9 +441,9 @@ int ProcessTiffData(int fromFD, int toFD
+@@ -440,10 +442,10 @@ int ProcessTiffData(int fromFD, int toFD
      int bytes_written = 0;
      int ret_status = 0;
      int bytes_read = 0;
 -    char hpTiffFileName[64];
 +    char hpTiffFileName[PATH_MAX];
      long input_file_size = 0;
+     FILE* pFilePtrFax;
 -    snprintf(hpTiffFileName,sizeof(hpTiffFileName), "%s/hpliptiffXXXXXX","/var/log/hp/tmp");
 +    snprintf(hpTiffFileName,sizeof(hpTiffFileName), "%s/hpliptiffXXXXXX",env_tmpdir);
  
  
-     fdTiff = mkstemp (hpTiffFileName);
-@@ -656,6 +658,10 @@ int main (int argc, char **argv)
+ //    fdTiff = mkstemp (hpTiffFileName);
+@@ -653,6 +655,10 @@ int main (int argc, char **argv)
  
      /*********** PROLOGUE ***********/
  
@@ -206,18 +210,18 @@ diff -up hplip-3.12.11/prnt/hpijs/hpcupsfax.cpp.logdir hplip-3.12.11/prnt/hpijs/
      GetLogLevel();
      openlog("hpcupsfax", LOG_PID,  LOG_DAEMON);
  
-@@ -679,7 +685,7 @@ int main (int argc, char **argv)
+@@ -676,7 +682,7 @@ int main (int argc, char **argv)
           i++;
      }
  
 -    snprintf(hpFileName,sizeof(hpFileName),"%s/hplipfaxLog_XXXXXX","/var/log/hp/tmp");
 +    snprintf(hpFileName,sizeof(hpFileName),"%s/hplipfaxLog_XXXXXX",env_tmpdir);
  
-     fdFax = mkstemp (hpFileName);
-     if (fdFax < 0)
-diff -up hplip-3.12.11/prnt/hpijs/hpijs.cpp.logdir hplip-3.12.11/prnt/hpijs/hpijs.cpp
---- hplip-3.12.11/prnt/hpijs/hpijs.cpp.logdir	2012-11-27 10:09:25.288698537 +0100
-+++ hplip-3.12.11/prnt/hpijs/hpijs.cpp	2012-11-27 10:09:25.301698169 +0100
+ //    fdFax = mkstemp (hpFileName);
+     fdFax = createTempFile(hpFileName, &pFilePtrFax);
+diff -up hplip-3.13.5/prnt/hpijs/hpijs.cpp.logdir hplip-3.13.5/prnt/hpijs/hpijs.cpp
+--- hplip-3.13.5/prnt/hpijs/hpijs.cpp.logdir	2013-05-14 14:57:19.448942309 +0200
++++ hplip-3.13.5/prnt/hpijs/hpijs.cpp	2013-05-14 14:57:19.461942130 +0200
 @@ -29,6 +29,7 @@
      POSSIBILITY OF SUCH DAMAGE.
  \*****************************************************************************/
@@ -226,27 +230,28 @@ diff -up hplip-3.12.11/prnt/hpijs/hpijs.cpp.logdir hplip-3.12.11/prnt/hpijs/hpij
  #include <sys/stat.h>
  #include <stdio.h>
  #include <stdlib.h>
-@@ -43,6 +44,8 @@
- #include "hpijs.h"
+@@ -44,6 +45,8 @@
  #include "services.h"
+ #include "utils.h"
  
 +static char *env_tmpdir;
 +
  extern void SendDbusMessage (const char *dev, const char *printer, int code, 
                               const char *username, const int jobid, const char *title);
  
-@@ -96,8 +99,8 @@ void setLogLevel(UXServices *pSS)
+@@ -97,8 +100,9 @@ void setLogLevel(UXServices *pSS)
  
      if (pSS->m_iLogLevel & SAVE_PCL_FILE)
      {
 -        char    szFileName[64];
--	snprintf (szFileName,sizeof(szFileName), "/var/log/hp/tmp/hpijs_%d.out", getpid());
+-        snprintf (szFileName,sizeof(szFileName), "/var/log/hp/tmp/hpijs_%d_XXXXXX", getpid());
 +        char    szFileName[PATH_MAX];
-+	snprintf (szFileName,sizeof(szFileName), "%s/hpijs_%d.out", env_tmpdir, getpid());
++        snprintf (szFileName,sizeof(szFileName), "%s/hpijs_%d_XXXXXX", env_tmpdir, getpid());
++
+         createTempFile(szFileName, &pSS->outfp);
  
- 	pSS->outfp = fopen (szFileName, "w");
- 	if (pSS->outfp)
-@@ -588,6 +591,10 @@ int main (int argc, char *argv[], char *
+ //	pSS->outfp = fopen (szFileName, "w");
+@@ -590,6 +594,10 @@ int main (int argc, char *argv[], char *
     int ret, n, i, kn=0, width, k_width;
     int low_marker = 0;
  
@@ -257,7 +262,7 @@ diff -up hplip-3.12.11/prnt/hpijs/hpijs.cpp.logdir hplip-3.12.11/prnt/hpijs/hpij
     openlog("hpijs", LOG_PID,  LOG_DAEMON);
  
     if (argc > 1)
-@@ -627,8 +634,8 @@ int main (int argc, char *argv[], char *
+@@ -629,8 +637,8 @@ int main (int argc, char *argv[], char *
     setLogLevel(pSS);
  
  #ifdef CAPTURE
@@ -268,9 +273,9 @@ diff -up hplip-3.12.11/prnt/hpijs/hpijs.cpp.logdir hplip-3.12.11/prnt/hpijs/hpij
     if ((pSS->InitScript(szCapOutFile, TRUE)) != NO_ERROR)
        BUG("unable to init capture");
  #endif
-diff -up hplip-3.12.11/prnt/hpijs/hpijsfax.cpp.logdir hplip-3.12.11/prnt/hpijs/hpijsfax.cpp
---- hplip-3.12.11/prnt/hpijs/hpijsfax.cpp.logdir	2012-11-20 10:50:48.000000000 +0100
-+++ hplip-3.12.11/prnt/hpijs/hpijsfax.cpp	2012-11-27 10:09:25.301698169 +0100
+diff -up hplip-3.13.5/prnt/hpijs/hpijsfax.cpp.logdir hplip-3.13.5/prnt/hpijs/hpijsfax.cpp
+--- hplip-3.13.5/prnt/hpijs/hpijsfax.cpp.logdir	2013-05-10 12:04:54.000000000 +0200
++++ hplip-3.13.5/prnt/hpijs/hpijsfax.cpp	2013-05-14 14:57:19.462942116 +0200
 @@ -31,6 +31,7 @@
  
  #ifdef HAVE_LIBHPIP
@@ -279,9 +284,9 @@ diff -up hplip-3.12.11/prnt/hpijs/hpijsfax.cpp.logdir hplip-3.12.11/prnt/hpijs/h
  #include <sys/stat.h>
  #include <stdio.h>
  #include <stdlib.h>
-@@ -270,14 +271,15 @@ int hpijsFaxServer (int argc, char **arg
- 	IP_IMAGE_TRAITS	traits;
+@@ -272,14 +273,15 @@ int hpijsFaxServer (int argc, char **arg
  	IP_HANDLE		hJob;
+ 	 FILE *pFilePtrFax;
  
 -	char					hpFileName[64]; 
 +	char					hpFileName[PATH_MAX]; 
