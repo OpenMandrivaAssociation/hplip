@@ -5,7 +5,7 @@ diff -Naur hplip-3.13.8/data/rules/56-hpmud.rules hplip-3.13.8.tpg/data/rules/56
  # HPLIP udev rules file. Notify console user if plugin support is required for this device.
  
 -ACTION!="add", GOTO="hpmud_rules_end"
-+ACTION="remove", GOTO="hpmud_rules_end"
++ACTION=="remove", GOTO="hpmud_rules_end"
  SUBSYSTEM=="ppdev", OWNER="root", GROUP="lp", MODE="0660"
  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GOTO="hpmud_usb_rules"
  
@@ -16,7 +16,7 @@ diff -Naur hplip-3.13.8/data/rules/56-hpmud_sysfs.rules hplip-3.13.8.tpg/data/ru
  # HPLIP udev rules file. Notify console user if plugin support is required for this device.
  
 -ACTION!="add", GOTO="hpmud_rules_end"
-+ACTION="remove", GOTO="hpmud_rules_end"
++ACTION=="remove", GOTO="hpmud_rules_end"
  SUBSYSTEM=="ppdev", OWNER="root", GROUP="lp", MODE="0660"
  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GOTO="hpmud_usb_rules"
  
