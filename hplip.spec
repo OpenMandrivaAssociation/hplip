@@ -17,12 +17,12 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.13.8
-Release:	6
+Version:	3.13.9
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
-Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source0:	http://downloads.sourceforge.net/project/hplip/hplip/%{version}%{extraversion}/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
 Source2:	%{name}-tmpfiles.conf
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
