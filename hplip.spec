@@ -39,7 +39,6 @@ Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
-Patch104:	hplip-no-asm.patch
 Patch106:	hplip-mucks-with-spooldir.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
@@ -277,9 +276,6 @@ flash memory cards.
 
 # Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
 %patch103 -p1 -b .ui-optional
-
-# Make sure to avoid handwritten asm.
-%patch104 -p1 -b .no-asm
 
 # Stopped hpcups pointlessly trying to read spool files
 # directly (RH bug #552572).
