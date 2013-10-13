@@ -45,7 +45,6 @@ Patch109:	hplip-snmp-quirks.patch
 Patch110:	hplip-discovery-method.patch
 Patch111:	hplip-hpijs-marker-supply.patch
 Patch112:	hplip-clear-old-state-reasons.patch
-Patch113:	hplip-systray-dbus-exception.patch
 Patch114:	hplip-hpcups-sigpipe.patch
 Patch115:	hplip-logdir.patch
 Patch116:	hplip-bad-low-ink-warning.patch
@@ -295,8 +294,6 @@ flash memory cards.
 
 # Clear old printer-state-reasons we used to manage (RH bug #510926).
 %patch112 -p1 -b .clear-old-state-reasons
-
-%patch113 -p1 -b .systray-dbus-exception
 
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
