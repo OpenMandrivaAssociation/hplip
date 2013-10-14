@@ -87,22 +87,22 @@ Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
 Patch302:	deactivate-add_group-function.diff
 
-#BuildRequires:	desktop-file-utils
-#BuildRequires:	imagemagick
-#BuildRequires:	polkit
-#BuildRequires:	python-sip >= 4.1.1
-#BuildRequires:	net-snmp-devel
-#BuildRequires:	cups-devel
-#BuildRequires:	jpeg-devel
-#BuildRequires:	pkgconfig(dbus-1)
-#BuildRequires:	pkgconfig(libgphoto2)
-#BuildRequires:	pkgconfig(libusb)
-#BuildRequires:	pkgconfig(libv4l1)
-#BuildRequires:	pkgconfig(python)
-#BuildRequires:	pkgconfig(udev)
+BuildRequires:	desktop-file-utils
+BuildRequires:	imagemagick
+BuildRequires:	polkit
+BuildRequires:	python-sip >= 4.1.1
+BuildRequires:	net-snmp-devel
+BuildRequires:	cups-devel
+BuildRequires:	jpeg-devel
+BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(libgphoto2)
+BuildRequires:	pkgconfig(libusb)
+BuildRequires:	pkgconfig(libv4l1)
+BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(udev)
 %if %{sane_backend}
-#BuildRequires:	pkgconfig(sane-backends)
-#BuildRequires:	xsane
+BuildRequires:	pkgconfig(sane-backends)
+BuildRequires:	xsane
 Requires(post):	hplip
 %endif
 Requires(post):	systemd
@@ -131,7 +131,7 @@ Requires:	wget
 Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
 Requires:	%{libhpip} = %{version}
-#py_requires -d
+%py_requires -d
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 
