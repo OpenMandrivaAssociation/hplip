@@ -131,7 +131,6 @@ Requires:	wget
 Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
 Requires:	%{libhpip} = %{version}
-%py_requires -d
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 
