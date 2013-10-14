@@ -310,9 +310,6 @@ do
   gzip -n ${ppd_file#*/}
 done
 
-# Fixed traceback on error condition in device.py (RH bug #628125).
-%patch122 -p1 -b .raw_deviceID-traceback
-
 # Avoid UnicodeDecodeError in printsettingstoolbox.py (RH bug #645739).
 %patch123 -p1 -b .UnicodeDecodeError
 
