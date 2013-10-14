@@ -48,7 +48,6 @@ Patch112:	hplip-clear-old-state-reasons.patch
 Patch114:	hplip-hpcups-sigpipe.patch
 Patch115:	hplip-logdir.patch
 Patch116:	hplip-bad-low-ink-warning.patch
-Patch118:	hplip-skip-blank-lines.patch
 Patch119:	hplip-dbglog-newline.patch
 Patch121:	hplip-ppd-ImageableArea.patch
 Patch122:	hplip-raw_deviceID-traceback.patch
@@ -300,9 +299,6 @@ flash memory cards.
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
-
-# Hpcups (ljcolor) was putting black lines where should be blank lines (RH bug #579461).
-%patch118 -p1 -b .skip-blank-lines
 
 # Added missing newline to string argument in dbglog() call (RH bug #585275).
 %patch119 -p1 -b .dbglog-newline
