@@ -17,12 +17,12 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.13.8
-Release:	6
+Version:	3.13.9
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
-Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source0:	http://downloads.sourceforge.net/project/hplip/hplip/%{version}%{extraversion}/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
 Source2:	%{name}-tmpfiles.conf
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
@@ -39,27 +39,20 @@ Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
-Patch104:	hplip-no-asm.patch
 Patch106:	hplip-mucks-with-spooldir.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
 Patch110:	hplip-discovery-method.patch
 Patch111:	hplip-hpijs-marker-supply.patch
 Patch112:	hplip-clear-old-state-reasons.patch
-Patch113:	hplip-systray-dbus-exception.patch
 Patch114:	hplip-hpcups-sigpipe.patch
 Patch115:	hplip-logdir.patch
 Patch116:	hplip-bad-low-ink-warning.patch
-Patch118:	hplip-skip-blank-lines.patch
-Patch119:	hplip-dbglog-newline.patch
 Patch121:	hplip-ppd-ImageableArea.patch
 Patch122:	hplip-raw_deviceID-traceback.patch
-Patch123:	hplip-UnicodeDecodeError.patch
 Patch124:	hplip-3.12.9-addprinter.patch
 Patch125:	hplip-dbus-exception.patch
-Patch126:	hplip-notification-exception.patch
 Patch127:	hplip-CVE-2010-4267.patch
-Patch128:	hplip-wifisetup.patch
 # fedora patch not necessary. done via sed call
 #Patch129: hplip-makefile-chgrp.patch
 Patch130:	hplip-hpaio-localonly.patch
@@ -70,7 +63,6 @@ Patch134:	hplip-3.13.8-fix-udev-rules.patch
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
 Patch201:	01_rss.dpatch
-Patch202:	10_shebang_fixes.dpatch
 Patch203:	14_charsign_fixes.dpatch
 Patch204:	85_rebuild_python_ui.dpatch
 Patch205:	87_move_documentation.dpatch
@@ -80,11 +72,9 @@ Patch207:	pjl-duplex-binding.dpatch
 Patch208:	mga-kde4-kdesudo-support.dpatch
 Patch209:	hp-check-groups.dpatch
 #Patch210:	hp-check_debian.dpatch
-Patch211:	hp-setup-prompt-for-custom-PPD.dpatch
 Patch213:	hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value.dpatch
 #Patch214:	ubuntu-hp-mkuri-notification-text.dpatch
 Patch215:	simple-scan-as-default.dpatch
-Patch216:	make-commafy-correctly-work-with-python-2.dpatch
 # (doktor5000) rediff original debian patch for hplip 3.11.10
 Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
 Patch219:	try_libhpmud.so.0.dpatch
@@ -95,7 +85,6 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
-Patch301:	fix-uninitialized-variables.patch
 Patch302:	deactivate-add_group-function.diff
 
 BuildRequires:	desktop-file-utils
@@ -278,9 +267,6 @@ flash memory cards.
 # Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
 %patch103 -p1 -b .ui-optional
 
-# Make sure to avoid handwritten asm.
-%patch104 -p1 -b .no-asm
-
 # Stopped hpcups pointlessly trying to read spool files
 # directly (RH bug #552572).
 %patch106 -p1 -b .mucks-with-spooldir
@@ -300,21 +286,11 @@ flash memory cards.
 # Clear old printer-state-reasons we used to manage (RH bug #510926).
 %patch112 -p1 -b .clear-old-state-reasons
 
-%patch113 -p1 -b .systray-dbus-exception
-
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
 
-%patch115 -p1 -b .logdir
-
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
-
-# Hpcups (ljcolor) was putting black lines where should be blank lines (RH bug #579461).
-%patch118 -p1 -b .skip-blank-lines
-
-# Added missing newline to string argument in dbglog() call (RH bug #585275).
-%patch119 -p1 -b .dbglog-newline
 
 # Fix ImageableArea for Laserjet 8150/9000 (RH bug #596298).
 for ppd_file in $(grep '^diff' %{PATCH121} | cut -d " " -f 4);
@@ -327,28 +303,16 @@ do
   gzip -n ${ppd_file#*/}
 done
 
-# Fixed traceback on error condition in device.py (RH bug #628125).
-%patch122 -p1 -b .raw_deviceID-traceback
-
-# Avoid UnicodeDecodeError in printsettingstoolbox.py (RH bug #645739).
-%patch123 -p1 -b .UnicodeDecodeError
-
 # Call cupsSetUser in cupsext's addPrinter method before connecting so
 # that we can get an authentication callback (RH bug #538352).
 %patch124 -p1 -b .addprinter
 
 # Catch D-Bus exceptions in fax dialog (RH bug #645316).
-%patch125 -p1 -b .dbus-exception
-
-# Catch GError exception when notification showing failed (RH bug #665577).
-%patch126 -p1 -b .notification-exception
+#patch125 -p1 -b .dbus-exception
 
 # Applied patch to fix CVE-2010-4267, remote stack overflow
 # vulnerability (RH bug #670252).
 #patch127 -p1 -b .CVE-2010-4267
-
-# Avoid KeyError in ui4/wifisetupdialog.py (RH bug #680939).
-%patch128 -p1 -b .wifisetup
 
 # Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
 sed -i '/chgrp/d' Makefile.am
@@ -360,7 +324,7 @@ sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
-%patch132 -p1 -b .hplip-IEEE-1284-4
+#patch132 -p1 -b .hplip-IEEE-1284-4
 %patch133 -p1 -b .check
 %patch134 -p1 -b .rules-fix
 
@@ -369,9 +333,6 @@ sed -i.duplex-constraints \
 # This patch tries to make sure that black is printed with just
 # the black pen, if the printer supports it
 %patch201 -p1 -b .01_rss
-
-# shebang fixes
-%patch202 -p1 -b .10_shebang_fixes
 
 # code cleanup related to char signedness
 %patch203 -p1 -b .14_charsign
@@ -396,15 +357,11 @@ sed -i.duplex-constraints \
 # https://bugs.launchpad.net/debian/+source/hplip/+bug/530746
 %patch209 -p1 -b .hp-check-groups
 
-%patch211 -p1 -b .hp-setup-prompt-for-custom-PPDs
-
 %patch213 -p1 -b .hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value
 
 # disable for now, as this changes default hplip behavior
 # and change in default scanning application should be decided by a poll first
 #%patch215 -p1 -b .simple-scan-as-default
-
-%patch216 -p1 -b .make-commafy-correctly-work-with-python-2
 
 #patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
 
@@ -425,7 +382,6 @@ sed -i.duplex-constraints \
 
 %patch228 -p1 -b .hpaio-option-duplex
 
-%patch301 -p0 -b .fix-uninitialized-variables
 %patch302 -p0 -b .deactivate-add_group-function
 
 # Use filter foomatic-rip instead of foomatic-rip-hplip (fix from Mandriva)
@@ -674,7 +630,7 @@ fi
 # Note: this must be /usr/lib not %{_libdir}, since that's the
 # CUPS serverbin directory.
 %attr(0755,root,root) %{_prefix}/lib/cups/backend/hp*
-%{_prefix}/lib/cups/filter/hplipjs
+#%{_prefix}/lib/cups/filter/hplipjs
 %{_prefix}/lib/cups/filter/hpcups
 %{_prefix}/lib/cups/filter/hpcupsfax
 %{_prefix}/lib/cups/filter/hpps
