@@ -52,9 +52,7 @@ Patch121:	hplip-ppd-ImageableArea.patch
 Patch122:	hplip-raw_deviceID-traceback.patch
 Patch124:	hplip-3.12.9-addprinter.patch
 Patch125:	hplip-dbus-exception.patch
-Patch126:	hplip-notification-exception.patch
 Patch127:	hplip-CVE-2010-4267.patch
-Patch128:	hplip-wifisetup.patch
 # fedora patch not necessary. done via sed call
 #Patch129: hplip-makefile-chgrp.patch
 Patch130:	hplip-hpaio-localonly.patch
@@ -65,7 +63,6 @@ Patch134:	hplip-3.13.8-fix-udev-rules.patch
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
 Patch201:	01_rss.dpatch
-Patch202:	10_shebang_fixes.dpatch
 Patch203:	14_charsign_fixes.dpatch
 Patch204:	85_rebuild_python_ui.dpatch
 Patch205:	87_move_documentation.dpatch
@@ -75,11 +72,9 @@ Patch207:	pjl-duplex-binding.dpatch
 Patch208:	mga-kde4-kdesudo-support.dpatch
 Patch209:	hp-check-groups.dpatch
 #Patch210:	hp-check_debian.dpatch
-Patch211:	hp-setup-prompt-for-custom-PPD.dpatch
 Patch213:	hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value.dpatch
 #Patch214:	ubuntu-hp-mkuri-notification-text.dpatch
 Patch215:	simple-scan-as-default.dpatch
-Patch216:	make-commafy-correctly-work-with-python-2.dpatch
 # (doktor5000) rediff original debian patch for hplip 3.11.10
 Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
 Patch219:	try_libhpmud.so.0.dpatch
@@ -90,25 +85,24 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
-Patch301:	fix-uninitialized-variables.patch
 Patch302:	deactivate-add_group-function.diff
 
-BuildRequires:	desktop-file-utils
-BuildRequires:	imagemagick
-BuildRequires:	polkit
-BuildRequires:	python-sip >= 4.1.1
-BuildRequires:	net-snmp-devel
-BuildRequires:	cups-devel
-BuildRequires:	jpeg-devel
-BuildRequires:	pkgconfig(dbus-1)
-BuildRequires:	pkgconfig(libgphoto2)
-BuildRequires:	pkgconfig(libusb)
-BuildRequires:	pkgconfig(libv4l1)
-BuildRequires:	pkgconfig(python)
-BuildRequires:	pkgconfig(udev)
+#BuildRequires:	desktop-file-utils
+#BuildRequires:	imagemagick
+#BuildRequires:	polkit
+#BuildRequires:	python-sip >= 4.1.1
+#BuildRequires:	net-snmp-devel
+#BuildRequires:	cups-devel
+#BuildRequires:	jpeg-devel
+#BuildRequires:	pkgconfig(dbus-1)
+#BuildRequires:	pkgconfig(libgphoto2)
+#BuildRequires:	pkgconfig(libusb)
+#BuildRequires:	pkgconfig(libv4l1)
+#BuildRequires:	pkgconfig(python)
+#BuildRequires:	pkgconfig(udev)
 %if %{sane_backend}
-BuildRequires:	pkgconfig(sane-backends)
-BuildRequires:	xsane
+#BuildRequires:	pkgconfig(sane-backends)
+#BuildRequires:	xsane
 Requires(post):	hplip
 %endif
 Requires(post):	systemd
@@ -137,7 +131,7 @@ Requires:	wget
 Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
 Requires:	%{libhpip} = %{version}
-%py_requires -d
+#py_requires -d
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 
@@ -314,17 +308,11 @@ done
 %patch124 -p1 -b .addprinter
 
 # Catch D-Bus exceptions in fax dialog (RH bug #645316).
-%patch125 -p1 -b .dbus-exception
-
-# Catch GError exception when notification showing failed (RH bug #665577).
-%patch126 -p1 -b .notification-exception
+#patch125 -p1 -b .dbus-exception
 
 # Applied patch to fix CVE-2010-4267, remote stack overflow
 # vulnerability (RH bug #670252).
 #patch127 -p1 -b .CVE-2010-4267
-
-# Avoid KeyError in ui4/wifisetupdialog.py (RH bug #680939).
-%patch128 -p1 -b .wifisetup
 
 # Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
 sed -i '/chgrp/d' Makefile.am
@@ -336,7 +324,7 @@ sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
-%patch132 -p1 -b .hplip-IEEE-1284-4
+#patch132 -p1 -b .hplip-IEEE-1284-4
 %patch133 -p1 -b .check
 %patch134 -p1 -b .rules-fix
 
@@ -345,9 +333,6 @@ sed -i.duplex-constraints \
 # This patch tries to make sure that black is printed with just
 # the black pen, if the printer supports it
 %patch201 -p1 -b .01_rss
-
-# shebang fixes
-%patch202 -p1 -b .10_shebang_fixes
 
 # code cleanup related to char signedness
 %patch203 -p1 -b .14_charsign
@@ -372,15 +357,11 @@ sed -i.duplex-constraints \
 # https://bugs.launchpad.net/debian/+source/hplip/+bug/530746
 %patch209 -p1 -b .hp-check-groups
 
-%patch211 -p1 -b .hp-setup-prompt-for-custom-PPDs
-
 %patch213 -p1 -b .hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value
 
 # disable for now, as this changes default hplip behavior
 # and change in default scanning application should be decided by a poll first
 #%patch215 -p1 -b .simple-scan-as-default
-
-%patch216 -p1 -b .make-commafy-correctly-work-with-python-2
 
 #patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
 
@@ -401,7 +382,6 @@ sed -i.duplex-constraints \
 
 %patch228 -p1 -b .hpaio-option-duplex
 
-%patch301 -p0 -b .fix-uninitialized-variables
 %patch302 -p0 -b .deactivate-add_group-function
 
 # Use filter foomatic-rip instead of foomatic-rip-hplip (fix from Mandriva)
