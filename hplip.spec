@@ -50,7 +50,6 @@ Patch115:	hplip-logdir.patch
 Patch116:	hplip-bad-low-ink-warning.patch
 Patch121:	hplip-ppd-ImageableArea.patch
 Patch122:	hplip-raw_deviceID-traceback.patch
-Patch123:	hplip-UnicodeDecodeError.patch
 Patch124:	hplip-3.12.9-addprinter.patch
 Patch125:	hplip-dbus-exception.patch
 Patch126:	hplip-notification-exception.patch
@@ -309,9 +308,6 @@ for ppd_file in $(grep '^diff' %{PATCH121} | cut -d " " -f 4);
 do
   gzip -n ${ppd_file#*/}
 done
-
-# Avoid UnicodeDecodeError in printsettingstoolbox.py (RH bug #645739).
-%patch123 -p1 -b .UnicodeDecodeError
 
 # Call cupsSetUser in cupsext's addPrinter method before connecting so
 # that we can get an authentication callback (RH bug #538352).
