@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.9
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -39,6 +39,7 @@ Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
+Patch104:	hplip-no-asm.patch
 Patch106:	hplip-mucks-with-spooldir.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
@@ -266,6 +267,8 @@ flash memory cards.
 # Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
 %patch103 -p1 -b .ui-optional
 
+%patch104 -p1 -b .no-asm
+
 # Stopped hpcups pointlessly trying to read spool files
 # directly (RH bug #552572).
 %patch106 -p1 -b .mucks-with-spooldir
@@ -287,6 +290,8 @@ flash memory cards.
 
 # Avoid busy loop in hpcups when backend has exited (RH bug #525944).
 %patch114 -p1 -b .hpcups-sigpipe
+
+%patch115 -p1 -b .logdir
 
 # Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
 %patch116 -p1 -b .bad-low-ink-warning
