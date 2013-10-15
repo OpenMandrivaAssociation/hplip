@@ -31,19 +31,6 @@ diff -up hplip-3.13.5/logcapture.py.logdir hplip-3.13.5/logcapture.py
  if File_list:
      sts,out = utils.run('cp -f %s %s'%(File_list_str, LOG_FILES))
      if sts != 0:
-diff -up hplip-3.13.5/prnt/filters/hplipjs.c.logdir hplip-3.13.5/prnt/filters/hplipjs.c
---- hplip-3.13.5/prnt/filters/hplipjs.c.logdir	2013-05-10 12:04:50.000000000 +0200
-+++ hplip-3.13.5/prnt/filters/hplipjs.c	2013-05-14 14:57:19.459942157 +0200
-@@ -275,7 +275,8 @@ int main (int argc, char **argv)
-     {
-         fprintf (stderr, "DEBUG: HPLIPJS: argv[%d] = %s\n", i, argv[i]);
-     }
--    snprintf(szPSFile, sizeof(szPSFile), "%s/output.ps","/var/log/hp/tmp");
-+    snprintf(szPSFile, sizeof(szPSFile), "%s/output.ps",
-+	     getenv ("TMPDIR") ? : "/var/log/hp/tmp");
- 
-     HPFp = fopen (szPSFile, "w");
- #endif
 diff -up hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp.logdir hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp
 --- hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp.logdir	2013-05-14 14:57:19.450942281 +0200
 +++ hplip-3.13.5/prnt/hpcups/HPCupsFilter.cpp	2013-05-14 14:59:45.745927028 +0200
