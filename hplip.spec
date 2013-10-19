@@ -724,6 +724,7 @@ fi
 # the link is here
 %dir %{_datadir}/ppd
 %dir %{_datadir}/ppd/HP
+%{_datadir}/cups/drv/hp/hpijs.drv
 %{_bindir}/hpcups-update-ppds
 
 %files hpijs-ppds
