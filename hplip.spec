@@ -514,9 +514,7 @@ fi
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
-if [ -f /etc/init.d/cups ]; then
-	/sbin/service cups condrestart || :
-fi
+%_post_service cups
 
 %post -n hplip-hpijs
 %{_bindir}/hpcups-update-ppds &>/dev/null ||:
@@ -549,15 +547,11 @@ fi
 %endif
 
 # Restart CUPS to make the removal of the Fax PPD known to it
-if [ -f /etc/init.d/cups ]; then
-	/sbin/service cups condrestart || :
-fi
+%_post_service cups
 
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-if [ -f /etc/init.d/cups ]; then
-	/sbin/service cups condrestart || :
-fi
+%_post_service cups
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
@@ -580,7 +574,6 @@ fi
 %{_bindir}/hp-logcapture
 %{_bindir}/hp-makecopies
 %{_bindir}/hp-makeuri
-%{_bindir}/hp-mkuri
 %{_bindir}/hp-pkservice
 %{_bindir}/hp-plugin
 %{_bindir}/hp-pqdiag
@@ -669,8 +662,6 @@ fi
 %{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
 %{_localstatedir}/lib/hp/hplip.state
-%dir %attr(0774,root,lp) %{_localstatedir}/log/hp
-%dir %attr(1774,root,lp) %{_localstatedir}/log/hp/tmp
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
 #%{_sysconfdir}/cron.daily/hplip_cron
 %{_sysconfdir}/tmpfiles.d/hplip.conf
