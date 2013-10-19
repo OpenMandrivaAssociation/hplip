@@ -79,22 +79,22 @@ Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
 
-#BuildRequires:	desktop-file-utils
-#BuildRequires:	imagemagick
-#BuildRequires:	polkit
-#BuildRequires:	python-sip >= 4.1.1
-#BuildRequires:	net-snmp-devel
-#BuildRequires:	cups-devel
-#BuildRequires:	jpeg-devel
-#BuildRequires:	pkgconfig(dbus-1)
-#BuildRequires:	pkgconfig(libgphoto2)
-#BuildRequires:	pkgconfig(libusb)
-#BuildRequires:	pkgconfig(libv4l1)
-#BuildRequires:	pkgconfig(python)
-#BuildRequires:	pkgconfig(udev)
+BuildRequires:	desktop-file-utils
+BuildRequires:	imagemagick
+BuildRequires:	polkit
+BuildRequires:	python-sip >= 4.1.1
+BuildRequires:	net-snmp-devel
+BuildRequires:	cups-devel
+BuildRequires:	jpeg-devel
+BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(libgphoto2)
+BuildRequires:	pkgconfig(libusb)
+BuildRequires:	pkgconfig(libv4l1)
+BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(udev)
 %if %{sane_backend}
-#BuildRequires:	pkgconfig(sane-backends)
-#BuildRequires:	xsane
+BuildRequires:	pkgconfig(sane-backends)
+BuildRequires:	xsane
 Requires(post):	hplip
 %endif
 Requires(post):	systemd
