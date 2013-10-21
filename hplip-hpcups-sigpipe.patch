@@ -1,5 +1,6 @@
---- hplip-3.13.8/prnt/hpijs/services.cpp	2013-08-07 05:59:17.000000000 +0000
-+++ hplip-3.13.8/prnt/hpijs/services.cpp.tpg	2013-08-19 11:57:23.889340643 +0000
+diff -up hplip-3.9.8/prnt/hpijs/services.cpp.hpcups-sigpipe hplip-3.9.8/prnt/hpijs/services.cpp
+--- hplip-3.9.8/prnt/hpijs/services.cpp.hpcups-sigpipe	2009-08-04 22:35:41.000000000 +0100
++++ hplip-3.9.8/prnt/hpijs/services.cpp	2009-10-29 11:56:23.015022337 +0000
 @@ -29,6 +29,7 @@
      POSSIBILITY OF SUCH DAMAGE.
  \*****************************************************************************/
@@ -8,7 +9,7 @@
  #include <sys/stat.h>
  #include <stdio.h>
  #include <stdlib.h>
-@@ -385,8 +386,16 @@
+@@ -382,8 +383,16 @@ DRIVER_ERROR UXServices::ToDevice(const 
     if (write(OutputPath, pBuffer, *Count) != (ssize_t)*Count) 
     {
        static int cnt=0;

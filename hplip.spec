@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.13.9
-Release:	2
+Version:	3.13.10
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -31,19 +31,19 @@ Source4:	hplip.rpmlintrc
 # (doktor5000) fix linking with python and libsane
 # taken from mandriva
 Patch1:		hplip-3.11.3-mdv-link.patch
-# (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
-# do not get applied in %%post on a new installation:
-Patch2:		hplip-apply-udev-rules-on-action-change.patch
 
 # Fedora patches
 Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
 Patch104:	hplip-no-asm.patch
-Patch106:	hplip-mucks-with-spooldir.patch
+# add
+Patch105:	hplip-deviceIDs-drv.patch
+# add
+Patch107:	hplip-deviceIDs-ppd.patch
+
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
-Patch110:	hplip-discovery-method.patch
 Patch111:	hplip-hpijs-marker-supply.patch
 Patch112:	hplip-clear-old-state-reasons.patch
 Patch114:	hplip-hpcups-sigpipe.patch
@@ -51,34 +51,26 @@ Patch115:	hplip-logdir.patch
 Patch116:	hplip-bad-low-ink-warning.patch
 Patch121:	hplip-ppd-ImageableArea.patch
 Patch122:	hplip-raw_deviceID-traceback.patch
-Patch124:	hplip-3.12.9-addprinter.patch
 Patch125:	hplip-dbus-exception.patch
 Patch127:	hplip-CVE-2010-4267.patch
 # fedora patch not necessary. done via sed call
 #Patch129: hplip-makefile-chgrp.patch
-Patch130:	hplip-hpaio-localonly.patch
 Patch132:	hplip-IEEE-1284-4.patch
-Patch133:	hplip-check.patch
-Patch134:	hplip-3.13.8-fix-udev-rules.patch
+Patch134:	hplip-3.13.10-fix-udev-rules.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
 Patch201:	01_rss.dpatch
 Patch203:	14_charsign_fixes.dpatch
 Patch204:	85_rebuild_python_ui.dpatch
-Patch205:	87_move_documentation.dpatch
 Patch206:	hplip-photosmart_b9100_support.patch
 Patch207:	pjl-duplex-binding.dpatch
 #hplip-pjl-duplex-binding.patch
-Patch208:	mga-kde4-kdesudo-support.dpatch
+Patch208:	mga-kde4-kdesudo-support.patch
 Patch209:	hp-check-groups.dpatch
-#Patch210:	hp-check_debian.dpatch
-Patch213:	hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value.dpatch
-#Patch214:	ubuntu-hp-mkuri-notification-text.dpatch
 Patch215:	simple-scan-as-default.dpatch
 # (doktor5000) rediff original debian patch for hplip 3.11.10
 Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
-Patch219:	try_libhpmud.so.0.dpatch
 Patch220:	add-lidil-two-cartridge-modes.dpatch
 Patch221:	add_missing_newline_for_error_log.dpatch
 Patch224:	hplip-syslog-fix-debug-messages-to-error.dpatch
@@ -86,7 +78,6 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
-Patch302:	deactivate-add_group-function.diff
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -254,8 +245,6 @@ flash memory cards.
 %prep
 %setup -qn %{name}-%{version}%{extraversion}
 
-%patch2 -p1 -b .udev~
-
 # Fedora patches
 
 # The pstotiff filter is rubbish so replace it (launchpad #528394).
@@ -268,19 +257,23 @@ flash memory cards.
 %patch103 -p1 -b .ui-optional
 
 %patch104 -p1 -b .no-asm
+%patch105 -p1 -b .ids
 
-# Stopped hpcups pointlessly trying to read spool files
-# directly (RH bug #552572).
-%patch106 -p1 -b .mucks-with-spooldir
+for ppd_file in $(grep '^diff' %{PATCH107} | cut -d " " -f 4);
+do
+  gunzip ${ppd_file#*/}.gz
+  done
+  %patch107 -p1 -b .deviceIDs-ppd
+  for ppd_file in $(grep '^diff' %{PATCH107} | cut -d " " -f 4);
+  do
+    gzip -n ${ppd_file#*/}
+done
 
 # Retry when connecting to device fails (RH bug #532112).
 %patch108 -p1 -b .retry-open
 
 # Mark SNMP quirks in PPD for HP OfficeJet Pro 8500 (RH bug #581825).
 %patch109 -p1 -b .snmp-quirks
-
-# Fixed hp-setup traceback when discovery page is skipped (RH bug #523685).
-%patch110 -p1 -b .discovery-method
 
 # Fixed bogus low ink warnings from hpijs driver (RH bug #643643).
 %patch111 -p1 -b .hpijs-marker-supply
@@ -307,10 +300,6 @@ do
   gzip -n ${ppd_file#*/}
 done
 
-# Call cupsSetUser in cupsext's addPrinter method before connecting so
-# that we can get an authentication callback (RH bug #538352).
-%patch124 -p1 -b .addprinter
-
 # Catch D-Bus exceptions in fax dialog (RH bug #645316).
 #patch125 -p1 -b .dbus-exception
 
@@ -321,15 +310,11 @@ done
 # Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
 sed -i '/chgrp/d' Makefile.am
 
-# Pay attention to the SANE localOnly flag in hpaio (RH bug #743593).
-%patch130 -p1 -b .hpaio-localonly
-
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
 #patch132 -p1 -b .hplip-IEEE-1284-4
-%patch133 -p1 -b .check
 %patch134 -p1 -b .rules-fix
 
 # Debian/Ubuntu patches
@@ -343,9 +328,6 @@ sed -i.duplex-constraints \
 
 # compiling ui files to py
 %patch204 -p1 -b .85_rebuild_python_ui
-
-# place html documentation under hplip-doc/HTML/
-%patch205 -p1 -b .87_move_documentation
 
 # Corrections on the models.dat entry for the HP PhotoSmart Pro B9100,
 # especially for the correct color calibration mode.
@@ -361,18 +343,11 @@ sed -i.duplex-constraints \
 # https://bugs.launchpad.net/debian/+source/hplip/+bug/530746
 %patch209 -p1 -b .hp-check-groups
 
-%patch213 -p1 -b .hp-mkuri-take-into-account-already-installed-plugin-also-for-exit-value
-
 # disable for now, as this changes default hplip behavior
 # and change in default scanning application should be decided by a poll first
 #%patch215 -p1 -b .simple-scan-as-default
 
 #patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
-
-# dlopen libhpmud.so.0 instead of libhpmud.so, in order not to depend on
-# devel package (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=548379)
-# obsoletes hplip-3.9.8-dlopen-libhpmud.patch, newer & extended version
-%patch219 -p1 -b .try_libhpmud.so.0
 
 %patch220 -p1 -b .add-lidil-two-cartridge-modes
 # fixed by upstream
@@ -385,8 +360,6 @@ sed -i.duplex-constraints \
 %patch227 -p1 -b .hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde
 
 %patch228 -p1 -b .hpaio-option-duplex
-
-%patch302 -p0 -b .deactivate-add_group-function
 
 # Use filter foomatic-rip instead of foomatic-rip-hplip (fix from Mandriva)
 for PPDGZ in ppd/hpijs/*.ppd.gz
@@ -406,9 +379,6 @@ chmod -R u+w .
 touch NEWS README AUTHORS ChangeLog
 autoreconf -ifv
 
-# (tpg) correct major
-sed -i -e "/libnotify.so./s/1/4/" io/hpmud/hp-mkuri.c
-
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
@@ -419,11 +389,13 @@ WITHOUT_SANE="--without-sane"
 	--enable-gui-build \
 	--enable-fax-build \
 	--enable-pp-build \
-	--enable-qt4 --disable-qt3 \
+	--enable-qt4 \
+	--disable-qt3 \
 	--enable-hpcups-install \
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
+	--enable-foomatic-drv-install \
 	--enable-udev-acl-rules \
 	--enable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime
@@ -542,9 +514,7 @@ fi
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
-if [ -f /etc/init.d/cups ]; then
-	/sbin/service cups condrestart || :
-fi
+%_post_service cups
 
 %post -n hplip-hpijs
 %{_bindir}/hpcups-update-ppds &>/dev/null ||:
@@ -577,15 +547,11 @@ fi
 %endif
 
 # Restart CUPS to make the removal of the Fax PPD known to it
-if [ -f /etc/init.d/cups ]; then
-	/sbin/service cups condrestart || :
-fi
+%_post_service cups
 
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-if [ -f /etc/init.d/cups ]; then
-	/sbin/service cups condrestart || :
-fi
+%_post_service cups
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
@@ -608,7 +574,6 @@ fi
 %{_bindir}/hp-logcapture
 %{_bindir}/hp-makecopies
 %{_bindir}/hp-makeuri
-%{_bindir}/hp-mkuri
 %{_bindir}/hp-pkservice
 %{_bindir}/hp-plugin
 %{_bindir}/hp-pqdiag
@@ -697,8 +662,6 @@ fi
 %{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_datadir}/dbus-1/system-services/com.hp.hplip.service
 %{_localstatedir}/lib/hp/hplip.state
-%dir %attr(0774,root,lp) %{_localstatedir}/log/hp
-%dir %attr(1774,root,lp) %{_localstatedir}/log/hp/tmp
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
 #%{_sysconfdir}/cron.daily/hplip_cron
 %{_sysconfdir}/tmpfiles.d/hplip.conf
@@ -752,6 +715,7 @@ fi
 # the link is here
 %dir %{_datadir}/ppd
 %dir %{_datadir}/ppd/HP
+%{_datadir}/cups/drv/hp/hpijs.drv
 %{_bindir}/hpcups-update-ppds
 
 %files hpijs-ppds
