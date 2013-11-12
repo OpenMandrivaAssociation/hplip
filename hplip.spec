@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.13.10
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -179,7 +179,7 @@ the "%{libhpip}" library.
 %package -n %{libsane}
 Summary:	SANE driver for scanners in HP's multi-function devices (from HPLIP)
 Group:		System/Printing
-Suggests:	sane-backends
+Requires(post):	sane-backends
 Provides:	sane-backends-hpaio = %{version}-%{release}
 # (cjw) for system-config-printer
 Provides:	libsane-hpaio
