@@ -1,0 +1,14 @@
+If you experience problems with the following printers:
+ HP LaserJet 1100 series,
+ HP LaserJet p1560 series,
+ HP LaserJet p1600 series,
+ HP LaserJet CP1020 series,
+ HP LaserJet M1130 MFP series,
+ HP LaserJet M1210 MFP series
+
+try to run
+# /usr/bin/SmartInstallDisable-Tool.run 
+
+If you have already added you printer in system settings, you should delete it and add it once more.
+
+Please refer to http://hplipopensource.com/node/367 for more details.

@@ -1,0 +1,10 @@
+--- a/data/rules/56-hpmud.rules	2013-10-31 15:45:33.000000000 +0400
++++ b/data/rules/56-hpmud.rules	2013-11-21 23:23:07.650886069 +0400
+@@ -1,6 +1,6 @@
+ # HPLIP udev rules file. Notify console user if plugin support is required for this device.
+ 
+-ACTION!="add", GOTO="hpmud_rules_end"
++ACTION=="remove", GOTO="hpmud_rules_end"
+ SUBSYSTEM=="ppdev", OWNER="root", GROUP="lp", MODE="0664"
+ SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GOTO="hpmud_usb_rules"
+ 

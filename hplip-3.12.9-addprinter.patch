@@ -1,0 +1,10 @@
+--- hplip-3.12.9/prnt/cupsext/cupsext.c.addprinter	2012-09-04 14:31:10.000000000 +0200
++++ hplip-3.12.9/prnt/cupsext/cupsext.c	2012-09-11 16:42:26.229950718 +0200
+@@ -324,6 +324,7 @@ PyObject * getPrinters( PyObject * self,
+     };
+ 
+     /* Connect to the HTTP server */
++    cupsSetUser ("root");
+     if ( ( http = httpConnectEncrypt( cupsServer(), ippPort(), cupsEncryption() ) ) == NULL )
+     {
+         goto abort;

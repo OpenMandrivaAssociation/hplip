@@ -17,31 +17,34 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.13.10
-Release:	6
+Version:	3.13.11
+Release:	24
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/project/hplip/hplip/%{version}%{extraversion}/%{name}-%{version}%{extraversion}.tar.gz
+Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
-Source2:	%{name}-tmpfiles.conf
+Source2:	copy-deviceids.py
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
 Source3:	hp-sendfax.png
 Source4:	hplip.rpmlintrc
+# http://hplipopensource.com/node/367
+Source5:	http://hplipopensource.com/hplip-web/smartinstall/SmartInstallDisable-Tool.run
+Source6:	README.urpmi
 # (doktor5000) fix linking with python and libsane
 # taken from mandriva
 Patch1:		hplip-3.11.3-mdv-link.patch
+# (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
+# do not get applied in %%post on a new installation:
+Patch2:		hplip-apply-udev-rules-on-action-change.patch
 
 # Fedora patches
 Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
 Patch104:	hplip-no-asm.patch
-# add
-Patch105:	hplip-deviceIDs-drv.patch
-# add
-Patch107:	hplip-deviceIDs-ppd.patch
-
+Patch105:       hplip-deviceIDs-drv.patch
+Patch107:       hplip-deviceIDs-ppd.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
 Patch111:	hplip-hpijs-marker-supply.patch
@@ -50,13 +53,12 @@ Patch114:	hplip-hpcups-sigpipe.patch
 Patch115:	hplip-logdir.patch
 Patch116:	hplip-bad-low-ink-warning.patch
 Patch121:	hplip-ppd-ImageableArea.patch
-Patch122:	hplip-raw_deviceID-traceback.patch
-Patch125:	hplip-dbus-exception.patch
-Patch127:	hplip-CVE-2010-4267.patch
 # fedora patch not necessary. done via sed call
 #Patch129: hplip-makefile-chgrp.patch
-Patch132:	hplip-IEEE-1284-4.patch
-Patch134:	hplip-3.13.10-fix-udev-rules.patch
+Patch131:	hplip-ipp-accessors.patch
+Patch132: hplip-IEEE-1284-4.patch
+Patch133: hplip-check.patch
+Patch134:	hplip-udev-rules.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
@@ -78,6 +80,8 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
+
+Patch302:	hplip-CVE-2013-4325.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -125,6 +129,9 @@ Requires:	acl
 Requires:	%{libhpip} = %{version}
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
+# hp-doctor requires gui modules
+Requires:	hplip-gui
+
 
 # foomatic-db-hpijs drivers are provided by hp and by this package now
 # NOTE: remove the foomatic-db-hpijs deps sometime in 2010-10-?? ?
@@ -245,6 +252,8 @@ flash memory cards.
 %prep
 %setup -qn %{name}-%{version}%{extraversion}
 
+%patch2 -p1 -b .udev-rules-on-action-change
+
 # Fedora patches
 
 # The pstotiff filter is rubbish so replace it (launchpad #528394).
@@ -256,18 +265,73 @@ flash memory cards.
 # Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
 %patch103 -p1 -b .ui-optional
 
+# Make sure to avoid handwritten asm.
 %patch104 -p1 -b .no-asm
+
+# Corrected several IEEE 1284 Device IDs using foomatic data.
+# Color LaserJet CM1312nfi (bug #581005)
+# Color LaserJet 3800 (bug #581935)
+# Color LaserJet 2840 (bug #582215)
+# Color LaserJet CP1518ni (bug #613689)
+# Color LaserJet 2600n (bug #613712)
+# Color LaserJet 2500/3700/4550/4600/4650/4700/5550/CP1515n/CP2025n
+#                CP3525/CP4520 Series/CM2320nf (bug #659040)
+# Color LaserJet CP2025dn (bug #651509)
+# Color LaserJet CM4730 MFP (bug #658831)
+# Color LaserJet CM3530 MFP (bug #659381)
+# LaserJet 4050 Series/4100 Series/2100 Series/4350/5100 Series/8000 Series
+#          P3005/P3010 Series/P4014/P4515 (bug #659039)
+# LaserJet Professional P1606dn (bug #708472)
+# LaserJet Professional M1212nf MFP (bug #742490)
+# LaserJet M1536dnf MFP (bug #743915)
+# LaserJet M1522nf MFP (bug #745498)
+# LaserJet M1319f MFP (bug #746614)
+# LaserJet M1120 MFP (bug #754139)
+# LaserJet P1007 (bug #585272)
+# LaserJet P1505 (bug #680951)
+# LaserJet P2035 (Ubuntu #917703)
+# PSC 1600 series (bug #743821)
+# Officejet 6300 series (bug #689378)
+# LaserJet Professional P1102w (bug #795958)
+# Color LaserJet CM4540 MFP (bug #968177)
+# Color LaserJet cp4005 (bug #980976)
 %patch105 -p1 -b .ids
 
+chmod +x %{SOURCE2}
+mv prnt/drv/hpijs.drv.in{,.deviceIDs-drv-hpijs}
+%{SOURCE2} prnt/drv/hpcups.drv.in \
+           prnt/drv/hpijs.drv.in.deviceIDs-drv-hpijs \
+           > prnt/drv/hpijs.drv.in
+
+# Add Device ID for
+# LaserJet 1200 (bug #577308)
+# LaserJet 1320 series (bug #579920)
+# LaserJet 2300 (bug #576928)
+# LaserJet P2015 Series (bug #580231)
+# LaserJet 4250 (bug #585499)
+# Color LaserJet 2605dn (bug #583953)
+# Color LaserJet 3800 (bug #581935)
+# Color LaserJet 2840 (bug #582215)
+# LaserJet 4050 Series/4100 Series/2100 Series/2420/4200/4300/4350/5100 Series
+#          8000 Series/M3027 MFP/M3035 MFP/P3005/P3010 Series (bug #659039)
+# Color LaserJet 2500/2550/2605dn/3700/4550/4600
+#                4650/4700/5550/CP3525 (bug #659040)
+# Color LaserJet CM4730 MFP (bug #658831)
+# Color LaserJet CM3530 MFP (bug #659381)
+# Designjet T770 (bug #747957)
+# Color LaserJet CM4540 MFP (bug #968177)
+# Color LaserJet cp4005 (bug #980976)
 for ppd_file in $(grep '^diff' %{PATCH107} | cut -d " " -f 4);
 do
   gunzip ${ppd_file#*/}.gz
-  done
-  %patch107 -p1 -b .deviceIDs-ppd
-  for ppd_file in $(grep '^diff' %{PATCH107} | cut -d " " -f 4);
-  do
-    gzip -n ${ppd_file#*/}
 done
+
+%patch107 -p1 -b .deviceIDs-ppd
+for ppd_file in $(grep '^diff' %{PATCH107} | cut -d " " -f 4);
+do
+  gzip -n ${ppd_file#*/}
+done
+
 
 # Retry when connecting to device fails (RH bug #532112).
 %patch108 -p1 -b .retry-open
@@ -300,13 +364,6 @@ do
   gzip -n ${ppd_file#*/}
 done
 
-# Catch D-Bus exceptions in fax dialog (RH bug #645316).
-#patch125 -p1 -b .dbus-exception
-
-# Applied patch to fix CVE-2010-4267, remote stack overflow
-# vulnerability (RH bug #670252).
-#patch127 -p1 -b .CVE-2010-4267
-
 # Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
 sed -i '/chgrp/d' Makefile.am
 
@@ -315,7 +372,10 @@ sed -i.duplex-constraints \
     prnt/drv/hpcups.drv.in
 
 #patch132 -p1 -b .hplip-IEEE-1284-4
-%patch134 -p1 -b .rules-fix
+
+# Removed SYSFS use in udev rules and actually made them work (bug #560754).
+# Move udev rules to /lib/udev/rules.d (bug #748208).
+%patch134 -p1 -b .udev-rules
 
 # Debian/Ubuntu patches
 
@@ -338,7 +398,7 @@ sed -i.duplex-constraints \
 %patch207 -p1 -b .hplip-pjl-duplex-binding
 
 # original patch from debian, path to kdesu added for %%_libdir on x86_64
-%patch208 -p1 -b .mga-kde4-kdesudo-support
+# %patch208 -p1 -b .mga-kde4-kdesudo-support
 
 # https://bugs.launchpad.net/debian/+source/hplip/+bug/530746
 %patch209 -p1 -b .hp-check-groups
@@ -361,13 +421,15 @@ sed -i.duplex-constraints \
 
 %patch228 -p1 -b .hpaio-option-duplex
 
-# Use filter foomatic-rip instead of foomatic-rip-hplip (fix from Mandriva)
-for PPDGZ in ppd/hpijs/*.ppd.gz
-do
-mv -T "$PPDGZ" "$PPDGZ.old"
-zcat "$PPDGZ.old" | sed -e 's/foomatic-rip-hplip/foomatic-rip/' | gzip -c > "$PPDGZ"
-rm -f "$PPDGZ.old"
-done
+%patch302 -p0
+
+sed -i.duplex-constraints \
+    -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
+    prnt/drv/hpcups.drv.in
+
+# Change shebang /usr/bin/env python -> /usr/bin/python (bug #618351).
+find -name '*.py' -print0 | xargs -0 \
+    sed -i.env-python -e 's,^#!/usr/bin/env python,#!/usr/bin/python,'
 
 # Make all files in the source user-writable
 chmod -R u+w .
@@ -389,15 +451,13 @@ WITHOUT_SANE="--without-sane"
 	--enable-gui-build \
 	--enable-fax-build \
 	--enable-pp-build \
-	--enable-qt4 \
-	--disable-qt3 \
+	--enable-qt4 --disable-qt3 \
 	--enable-hpcups-install \
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
-	--enable-foomatic-drv-install \
 	--enable-udev-acl-rules \
-	--enable-policykit \
+	--disable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
@@ -425,17 +485,21 @@ rm -f %{buildroot}%{_libdir}/sane/libsane-hpaio*.la
 rm -f %{buildroot}%{_sysconfdir}/sane.d/dll.conf
 
 # Remove other unneeded/unwanted files
-rm -f %{buildroot}%{py_platsitedir}/*.la
+# Remove files we don't want to package.
+rm -f %{buildroot}%{_datadir}/hplip/hpaio.desc
+rm -f %{buildroot}%{_datadir}/hplip/hplip-install
+rm -rf %{buildroot}%{_datadir}/hplip/install.*
 rm -f %{buildroot}%{_datadir}/hplip/uninstall.*
 rm -f %{buildroot}%{_bindir}/hp-uninstall
 rm -f %{buildroot}%{_datadir}/hplip/upgrade.*
 rm -f %{buildroot}%{_bindir}/hp-upgrade
 rm -f %{buildroot}%{_bindir}/hp-config_usb_printer
-rm -f %{buildroot}/usr/lib/systemd/system/hplip-printer@.service
+rm -f %{buildroot}%{_unitdir}/hplip-printer@.service
 rm -f %{buildroot}%{_datadir}/hplip/config_usb_printer.*
-rm -f %{buildroot}%{_libdir}/*.la
-rm -rf %{buildroot}%{python_sitearch}/*.la
-rm -rf %{buildroot}%{_libdir}/sane/*.la
+rm -f %{buildroot}%{_datadir}/hplip/hpijs.drv.in.template
+rm -f %{buildroot}%{_datadir}/cups/mime/pstotiff.types
+rm -f %{buildroot}%{_datadir}/hplip/fax/pstotiff*
+rm -f %{buildroot}%{_cups_serverbin}/filter/hpcac
 
 mkdir -p %{buildroot}%{_datadir}/applications
 desktop-file-install --vendor='' \
@@ -450,18 +514,16 @@ desktop-file-install --vendor='' \
 	--remove-key='Version' \
 	%{buildroot}%{_datadir}/applications/hplip.desktop
 
-cat > %{buildroot}%{_datadir}/applications/%{_vendor}-hp-sendfax.desktop << EOF
-[Desktop Entry]
-Name=HP Sendfax
-Comment=Utility for sending faxes with HPs multi-function devices
-Exec=%{_bindir}/hp-sendfax
-Icon=hp-sendfax
-Terminal=false
-Type=Application
-Categories=TelephonyTools;Qt;Printing;Utility;
-EOF
+# Create /run/hplip
+mkdir -p %{buildroot}/run/hplip
 
-install -D -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
+# install /usr/lib/tmpfiles.d/hplip.conf (bug #1015831)
+mkdir -p %{buildroot}%{_tmpfilesdir}
+cat > %{buildroot}%{_tmpfilesdir}/hplip.conf <<EOF
+# See tmpfiles.d(5) for details
+
+d /run/hplip 0775 root lp -
+EOF
 
 # install menu icons
 for N in 16 32 48 64; do convert %{SOURCE3} -resize ${N}x${N} $N.png; done
@@ -471,26 +533,21 @@ install -D -m 0644 48.png %{buildroot}%{_iconsdir}/hicolor/48x48/apps/hp-sendfax
 install -D -m 0644 64.png %{buildroot}%{_iconsdir}/hicolor/64x64/apps/hp-sendfax.png
 install -D -m 0644 %{SOURCE3} %{buildroot}%{_iconsdir}/hicolor/128x128/apps/hp-sendfax.png
 
-# switched to udev, no need for hal information
-rm -rf  %{buildroot}%{_datadir}/hal/fdi
+# (cg) Correct the udev rules dir
+mkdir -p %{buildroot}/lib
+mv %{buildroot}%{_sysconfdir}/udev %{buildroot}/lib/
 
 # Regenerate hpcups PPDs on upgrade if necessary (bug #579355).
 install -p -m755 %{SOURCE1} %{buildroot}%{_bindir}/hpcups-update-ppds
 
-# Fedora pstotiff
-rm -f %{buildroot}%{_sysconfdir}/cups/pstotiff.types
-rm -f %{buildroot}%{_datadir}/cups/mime/pstotiff.types
-rm -f %{buildroot}%{_datadir}/hplip/fax/pstotiff*
-rm -f %{buildroot}%{_prefix}/lib/cups/filter/hpcac
-
-# bork?
-install -d %{buildroot}%{_sysconfdir}/cups
-cp -p %{buildroot}%{_datadir}/cups/mime/pstotiff.convs %{buildroot}%{_sysconfdir}/cups/pstotiff.convs
-
-# set up consolehelper
-mkdir -p %{buildroot}%{_sbindir}
-mv %{buildroot}%{_bindir}/hp-setup %{buildroot}%{_sbindir}/hp-setup
-ln -s consolehelper %{buildroot}%{_bindir}/hp-setup
+# A tool disable smart install feature in HP printer(s) from linux
+# HP Smart Install is a service running on firmware which makes printer to appear
+# as "Mass Storage Devices" when connected via USB cable. This is to install the
+# minimal printer software from flash memory of printer. This service needs to be
+# disabled on linux in order to have the device function as a printer.
+install -p -m755 %{SOURCE5} %{buildroot}%{_bindir}/SmartInstallDisable-Tool.run
+mkdir -p %{buildroot}%{_docdir}/%{name}
+install -p -m755 %{SOURCE6} %{buildroot}%{_docdir}/%{name}
 
 # Make sure pyc files are generated, otherwise we can get
 # difficult to debug problems
@@ -498,19 +555,63 @@ pushd %{buildroot}%{_datadir}/%{name}
 python -m compileall .
 popd
 
+# create empty /var/lib/hp/hplip.state to fix hp-plugin installation (mga#5395)
 mkdir -p %{buildroot}%{_localstatedir}/lib/hp/
 touch %{buildroot}%{_localstatedir}/lib/hp/hplip.state
 
-%triggerin -- hplip < 2.7.7
-chkconfig --del hplip
+# Create an empty plugins directory to make sure it gets the right
+mkdir -p %{buildroot}%{_datadir}/hplip/prnt/plugins
 
-# Restart CUPS to make the Fax PPD known to it
-if [ -f /etc/init.d/cups ]; then
-	/sbin/service cups condrestart || :
-fi
+# create empty log directory so that it can be owned
+mkdir -p %{buildroot}%{_localstatedir}/log/hp/tmp
+
+mkdir -p %{buildroot}%{_unitdir}
+mv -f %{buildroot}/usr/lib/systemd/system/hplip-printer@.service %{buildroot}%{_unitdir}/hplip-printer@.service
+
+# Images in docdir should not be executable (bug #440552).
+find doc/images -type f -exec chmod 644 {} \;
+
+#sed -e 's/0664/0666/' -i %{buildroot}/lib/udev/rules.d/56-hpmud.rules
+#sed -e 's/ATTR/#ATTR/' -i %{buildroot}/lib/udev/rules.d/56-hpmud.rules
+#sed -e 's/ATTR/SYSFS/' -i %{buildroot}/lib/udev/rules.d/56-hpmud.rules
+
+# The systray applet doesn't work properly (displays icon as a
+# window), so don't ship the launcher yet.
+# rm -f %{buildroot}%{_sysconfdir}/xdg/autostart/hplip-systray.desktop
+
+#We do not need hal
+rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
+
+#Add rules for all hp printers
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}/lib/udev/rules.d/56-hpmud.rules
+
+# consolehelper config
+#
+
+mkdir -p %{buildroot}%{_sbindir}
+
+# - console user, no password
+for pak in hp-setup hp-plugin hp-diagnose_plugin; do
+		mv %{buildroot}%{_bindir}/$pak %{buildroot}%{_sbindir}/$pak
+        ln -sf %{_bindir}/consolehelper %{buildroot}%{_bindir}/$pak
+        mkdir -p %{buildroot}%{_sysconfdir}/security/console.apps/
+        cat > %{buildroot}%{_sysconfdir}/security/console.apps/$pak <<EOF
+USER=root
+PROGRAM=%{_sbindir}/$pak
+FALLBACK=false
+SESSION=true
+EOF
+        mkdir -p %{buildroot}%{_sysconfdir}/pam.d/
+		cat > %{buildroot}%{_sysconfdir}/pam.d/$pak  <<EOF
+#%PAM-1.0
+auth		include		config-util-user
+account		include		config-util-user
+session		include		config-util-user
+EOF
+done
 
 %post
-%tmpfiles_create %{name}
+%tmpfiles_create %{name}.conf
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
@@ -559,7 +660,6 @@ fi
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
-#%{_bindir}/hp-config_usb_printer
 %{_bindir}/hp-devicesettings
 %{_bindir}/hp-diagnose_plugin
 %{_bindir}/hp-diagnose_queues
@@ -583,13 +683,24 @@ fi
 %{_bindir}/hp-scan
 %{_bindir}/hp-sendfax
 %{_bindir}/hp-setup
-%{_sbindir}/hp-setup
 %{_bindir}/hp-testpage
 %{_bindir}/hp-timedate
-#%{_bindir}/hp-uninstall
 %{_bindir}/hp-unload
-#%{_bindir}/hp-upgrade
 %{_bindir}/hp-wificonfig
+
+%{_sbindir}/hp-diagnose_plugin
+%{_sbindir}/hp-setup
+%{_sbindir}/hp-plugin
+
+%{_sysconfdir}/pam.d/hp-diagnose_plugin
+%{_sysconfdir}/pam.d/hp-plugin
+%{_sysconfdir}/pam.d/hp-setup
+%{_sysconfdir}/security/console.apps/hp-diagnose_plugin
+%{_sysconfdir}/security/console.apps/hp-plugin
+%{_sysconfdir}/security/console.apps/hp-setup
+
+# A tool to disable Smart Install
+%{_bindir}/SmartInstallDisable-Tool.run
 
 %exclude %{_datadir}/hplip/data/models
 # C libraries for Python
@@ -599,13 +710,10 @@ fi
 # Note: this must be /usr/lib not %{_libdir}, since that's the
 # CUPS serverbin directory.
 %attr(0755,root,root) %{_prefix}/lib/cups/backend/hp*
-#%{_prefix}/lib/cups/filter/hplipjs
 %{_prefix}/lib/cups/filter/hpcups
 %{_prefix}/lib/cups/filter/hpcupsfax
 %{_prefix}/lib/cups/filter/hpps
 %{_prefix}/lib/cups/filter/pstotiff
-%{_datadir}/cups/mime/pstotiff.convs
-%config(noreplace) %{_sysconfdir}/cups/pstotiff.convs
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
 # Files
@@ -614,7 +722,7 @@ fi
 %{_datadir}/hplip/check-plugin.py*
 %{_datadir}/hplip/clean.py*
 %{_datadir}/hplip/colorcal.py*
-#%{_datadir}/hplip/config_usb_printer.py*
+#{_datadir}/hplip/config_usb_printer.py*
 %{_datadir}/hplip/devicesettings.py*
 %{_datadir}/hplip/diagnose_plugin.py*
 %{_datadir}/hplip/diagnose_queues.py*
@@ -659,13 +767,17 @@ fi
 %{_datadir}/hplip/pcard
 %{_datadir}/hplip/prnt
 %{_datadir}/hplip/scan
-%{_datadir}/polkit-1/actions/com.hp.hplip.policy
-%{_datadir}/dbus-1/system-services/com.hp.hplip.service
+#{_datadir}/polkit-1/actions/com.hp.hplip.policy
+#{_datadir}/dbus-1/system-services/com.hp.hplip.service
 %{_localstatedir}/lib/hp/hplip.state
-%config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
-#%{_sysconfdir}/cron.daily/hplip_cron
-%{_sysconfdir}/tmpfiles.d/hplip.conf
+%{_docdir}/%{name}/README.urpmi
+#config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
+%dir %attr(0775,root,lp) /run/hplip
+%{_tmpfilesdir}/hplip.conf
+%{_unitdir}/hplip-printer@.service
 %{_datadir}/hplip/hplip_clean.sh
+%{_datadir}/cups/mime/pstotiff.convs
+
 
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
@@ -689,7 +801,7 @@ fi
 %endif
 
 %files model-data
-%{_sysconfdir}/udev/rules.d/*.rules
+/lib/udev/rules.d/*.rules
 %{_datadir}/hplip/data/models
 
 %files gui
@@ -715,10 +827,9 @@ fi
 # the link is here
 %dir %{_datadir}/ppd
 %dir %{_datadir}/ppd/HP
-%{_datadir}/cups/drv/hp/hpijs.drv
+#{_datadir}/cups/drv/hp/hpijs.drv
 %{_bindir}/hpcups-update-ppds
 
 %files hpijs-ppds
 %{_datadir}/ppd/HP/apollo*.ppd*
 %{_datadir}/ppd/HP/hp-*.ppd*
-
