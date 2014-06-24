@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.14.3
-Release:	2
+Release:	4
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -108,7 +108,7 @@ Requires:	foomatic-filters
 Requires:	hplip-model-data
 Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
-Requires:	python-sip >= 4.1.1
+Requires:	sip-api(%{sip_api_major}) = %{sip_api}
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
