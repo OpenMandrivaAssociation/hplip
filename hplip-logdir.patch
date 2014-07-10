@@ -1,6 +1,7 @@
---- hplip-3.14.3/prnt/hpcups/HPCupsFilter.cpp.logdir	2014-04-01 20:32:41.175022619 +0200
-+++ hplip-3.14.3/prnt/hpcups/HPCupsFilter.cpp	2014-04-01 20:33:58.726020660 +0200
-@@ -604,7 +605,7 @@ int HPCupsFilter::processRasterData(cups
+diff -Naur hplip-3.14.6.orig/prnt/hpcups/HPCupsFilter.cpp hplip-3.14.6/prnt/hpcups/HPCupsFilter.cpp
+--- hplip-3.14.6.orig/prnt/hpcups/HPCupsFilter.cpp	2014-07-10 18:00:10.623877105 +0400
++++ hplip-3.14.6/prnt/hpcups/HPCupsFilter.cpp	2014-07-10 18:00:28.512876654 +0400
+@@ -597,7 +597,7 @@
      char hpPreProcessedRasterFile[MAX_FILE_PATH_LEN]; //temp file needed to store raster data with swaped pages.
  
  
@@ -9,14 +10,17 @@
  
  
      while (cupsRasterReadHeader2(cups_raster, &cups_header))
---- hplip-3.14.3/prnt/hpcups/SystemServices.cpp.logdir	2014-04-01 20:32:41.182022618 +0200
-+++ hplip-3.14.3/prnt/hpcups/SystemServices.cpp	2014-04-01 20:34:56.574019199 +0200
-@@ -38,7 +38,7 @@ SystemServices::SystemServices(int iLogL
-     if (iLogLevel & SAVE_PCL_FILE)
+diff -Naur hplip-3.14.6.orig/prnt/hpcups/SystemServices.cpp hplip-3.14.6/prnt/hpcups/SystemServices.cpp
+--- hplip-3.14.6.orig/prnt/hpcups/SystemServices.cpp	2014-07-10 18:00:10.645877105 +0400
++++ hplip-3.14.6/prnt/hpcups/SystemServices.cpp	2014-07-10 18:03:01.156872806 +0400
+@@ -38,8 +38,8 @@
+     if (iLogLevel & SAVE_OUT_FILE)
      {
          char    fname[MAX_FILE_PATH_LEN];
--        sprintf(fname, "%s/hp_%s_cups_out_job%d_XXXXXX",CUPS_TMP_DIR, user_name, job_id);
-+        snprintf(fname, sizeof(fname), "%s/hp_%s_cups_out_job%d_XXXXXX",CUPS_TMP_DIR, user_name, job_id);
-         
+-        sprintf(fname, "%s/hpcups_%s_out_job%d_XXXXXX",CUPS_TMP_DIR, user_name, job_id);
+-        
++        snprintf(fname, sizeof(fname), "%s/hpcups_%s_out_job%d_XXXXXX",CUPS_TMP_DIR, user_name, job_id);
++
          createTempFile(fname, &m_fp);
          if (m_fp)
+         {
