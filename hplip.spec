@@ -94,7 +94,7 @@ BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libgphoto2)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
-BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(udev)
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
