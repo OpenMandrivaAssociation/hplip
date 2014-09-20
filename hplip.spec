@@ -17,7 +17,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.14.3
+Version:	3.14.6
 Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -80,9 +80,8 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
-Patch229:	fix-systray-no-menus.patch
-Patch302:	hplip-CVE-2013-4325.patch
 
+Patch302:	hplip-CVE-2013-4325.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -95,7 +94,7 @@ BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libgphoto2)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
-BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(udev)
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
@@ -109,7 +108,7 @@ Requires:	foomatic-filters
 Requires:	hplip-model-data
 Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
-Requires:	python-sip >= 4.1.1
+Requires:	sip-api(%{sip_api_major}) = %{sip_api}
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
@@ -421,8 +420,6 @@ sed -i.duplex-constraints \
 %patch227 -p1 -b .hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde
 
 %patch228 -p1 -b .hpaio-option-duplex
-
-%patch229 -p1 -b .fix-systray-no-menus.patch
 
 %patch302 -p0
 
