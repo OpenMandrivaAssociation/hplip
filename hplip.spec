@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.14.6
-Release:	2
+Version:	3.14.10
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -427,9 +427,9 @@ sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
-# Change shebang /usr/bin/env python -> /usr/bin/python (bug #618351).
+# Change shebang /usr/bin/env python -> /usr/bin/python2 (bug #618351).
 find -name '*.py' -print0 | xargs -0 \
-    sed -i.env-python -e 's,^#!/usr/bin/env python,#!/usr/bin/python,'
+    sed -i.env-python -e 's,^#!/usr/bin/env python,#!/usr/bin/python2,'
 
 # Make all files in the source user-writable
 chmod -R u+w .
@@ -440,6 +440,8 @@ chmod -R u+w .
 # create required files as placeholder, otherwise autoreconf fails
 touch NEWS README AUTHORS ChangeLog
 autoreconf -ifv
+
+export PYTHON=%__python2
 
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
@@ -552,7 +554,7 @@ install -p -m755 %{SOURCE6} %{buildroot}%{_docdir}/%{name}
 # Make sure pyc files are generated, otherwise we can get
 # difficult to debug problems
 pushd %{buildroot}%{_datadir}/%{name}
-python -m compileall .
+python2 -m compileall .
 popd
 
 # create empty /var/lib/hp/hplip.state to fix hp-plugin installation (mga#5395)
