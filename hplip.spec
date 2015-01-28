@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.14.10
-Release:	2
+Release:	3
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -617,7 +617,7 @@ done
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
-%_post_service cups
+/bin/systemctl try-restart cups.service ||:
 
 %post -n hplip-hpijs
 %{_bindir}/hpcups-update-ppds &>/dev/null ||:
@@ -650,11 +650,11 @@ fi
 %endif
 
 # Restart CUPS to make the removal of the Fax PPD known to it
-%_post_service cups
+/bin/systemctl restart cups.service ||:
 
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-%_post_service cups
+/bin/systemctl restart cups.service ||:
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
