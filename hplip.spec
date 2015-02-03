@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.14.10
-Release:	3
+Release:	4
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -86,7 +86,7 @@ Patch302:	hplip-CVE-2013-4325.patch
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
-BuildRequires:	python-sip >= 4.1.1
+BuildRequires:	python2-sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
 BuildRequires:	jpeg-devel
@@ -114,7 +114,7 @@ Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
-Requires:	python-dbus
+Requires:	python2-dbus
 Requires:	polkit-agent
 Requires:	usermode-consoleonly
 Requires:	python-gobject
@@ -131,7 +131,7 @@ Requires:	%{libhpip} = %{version}
 Suggests:	foomatic-db-hpijs
 # hp-doctor requires gui modules
 Requires:	hplip-gui
-
+Requires:	gnupg
 
 # foomatic-db-hpijs drivers are provided by hp and by this package now
 # NOTE: remove the foomatic-db-hpijs deps sometime in 2010-10-?? ?
@@ -208,7 +208,7 @@ determine whether HPLIP has to be installed or not.
 %package gui
 Summary:	HPLIP graphical tools
 Group:		System/Printing
-Requires:	python-qt4-gui
+Requires:	python2-qt4-gui
 Requires:	%{name} = %{version}-%{release}
 Requires:	usermode
 
@@ -441,12 +441,12 @@ chmod -R u+w .
 touch NEWS README AUTHORS ChangeLog
 autoreconf -ifv
 
-export PYTHON=%__python2
+export PYTHON=%{__python2}
 
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
-%configure2_5x \
+%configure \
 	$WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
 	--enable-scan-build \
