@@ -429,7 +429,10 @@ sed -i.duplex-constraints \
 
 # Change shebang /usr/bin/env python -> /usr/bin/python2 (bug #618351).
 find -name '*.py' -print0 | xargs -0 \
-    sed -i.env-python -e 's,^#!/usr/bin/env python,#!/usr/bin/python2,'
+    sed -i.env-python -e 's,^#!/usr/bin/env python,#!%{__python2},'
+
+find -name '*.py' -print0 | xargs -0 \
+    sed -i.env-python -e 's,^#!/usr/bin/python,#!%{__python2},'
 
 # Make all files in the source user-writable
 chmod -R u+w .
