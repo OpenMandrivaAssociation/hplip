@@ -108,7 +108,7 @@ Requires:	foomatic-filters
 Requires:	hplip-model-data
 Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
-Requires:	sip-api(%{sip_api_major}) = %{sip_api}
+Requires:	python2-sip
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
