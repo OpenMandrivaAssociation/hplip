@@ -18,7 +18,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.14.10
-Release:	5
+Release:	6
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -620,7 +620,8 @@ done
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
-/bin/systemctl try-restart cups.service ||:
+/bin/systemctl try-restart org.cups.cupsd.socket ||:
+/bin/systemctl try-restart org.cups.cupsd.service ||:
 
 %post -n hplip-hpijs
 %{_bindir}/hpcups-update-ppds &>/dev/null ||:
