@@ -17,8 +17,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.14.10
-Release:	6
+Version:	3.15.2
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -43,8 +43,8 @@ Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
 Patch104:	hplip-no-asm.patch
-Patch105:       hplip-deviceIDs-drv.patch
-Patch107:       hplip-deviceIDs-ppd.patch
+Patch105:	hplip-deviceIDs-drv.patch
+Patch107:	hplip-deviceIDs-ppd.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
 Patch111:	hplip-hpijs-marker-supply.patch
@@ -56,8 +56,8 @@ Patch121:	hplip-ppd-ImageableArea.patch
 # fedora patch not necessary. done via sed call
 #Patch129: hplip-makefile-chgrp.patch
 Patch131:	hplip-ipp-accessors.patch
-Patch132: hplip-IEEE-1284-4.patch
-Patch133: hplip-check.patch
+Patch132:	hplip-IEEE-1284-4.patch
+Patch133:	hplip-check.patch
 Patch134:	hplip-udev-rules.patch
 
 # Debian/Ubuntu patches
@@ -86,7 +86,7 @@ Patch302:	hplip-CVE-2013-4325.patch
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
-BuildRequires:	python2-sip >= 4.1.1
+BuildRequires:	python-sip >= 4.1.1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
 BuildRequires:	jpeg-devel
@@ -94,7 +94,7 @@ BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libgphoto2)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
-BuildRequires:	pkgconfig(python2)
+BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(udev)
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
@@ -108,13 +108,13 @@ Requires:	foomatic-filters
 Requires:	hplip-model-data
 Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
-Requires:	python2-sip
+Requires:	python-sip
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
-Requires:	python2-dbus
+Requires:	python-dbus
 Requires:	polkit-agent
 Requires:	usermode-consoleonly
 Requires:	python-gobject
@@ -208,7 +208,7 @@ determine whether HPLIP has to be installed or not.
 %package gui
 Summary:	HPLIP graphical tools
 Group:		System/Printing
-Requires:	python2-qt4-gui
+Requires:	python-qt4-gui
 Requires:	%{name} = %{version}-%{release}
 Requires:	usermode
 
@@ -427,13 +427,6 @@ sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
-# Change shebang /usr/bin/env python -> /usr/bin/python2 (bug #618351).
-find -name '*.py' -print0 | xargs -0 \
-    sed -i.env-python -e 's,^#!/usr/bin/python,#!%{__python2},'
-
-find -name '*.py' -print0 | xargs -0 \
-    sed -i.env-python -e 's,^#!/usr/bin/env python,#!%{__python2},'
-
 # Make all files in the source user-writable
 chmod -R u+w .
 
@@ -443,8 +436,6 @@ chmod -R u+w .
 # create required files as placeholder, otherwise autoreconf fails
 touch NEWS README AUTHORS ChangeLog
 autoreconf -ifv
-
-export PYTHON=%{__python2}
 
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
@@ -654,11 +645,13 @@ fi
 %endif
 
 # Restart CUPS to make the removal of the Fax PPD known to it
-/bin/systemctl restart cups.service ||:
+/bin/systemctl restart org.cups.cupsd.socket ||:
+/bin/systemctl restart org.cups.cupsd.service ||:
 
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-/bin/systemctl restart cups.service ||:
+/bin/systemctl restart org.cups.cupsd.socket ||:
+/bin/systemctl restart org.cups.cupsd.service ||:
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
