@@ -86,7 +86,7 @@ Patch302:	hplip-CVE-2013-4325.patch
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
-BuildRequires:	python-sip >= 4.1.1
+BuildRequires:	python-sip >= 1:4.16.4-1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
 BuildRequires:	jpeg-devel
@@ -108,18 +108,18 @@ Requires:	foomatic-filters
 Requires:	hplip-model-data
 Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
-Requires:	python-sip
+Requires:	python-sip >= 1:4.16.4-1
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
-Requires:	python-dbus
+Requires:	python-dbus >= 1.2.0-11
 Requires:	polkit-agent
 Requires:	usermode-consoleonly
-Requires:	python-gobject
+Requires:	python-gi >= 3.14.0-3
 # Required by hp-scan for command line scanning
-Requires:	python-imaging
+Requires:	python-imaging >= 2.5.1-3
 Requires:	sane-backends-hpaio
 # Needed to avoid misleading errors about network connectivity (RH bug #705843)
 Requires:	wget
@@ -454,7 +454,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-hpijs-install \
 	--enable-udev-acl-rules \
 	--disable-policykit \
-	--with-mimedir=%{_datadir}/cups/mime
+	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -467,7 +467,7 @@ mkdir -p %{buildroot}%{_includedir}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
 
-%makeinstall_std
+%makeinstall_std PYTHON=%{__python}
 
 # Install files which the "make install" missed to install
 install -m 644 ip/hpip.h %{buildroot}%{_includedir}
@@ -548,7 +548,7 @@ install -p -m755 %{SOURCE6} %{buildroot}%{_docdir}/%{name}
 # Make sure pyc files are generated, otherwise we can get
 # difficult to debug problems
 pushd %{buildroot}%{_datadir}/%{name}
-python2 -m compileall .
+%{__python} -m compileall .
 popd
 
 # create empty /var/lib/hp/hplip.state to fix hp-plugin installation (mga#5395)
