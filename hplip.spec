@@ -606,9 +606,6 @@ session		include		config-util-user
 EOF
 done
 
-%post
-%tmpfiles_create %{name}.conf
-
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
 /bin/systemctl try-restart org.cups.cupsd.socket ||:
@@ -776,7 +773,7 @@ fi
 %{_unitdir}/hplip-printer@.service
 %{_datadir}/hplip/hplip_clean.sh
 %{_datadir}/cups/mime/pstotiff.convs
-
+%{_datadir}/hplip/__pycache__/*.pyc
 
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
