@@ -5,6 +5,7 @@
 
 %define major 0
 %define libhpip %mklibname hpip %{major}
+%define libhpipp %mklibname hpipp %{major}
 %define libhpmud %mklibname hpmud %{major}
 %define sanemaj 1
 %define libsane %mklibname sane-hpaio %{sanemaj}
@@ -127,7 +128,8 @@ Requires:	wget
 # (tpg) hp-check needs this
 Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
-Requires:	%{libhpip} = %{version}
+Requires:	%{libhpip} = %{EVRD}
+Requires:	%{libhpipp} = %{EVRD}
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 # hp-doctor requires gui modules
@@ -162,6 +164,13 @@ Group:		System/Printing
 %description -n %{libhpip}
 Library needed for the "hplip" HP printer/all-in-one drivers
 
+%package -n %{libhpipp}
+Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
+Group:		System/Printing
+
+%description -n %{libhpipp}
+Library needed for the "hplip" HP printer/all-in-one drivers
+
 %package -n %{libhpmud}
 Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
 Group:		System/Printing
@@ -174,6 +183,7 @@ Library needed for the "hplip" HP printer/all-in-one drivers
 Summary:	Headers and links to compile against the "%{libhpip}" ("hplip") library
 Group:		Development/C
 Requires:	%{libhpip} >= %{version}-%{release}
+Requires:	%{libhpipp} >= %{version}-%{release}
 Requires:	%{libhpmud} >= %{version}-%{release}
 Requires:	%{libsane} >= %{version}-%{release}
 Provides:	libhpip-devel = %{version}-%{release}
@@ -786,10 +796,14 @@ fi
 %files -n %{libhpmud}
 %{_libdir}/libhpmud.so.%{major}*
 
+%files -n %{libhpipp}
+%{_libdir}/libhpipp.so.%{major}*
+
 %files -n %{devname}
 %{_includedir}/hpip.h
 %{_includedir}/xform.h
 %{_libdir}/libhpip.so
+%{_libdir}/libhpipp.so
 %{_libdir}/libhpmud.so
 %if %{sane_backend}
 %{_libdir}/sane/libsane-hpaio.so
