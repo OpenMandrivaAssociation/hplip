@@ -14,6 +14,7 @@
 %define __noautoreq 'devel\(.*\)'
 
 %define extraversion %nil
+%define _disable_ld_no_undefined 1
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
