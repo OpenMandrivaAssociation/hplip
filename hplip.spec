@@ -784,8 +784,6 @@ fi
 %{_unitdir}/hplip-printer@.service
 %{_datadir}/hplip/hplip_clean.sh
 %{_datadir}/cups/mime/pstotiff.convs
-%dir %{_datadir}/hplip/__pycache__
-%{_datadir}/hplip/__pycache__/*.pyc
 
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
