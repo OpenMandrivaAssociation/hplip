@@ -21,10 +21,10 @@
  CXXFLAGS+= -DCONFDIR=\"$(hplip_confdir)\"
 --- a/configure.in
 +++ b/configure.in
-@@ -536,6 +536,8 @@
-    AC_MSG_RESULT("using $PYTHONINCLUDEDIR")
-    AC_ARG_VAR(PYTHONINCLUDEDIR, [path to Python.h C header file])
-    AC_CHECK_HEADERS(python$PYTHON_VERSION/Python.h, ,[AC_MSG_ERROR([cannot find python-devel support], 6)])
+@@ -531,6 +531,8 @@
+           [FOUND_HEADER=yes; break;])
+    AS_IF([test "x$FOUND_HEADER" != "xyes"],
+           [AC_MSG_ERROR([cannot find python-devel support], 6)])
 +   AC_ARG_VAR([PYUIC4], [PyQT pyuic4 .ui to .py compiler command])
 +   AC_CHECK_TOOLS([PYUIC4], [pyuic4])
  fi

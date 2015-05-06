@@ -5,6 +5,7 @@
 
 %define major 0
 %define libhpip %mklibname hpip %{major}
+%define libhpipp %mklibname hpipp %{major}
 %define libhpmud %mklibname hpmud %{major}
 %define sanemaj 1
 %define libsane %mklibname sane-hpaio %{sanemaj}
@@ -14,11 +15,12 @@
 %define __noautoreq 'devel\(.*\)'
 
 %define extraversion %nil
+%define _disable_ld_no_undefined 1
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.14.6
-Release:	2
+Version:	3.15.4
+Release:	0.1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -43,8 +45,8 @@ Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
 Patch104:	hplip-no-asm.patch
-Patch105:       hplip-deviceIDs-drv.patch
-Patch107:       hplip-deviceIDs-ppd.patch
+Patch105:	hplip-deviceIDs-drv.patch
+Patch107:	hplip-deviceIDs-ppd.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
 Patch111:	hplip-hpijs-marker-supply.patch
@@ -56,8 +58,8 @@ Patch121:	hplip-ppd-ImageableArea.patch
 # fedora patch not necessary. done via sed call
 #Patch129: hplip-makefile-chgrp.patch
 Patch131:	hplip-ipp-accessors.patch
-Patch132: hplip-IEEE-1284-4.patch
-Patch133: hplip-check.patch
+Patch132:	hplip-IEEE-1284-4.patch
+Patch133:	hplip-check.patch
 Patch134:	hplip-udev-rules.patch
 
 # Debian/Ubuntu patches
@@ -114,7 +116,7 @@ Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
-Requires:	python-dbus
+Requires:	python-dbus >= 1.2.0-11
 Requires:	polkit-agent
 Requires:	usermode-consoleonly
 Requires:	python-gobject
@@ -126,12 +128,13 @@ Requires:	wget
 # (tpg) hp-check needs this
 Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
-Requires:	%{libhpip} = %{version}
+Requires:	%{libhpip} = %{EVRD}
+Requires:	%{libhpipp} = %{EVRD}
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 # hp-doctor requires gui modules
 Requires:	hplip-gui
-
+Requires:	gnupg
 
 # foomatic-db-hpijs drivers are provided by hp and by this package now
 # NOTE: remove the foomatic-db-hpijs deps sometime in 2010-10-?? ?
@@ -161,6 +164,13 @@ Group:		System/Printing
 %description -n %{libhpip}
 Library needed for the "hplip" HP printer/all-in-one drivers
 
+%package -n %{libhpipp}
+Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
+Group:		System/Printing
+
+%description -n %{libhpipp}
+Library needed for the "hplip" HP printer/all-in-one drivers
+
 %package -n %{libhpmud}
 Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
 Group:		System/Printing
@@ -173,6 +183,7 @@ Library needed for the "hplip" HP printer/all-in-one drivers
 Summary:	Headers and links to compile against the "%{libhpip}" ("hplip") library
 Group:		Development/C
 Requires:	%{libhpip} >= %{version}-%{release}
+Requires:	%{libhpipp} >= %{version}-%{release}
 Requires:	%{libhpmud} >= %{version}-%{release}
 Requires:	%{libsane} >= %{version}-%{release}
 Provides:	libhpip-devel = %{version}-%{release}
@@ -426,10 +437,6 @@ sed -i.duplex-constraints \
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
-
-# Change shebang /usr/bin/env python -> /usr/bin/python (bug #618351).
-find -name '*.py' -print0 | xargs -0 \
-    sed -i.env-python -e 's,^#!/usr/bin/env python,#!/usr/bin/python,'
 
 # Make all files in the source user-writable
 chmod -R u+w .
@@ -777,7 +784,8 @@ fi
 %{_unitdir}/hplip-printer@.service
 %{_datadir}/hplip/hplip_clean.sh
 %{_datadir}/cups/mime/pstotiff.convs
-
+%dir %{_datadir}/hplip/__pycache__
+%{_datadir}/hplip/__pycache__/*.pyc
 
 %files doc
 %doc %{_docdir}/%{name}-doc-%{version}%{extraversion}
@@ -788,10 +796,14 @@ fi
 %files -n %{libhpmud}
 %{_libdir}/libhpmud.so.%{major}*
 
+%files -n %{libhpipp}
+%{_libdir}/libhpipp.so.%{major}*
+
 %files -n %{devname}
 %{_includedir}/hpip.h
 %{_includedir}/xform.h
 %{_libdir}/libhpip.so
+%{_libdir}/libhpipp.so
 %{_libdir}/libhpmud.so
 %if %{sane_backend}
 %{_libdir}/sane/libsane-hpaio.so
