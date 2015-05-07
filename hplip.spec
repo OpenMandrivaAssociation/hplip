@@ -116,7 +116,7 @@ Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
 Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
-Requires:	python-dbus >= 1.2.0-11
+Requires:	python-dbus >= 1.2.0-2
 Requires:	polkit-agent
 Requires:	usermode-consoleonly
 Requires:	python-gobject
