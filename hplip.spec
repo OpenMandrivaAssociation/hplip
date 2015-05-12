@@ -20,7 +20,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.15.4
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -82,7 +82,8 @@ Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
-
+# (tpg) https://issues.openmandriva.org/show_bug.cgi?id=1223
+Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
 
 BuildRequires:	desktop-file-utils
@@ -431,6 +432,7 @@ sed -i.duplex-constraints \
 %patch227 -p1 -b .hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde
 
 %patch228 -p1 -b .hpaio-option-duplex
+%patch229 -p1 -b .processEvents
 
 %patch302 -p0
 
