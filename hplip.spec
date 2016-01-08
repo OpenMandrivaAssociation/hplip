@@ -444,6 +444,7 @@ chmod -R u+w .
 #needed by patches 204 and 205
 # create required files as placeholder, otherwise autoreconf fails
 touch NEWS README AUTHORS ChangeLog
+sed -i 's|^AM_INIT_AUTOMAKE|AM_INIT_AUTOMAKE([foreign])|g' configure.in
 autoreconf -ifv
 
 %if !%{sane_backend}
@@ -461,12 +462,8 @@ WITHOUT_SANE="--without-sane"
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
-	--enable-udev-acl-rules \
 	--disable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
-
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 %make
 
