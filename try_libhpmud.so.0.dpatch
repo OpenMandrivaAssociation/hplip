@@ -1,38 +1,26 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## try_libhpmud.so.0.dpatch by  <evgeni@debian.org>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Try libhpmud.so.0 after libhpmud.so
-
-@DPATCH@
-
-Index: hplip-3.13.11/scan/sane/marvell.c
-===================================================================
---- hplip-3.13.11.orig/scan/sane/marvell.c	2013-10-31 22:45:07.000000000 +1100
-+++ hplip-3.13.11/scan/sane/marvell.c	2013-12-10 05:20:11.000000000 +1100
-@@ -60,10 +60,14 @@
+--- hplip-3.14.6/scan/sane/marvell.c.try_libhpmud.so.0	2014-06-05 13:53:59.292626745 +0200
++++ hplip-3.14.6/scan/sane/marvell.c	2014-06-05 13:55:17.270338062 +0200
+@@ -60,11 +60,14 @@ static int bb_load(struct marvell_sessio
     int stat=1;
  
     /* Load hpmud manually with symbols exported. Otherwise the plugin will not find it. */ 
 -   if ((ps->hpmud_handle = load_library("libhpmud.so")) == NULL)
-+
 +   if ((ps->hpmud_handle = dlopen("libhpmud.so", RTLD_LAZY|RTLD_GLOBAL)) == NULL)
     {
 -	   if ((ps->hpmud_handle = load_library("libhpmud.so.0")) == NULL)
--           goto bugout;
-+     if ((ps->hpmud_handle = dlopen("libhpmud.so.0", RTLD_LAZY|RTLD_GLOBAL)) == NULL)
-+     {
-+       BUG("unable to load restricted library: %s\n", dlerror());
-+       goto bugout;
-+     }
-    }
++      if ((ps->hpmud_handle = dlopen("libhpmud.so.0", RTLD_LAZY|RTLD_GLOBAL)) == NULL)
++      {
++           BUG("unable to load restricted library: %s\n", dlerror());
+            goto bugout;
+-   }
++      }
++   } 
  
     /* Load math library manually with symbols exported (Ubuntu 8.04). Otherwise the plugin will not find it. */ 
-Index: hplip-3.13.11/scan/sane/soap.c
-===================================================================
---- hplip-3.13.11.orig/scan/sane/soap.c	2013-10-31 22:45:07.000000000 +1100
-+++ hplip-3.13.11/scan/sane/soap.c	2013-12-10 05:18:45.000000000 +1100
-@@ -68,10 +68,13 @@
+    if ((ps->math_handle = load_library("libm.so")) == NULL)
+--- hplip-3.14.6/scan/sane/soap.c.try_libhpmud.so.0	2014-06-05 13:53:59.306626513 +0200
++++ hplip-3.14.6/scan/sane/soap.c	2014-06-05 13:56:51.357786348 +0200
+@@ -68,11 +68,14 @@ static int bb_load(struct soap_session *
     int stat=1;
  
     /* Load hpmud manually with symbols exported. Otherwise the plugin will not find it. */ 
@@ -41,19 +29,19 @@ Index: hplip-3.13.11/scan/sane/soap.c
     {
 -	   if ((ps->hpmud_handle = load_library("libhpmud.so.0")) == NULL)
 -           goto bugout;
+-   }
 +     if ((ps->hpmud_handle = dlopen("libhpmud.so.0", RTLD_LAZY|RTLD_GLOBAL)) == NULL)
 +     {
 +       BUG("unable to load restricted library: %s\n", dlerror());
 +       goto bugout;
 +     }
-    }
++   } 
  
     /* Load math library manually with symbols exported (Ubuntu 8.04). Otherwise the plugin will not find it. */ 
-Index: hplip-3.13.11/scan/sane/soapht.c
-===================================================================
---- hplip-3.13.11.orig/scan/sane/soapht.c	2013-10-31 22:45:07.000000000 +1100
-+++ hplip-3.13.11/scan/sane/soapht.c	2013-12-10 05:19:28.000000000 +1100
-@@ -62,10 +62,13 @@
+    if ((ps->math_handle = load_library("libm.so")) == NULL)
+--- hplip-3.14.6/scan/sane/soapht.c.try_libhpmud.so.0	2014-06-05 13:58:13.571430353 +0200
++++ hplip-3.14.6/scan/sane/soapht.c	2014-06-05 14:01:15.280438768 +0200
+@@ -62,11 +62,14 @@ static int bb_load(struct soap_session *
     int stat=1;
  
     /* Load hpmud manually with symbols exported. Otherwise the plugin will not find it. */ 
@@ -62,11 +50,13 @@ Index: hplip-3.13.11/scan/sane/soapht.c
     {
 -	   if ((ps->hpmud_handle = load_library("libhpmud.so.0")) == NULL)
 -           goto bugout;
+-   }
 +     if ((ps->hpmud_handle = dlopen("libhpmud.so.0", RTLD_LAZY|RTLD_GLOBAL)) == NULL)
 +     {
 +       BUG("unable to load restricted library: %s\n", dlerror());
 +       goto bugout;
 +     }
-    }
++   } 
  
     /* Load math library manually with symbols exported (Ubuntu 8.04). Otherwise the plugin will not find it. */ 
+    if ((ps->math_handle = load_library("libm.so")) == NULL)

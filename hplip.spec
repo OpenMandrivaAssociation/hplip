@@ -19,8 +19,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.15.4
-Release:	3
+Version:	3.15.11
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -33,12 +33,11 @@ Source4:	hplip.rpmlintrc
 # http://hplipopensource.com/node/367
 Source5:	http://hplipopensource.com/hplip-web/smartinstall/SmartInstallDisable-Tool.run
 Source6:	README.urpmi
-# (doktor5000) fix linking with python and libsane
-# taken from mandriva
-Patch1:		hplip-3.11.3-mdv-link.patch
+
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
+Patch4:		hplip-3.15.4-hp_ipp.patch
 
 # Fedora patches
 Patch101:	hplip-pstotiff-is-rubbish.patch
@@ -66,12 +65,11 @@ Patch134:	hplip-udev-rules.patch
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
 Patch201:	01_rss.dpatch
 Patch203:	14_charsign_fixes.dpatch
-Patch204:	85_rebuild_python_ui.dpatch
+Patch204:	hplip-3.15.11-rebuild_python_ui.patch
 Patch206:	hplip-photosmart_b9100_support.patch
 Patch207:	pjl-duplex-binding.dpatch
 #hplip-pjl-duplex-binding.patch
 Patch208:	mga-kde4-kdesudo-support.patch
-Patch209:	hp-check-groups.dpatch
 Patch215:	simple-scan-as-default.dpatch
 # (doktor5000) rediff original debian patch for hplip 3.11.10
 Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
@@ -265,6 +263,7 @@ flash memory cards.
 %setup -qn %{name}-%{version}%{extraversion}
 
 %patch2 -p1 -b .udev-rules-on-action-change
+%patch4 -p1
 
 # Fedora patches
 
@@ -411,9 +410,6 @@ sed -i.duplex-constraints \
 
 # original patch from debian, path to kdesu added for %%_libdir on x86_64
 # %patch208 -p1 -b .mga-kde4-kdesudo-support
-
-# https://bugs.launchpad.net/debian/+source/hplip/+bug/530746
-%patch209 -p1 -b .hp-check-groups
 
 # disable for now, as this changes default hplip behavior
 # and change in default scanning application should be decided by a poll first
