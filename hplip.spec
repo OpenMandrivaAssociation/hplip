@@ -7,6 +7,7 @@
 %define libhpip %mklibname hpip %{major}
 %define libhpipp %mklibname hpipp %{major}
 %define libhpmud %mklibname hpmud %{major}
+%define libhpdiscovery %mklibname hpdiscovery %{major}
 %define sanemaj 1
 %define libsane %mklibname sane-hpaio %{sanemaj}
 %define devname %mklibname hpip -d
@@ -19,8 +20,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.15.11
-Release:	3
+Version:	3.16.5
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -65,7 +66,7 @@ Patch134:	hplip-udev-rules.patch
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
 Patch201:	01_rss.dpatch
 Patch203:	14_charsign_fixes.dpatch
-Patch204:	hplip-3.15.11-rebuild_python_ui.patch
+#Patch204:	hplip-3.15.11-rebuild_python_ui.patch
 Patch206:	hplip-photosmart_b9100_support.patch
 Patch207:	pjl-duplex-binding.dpatch
 #hplip-pjl-duplex-binding.patch
@@ -178,6 +179,13 @@ Conflicts:	%{_lib}hpip0 < 3.13.2-4
 %description -n %{libhpmud}
 Library needed for the "hplip" HP printer/all-in-one drivers
 
+%package -n %{libhpdiscovery}
+Summary:        Dynamic library for the "hplip" HP printer/all-in-one drivers
+Group:          System/Printing
+
+%description -n %{libhpdiscovery}
+Library needed for the "hplip" HP printer/all-in-one drivers
+
 %package -n %{devname}
 Summary:	Headers and links to compile against the "%{libhpip}" ("hplip") library
 Group:		Development/C
@@ -218,7 +226,7 @@ determine whether HPLIP has to be installed or not.
 %package gui
 Summary:	HPLIP graphical tools
 Group:		System/Printing
-Requires:	python-qt4-gui
+Requires:	python-qt5-gui
 Requires:	%{name} = %{version}-%{release}
 Requires:	usermode
 
@@ -398,7 +406,7 @@ sed -i.duplex-constraints \
 %patch203 -p1 -b .14_charsign
 
 # compiling ui files to py
-%patch204 -p1 -b .85_rebuild_python_ui
+#patch204 -p1 -b .85_rebuild_python_ui
 
 # Corrections on the models.dat entry for the HP PhotoSmart Pro B9100,
 # especially for the correct color calibration mode.
@@ -457,7 +465,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-gui-build \
 	--enable-fax-build \
 	--enable-pp-build \
-	--enable-qt4 --disable-qt3 \
+	--enable-qt5 --disable-qt4 --disable-qt3 \
 	--enable-hpcups-install \
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
@@ -794,12 +802,16 @@ fi
 %files -n %{libhpipp}
 %{_libdir}/libhpipp.so.%{major}*
 
+%files -n %{libhpdiscovery}
+%{_libdir}/libhpdiscovery.so.%{major}*
+
 %files -n %{devname}
 %{_includedir}/hpip.h
 %{_includedir}/xform.h
 %{_libdir}/libhpip.so
 %{_libdir}/libhpipp.so
 %{_libdir}/libhpmud.so
+%{_libdir}/libhpdiscovery.so
 %if %{sane_backend}
 %{_libdir}/sane/libsane-hpaio.so
 
@@ -826,7 +838,7 @@ fi
 %{_datadir}/hplip/toolbox.py*
 # Directories
 %{_datadir}/hplip/data/images
-%{_datadir}/hplip/ui4
+%{_datadir}/hplip/ui5
 
 %files hpijs
 %{_bindir}/hpijs

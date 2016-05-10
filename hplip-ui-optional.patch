@@ -16,12 +16,12 @@ diff -up hplip-3.12.11/base/utils.py.ui-optional hplip-3.12.11/base/utils.py
          return False
  
 @@ -712,7 +719,8 @@ def checkPyQtImport4():
-         import PyQt4
-         import ui4
-     except ImportError:
--        log.error("HPLIP is not installed properly or is installed without graphical support. Please reinstall HPLIP")
+         import PyQt5
+         import ui5
+     else:
+-        log.debug("HPLIP is not installed properly or is installed without graphical support. Please reinstall HPLIP again")
 +        # hplip-gui sub-package (Fedora) requires PyQt4
 +        log.error("Install the hplip-gui package for graphical support.")
          return False
-     else:
-         return True
+     return True
+

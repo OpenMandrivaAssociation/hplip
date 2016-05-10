@@ -7,4 +7,4 @@
 +ACTION!="remove", GOTO="hpmud_rules_end"
  SUBSYSTEM=="ppdev", OWNER="root", GROUP="lp", MODE="0664"
  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GOTO="hpmud_usb_rules"
- 
+ GOTO="hpmud_rules_end"
