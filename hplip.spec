@@ -21,7 +21,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.16.5
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -227,6 +227,8 @@ determine whether HPLIP has to be installed or not.
 Summary:	HPLIP graphical tools
 Group:		System/Printing
 Requires:	python-qt5-gui
+Requires:	python-qt5-widgets
+Requires:	python-qt5-dbus
 Requires:	%{name} = %{version}-%{release}
 Requires:	usermode
 
