@@ -21,7 +21,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.16.5
-Release:	2
+Release:	3
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -104,7 +104,7 @@ BuildRequires:	xsane
 Requires(post):	hplip
 %endif
 Requires(post):	systemd
-Requires:	cups
+Requires(post):	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
 Requires:	hplip-model-data
@@ -624,8 +624,8 @@ done
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
-/bin/systemctl try-restart org.cups.cupsd.socket ||:
-/bin/systemctl try-restart org.cups.cupsd.service ||:
+/bin/systemctl try-restart cups.socket ||:
+/bin/systemctl try-restart cups.service ||:
 
 %post -n hplip-hpijs
 %{_bindir}/hpcups-update-ppds &>/dev/null ||:
@@ -658,13 +658,13 @@ fi
 %endif
 
 # Restart CUPS to make the removal of the Fax PPD known to it
-/bin/systemctl restart org.cups.cupsd.socket ||:
-/bin/systemctl restart org.cups.cupsd.service ||:
+/bin/systemctl restart cups.socket ||:
+/bin/systemctl restart cups.service ||:
 
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-/bin/systemctl restart org.cups.cupsd.socket ||:
-/bin/systemctl restart org.cups.cupsd.service ||:
+/bin/systemctl restart cups.socket ||:
+/bin/systemctl restart cups.service ||:
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
