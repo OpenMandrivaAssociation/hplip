@@ -1,0 +1,20 @@
+--- hplip-3.16.7/prnt/hpcups/HPCupsFilter.h.omv~	2016-08-17 19:13:04.097726436 +0200
++++ hplip-3.16.7/prnt/hpcups/HPCupsFilter.h	2016-08-17 19:13:11.514666581 +0200
+@@ -37,6 +37,7 @@
+ #include "Job.h"
+ 
+ #include "dbuscomm.h"
++#include <cups/ppd.h>
+ 
+ #define		DBITMAPFILEHEADER		14
+ #define		DBITMAPINFOHEADER		40
+--- hplip-3.16.7/prnt/hpijs/hpcupsfax.cpp.omv~	2016-08-17 19:14:08.959203863 +0200
++++ hplip-3.16.7/prnt/hpijs/hpcupsfax.cpp	2016-08-17 19:14:18.138130062 +0200
+@@ -44,6 +44,7 @@
+ #include <math.h>
+ #include <cups/cups.h>
+ #include <cups/raster.h>
++#include <cups/ppd.h>
+ #include <string>
+ #ifdef FALSE
+ #undef FALSE

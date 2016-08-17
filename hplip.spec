@@ -20,12 +20,12 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.16.5
-Release:	5
+Version:	3.16.7
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
-Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/hplip/hplip-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
 Source2:	copy-deviceids.py
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
@@ -38,6 +38,7 @@ Source6:	README.urpmi
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
+Patch3:		hplip-cups-2.2.patch
 Patch4:		hplip-3.15.4-hp_ipp.patch
 
 # Fedora patches
@@ -273,6 +274,7 @@ flash memory cards.
 %setup -qn %{name}-%{version}%{extraversion}
 
 %patch2 -p1 -b .udev-rules-on-action-change
+%patch3 -p1 -b .cups22~
 %patch4 -p1
 
 # Fedora patches
