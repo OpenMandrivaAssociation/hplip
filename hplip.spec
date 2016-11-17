@@ -20,12 +20,12 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.16.5
-Release:	5
+Version:	3.16.10
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
-Source0:	http://garr.dl.sourceforge.net/sourceforge/hplip/%{name}-%{version}%{extraversion}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/hplip/hplip-%{version}%{extraversion}.tar.gz
 Source1:	hpcups-update-ppds.sh
 Source2:	copy-deviceids.py
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
@@ -38,6 +38,7 @@ Source6:	README.urpmi
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
+Patch3:		hplip-cups-2.2.patch
 Patch4:		hplip-3.15.4-hp_ipp.patch
 
 # Fedora patches
@@ -71,6 +72,7 @@ Patch206:	hplip-photosmart_b9100_support.patch
 Patch207:	pjl-duplex-binding.dpatch
 #hplip-pjl-duplex-binding.patch
 Patch208:	mga-kde4-kdesudo-support.patch
+Patch209:	hplip-3.15.11-mga-plasma-delay-startup.patch
 Patch215:	simple-scan-as-default.dpatch
 # (doktor5000) rediff original debian patch for hplip 3.11.10
 Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
@@ -273,6 +275,7 @@ flash memory cards.
 %setup -qn %{name}-%{version}%{extraversion}
 
 %patch2 -p1 -b .udev-rules-on-action-change
+%patch3 -p1 -b .cups22~
 %patch4 -p1
 
 # Fedora patches
@@ -420,6 +423,8 @@ sed -i.duplex-constraints \
 
 # original patch from debian, path to kdesu added for %%_libdir on x86_64
 # %patch208 -p1 -b .mga-kde4-kdesudo-support
+
+%patch209 -p1 -b .plasma
 
 # disable for now, as this changes default hplip behavior
 # and change in default scanning application should be decided by a poll first
