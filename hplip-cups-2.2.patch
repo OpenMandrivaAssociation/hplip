@@ -1,20 +1,28 @@
---- hplip-3.16.7/prnt/hpcups/HPCupsFilter.h.omv~	2016-08-17 19:13:04.097726436 +0200
-+++ hplip-3.16.7/prnt/hpcups/HPCupsFilter.h	2016-08-17 19:13:11.514666581 +0200
-@@ -37,6 +37,7 @@
- #include "Job.h"
+From: David Geiger <david.david@mageialinux-online.org>
+Date: Tue, 22 Sep 2016 10:30:12 -0500
+Subject: [PATCH] fix FTBFS against cups-2.2
+
+'ppd_file_t' moved to cups/ppd.h
+
+diff -Nru a/prnt/hpcups/HPCupsFilter.h b/prnt/hpcups/HPCupsFilter.h
+--- a/prnt/hpcups/HPCupsFilter.h	2016-08-26 12:03:22.000000000 +0200
++++ b/prnt/hpcups/HPCupsFilter.h	2016-09-22 10:30:28.847713112 +0200
+@@ -31,6 +31,7 @@
+ #ifndef HP_CUPSFILTER_H
+ #define HP_CUPSFILTER_H
  
- #include "dbuscomm.h"
 +#include <cups/ppd.h>
- 
- #define		DBITMAPFILEHEADER		14
- #define		DBITMAPINFOHEADER		40
---- hplip-3.16.7/prnt/hpijs/hpcupsfax.cpp.omv~	2016-08-17 19:14:08.959203863 +0200
-+++ hplip-3.16.7/prnt/hpijs/hpcupsfax.cpp	2016-08-17 19:14:18.138130062 +0200
-@@ -44,6 +44,7 @@
+ #include "CommonDefinitions.h"
+ #include "SystemServices.h"
+ #include "Compressor.h"
+diff -Nru a/prnt/hpijs/hpcupsfax.cpp b/prnt/hpijs/hpcupsfax.cpp
+--- a/prnt/hpijs/hpcupsfax.cpp	2016-08-26 12:03:15.000000000 +0200
++++ b/prnt/hpijs/hpcupsfax.cpp	2016-09-22 09:53:38.281873443 +0200
+@@ -43,6 +43,7 @@
+ #include <arpa/inet.h>
  #include <math.h>
  #include <cups/cups.h>
- #include <cups/raster.h>
 +#include <cups/ppd.h>
+ #include <cups/raster.h>
  #include <string>
  #ifdef FALSE
- #undef FALSE
