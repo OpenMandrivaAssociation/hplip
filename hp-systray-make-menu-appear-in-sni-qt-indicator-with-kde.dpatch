@@ -5,8 +5,8 @@
 ## DP: No description.
 
 @DPATCH@
---- a/ui4/systemtray.py
-+++ b/ui4/systemtray.py
+--- a/ui5/systemtray.py
++++ b/ui5/systemtray.py
 @@ -569,6 +569,9 @@
  
          elif reason == QSystemTrayIcon.Trigger:

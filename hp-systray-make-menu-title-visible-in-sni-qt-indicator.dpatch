@@ -1,5 +1,5 @@
 --- hplip-3.16.5/ui5/systemtray.py.orig	2016-06-23 20:53:13.451859844 +0100
-+++ hplip-3.16.5/ui5/systemtray.py	2016-06-23 20:54:23.907865130 +0100
++++ hplip-3.16.5/ui5/systemtray.py	2016-06-26 21:02:45.717273118 +0100
 @@ -442,30 +442,12 @@
      def setMenu(self):
          self.menu = QMenu()
@@ -24,11 +24,12 @@
 -        layout.insertWidget(-1, label, 20)
 -        title.setDefaultWidget(hbox)
 -
-         label.setText(self.__tr("HPLIP Status Service"))
+-        label.setText(self.__tr("HPLIP Status Service"))
 -
 -        f = label.font()
 -        f.setBold(True)
 -        label.setFont(f)
++        title.setText(self.__tr("HPLIP Status Service"))
 +        title.setIcon(self.prop_icon)
 +        title.setIconVisibleInMenu(True)
          self.menu.insertAction(None, title)
