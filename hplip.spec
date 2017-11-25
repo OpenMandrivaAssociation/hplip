@@ -20,12 +20,12 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.16.10
+Version:	3.17.10
 Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
-Source0:	http://prdownloads.sourceforge.net/hplip/hplip-%{version}%{extraversion}.tar.gz
+Source0:	https://downloads.sourceforge.net/project/hplip/hplip/%{version}/hplip-%{version}.tar.gz
 Source1:	hpcups-update-ppds.sh
 Source2:	copy-deviceids.py
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
@@ -46,8 +46,8 @@ Patch101:	hplip-pstotiff-is-rubbish.patch
 Patch102:	hplip-strstr-const.patch
 Patch103:	hplip-ui-optional.patch
 Patch104:	hplip-no-asm.patch
-Patch105:	hplip-deviceIDs-drv.patch
-Patch107:	hplip-deviceIDs-ppd.patch
+Patch105:	https://src.fedoraproject.org/rpms/hplip/raw/master/f/hplip-deviceIDs-drv.patch
+Patch107:	https://src.fedoraproject.org/rpms/hplip/raw/master/f/hplip-deviceIDs-ppd.patch
 Patch108:	hplip-retry-open.patch
 Patch109:	hplip-snmp-quirks.patch
 Patch111:	hplip-hpijs-marker-supply.patch
@@ -276,7 +276,7 @@ flash memory cards.
 
 %patch2 -p1 -b .udev-rules-on-action-change
 %patch3 -p1 -b .cups22~
-%patch4 -p1
+%patch4 -p1 -b .004~
 
 # Fedora patches
 
