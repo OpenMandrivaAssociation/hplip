@@ -20,8 +20,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.17.10
-Release:	2
+Version:	3.17.11
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		http://hplip.sourceforge.net/
@@ -86,6 +86,7 @@ Patch228:	hpaio-option-duplex.diff
 # (tpg) https://issues.openmandriva.org/show_bug.cgi?id=1223
 Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
+Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -446,6 +447,7 @@ sed -i.duplex-constraints \
 %patch229 -p1 -b .processEvents
 
 %patch302 -p0
+%patch303 -p1
 
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
