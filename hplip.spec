@@ -13,7 +13,10 @@
 %define devname %mklibname hpip -d
 
 # Suppress automatically generated Requires for devel packages
-%define __noautoreq 'devel\(.*\)'
+%global __requires_exclude	devel\\\(.*\\\)
+
+# we don't want to provide private python extension libs
+%global __provides_exclude	%{python3_sitearch}/.*\\.so$
 
 %define extraversion %nil
 %define _disable_ld_no_undefined 1
@@ -219,6 +222,7 @@ SANE driver for scanners in HP's multi-function devices (from HPLIP)
 %package model-data
 Summary:	Data file listing the HP printer models supported by HPLIP
 Group:		System/Printing
+Requires(post):	systemd
 
 %description model-data
 HPLIP supports most current HP printers and multifunction devices, but
