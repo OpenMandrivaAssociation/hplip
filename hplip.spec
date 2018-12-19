@@ -107,6 +107,7 @@ BuildRequires:	pkgconfig(libv4l1)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(udev)
 BuildRequires:	pkgconfig(libcrypto)
+BuildRequires:	pkgconfig(zlib)
 BuildRequires:	polkit-1-devel
 BuildRequires:	python2
 %if %{sane_backend}
