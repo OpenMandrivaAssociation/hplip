@@ -104,6 +104,7 @@ BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(udev)
+BuildRequires:	python2
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
 BuildRequires:	xsane
