@@ -23,11 +23,11 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.17.11
-Release:	2
+Version:	3.18.12
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
-Url:		http://hplip.sourceforge.net/
+Url:		https://developers.hp.com/hp-linux-imaging-and-printing
 Source0:	https://downloads.sourceforge.net/project/hplip/hplip/%{version}/hplip-%{version}.tar.gz
 Source1:	hpcups-update-ppds.sh
 Source2:	copy-deviceids.py
@@ -71,7 +71,6 @@ Patch134:	hplip-udev-rules.patch
 Patch201:	01_rss.dpatch
 Patch203:	14_charsign_fixes.dpatch
 #Patch204:	hplip-3.15.11-rebuild_python_ui.patch
-Patch206:	hplip-photosmart_b9100_support.patch
 Patch207:	pjl-duplex-binding.dpatch
 #hplip-pjl-duplex-binding.patch
 Patch208:	mga-kde4-kdesudo-support.patch
@@ -90,6 +89,7 @@ Patch228:	hpaio-option-duplex.diff
 Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
 Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
+Patch304:	hplip-3.18.12-clang7.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -418,10 +418,6 @@ sed -i.duplex-constraints \
 # compiling ui files to py
 #patch204 -p1 -b .85_rebuild_python_ui
 
-# Corrections on the models.dat entry for the HP PhotoSmart Pro B9100,
-# especially for the correct color calibration mode.
-%patch206 -p1 -b .hplip-photosmart_b9100_support
-
 # Fixes Short-edge duplex printing if duplex is PJL-controlled
 # https://bugs.launchpad.net/hplip/+bug/244295
 %patch207 -p1 -b .hplip-pjl-duplex-binding
@@ -452,6 +448,7 @@ sed -i.duplex-constraints \
 
 %patch302 -p0
 %patch303 -p1
+%patch304 -p1
 
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
@@ -680,6 +677,7 @@ fi
 %files
 %config(noreplace) %{_sysconfdir}/hp
 %dir %{_localstatedir}/lib/hp/
+%{_bindir}/hp-uiscan
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
@@ -687,7 +685,10 @@ fi
 %{_bindir}/hp-diagnose_plugin
 %{_bindir}/hp-diagnose_queues
 %{_bindir}/hp-doctor
+%{_datadir}/hplip/dat2drv
 %{_datadir}/hplip/doctor.py*
+%{_datadir}/hplip/locatedriver
+%{_datadir}/hplip/uiscan.py
 %{_bindir}/hp-fab
 %{_bindir}/hp-faxsetup
 %{_bindir}/hp-firmware
