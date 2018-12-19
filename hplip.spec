@@ -90,6 +90,8 @@ Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
 Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 Patch304:	hplip-3.18.12-clang7.patch
+# From Debian
+Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -455,6 +457,8 @@ sed -i.duplex-constraints \
 %patch302 -p0
 %patch303 -p1
 %patch304 -p1
+
+%patch400 -p1 -b .noClosedSource~
 
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
