@@ -98,7 +98,7 @@ BuildRequires:	python-sip >= 1:4.16.4-1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
 # For ppdc
-BuildRequires:	cups-common
+BuildRequires:	cups-common cups
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libgphoto2)
