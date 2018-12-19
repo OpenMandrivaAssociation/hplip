@@ -97,6 +97,8 @@ BuildRequires:	polkit
 BuildRequires:	python-sip >= 1:4.16.4-1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
+# For ppdc
+BuildRequires:	cups-common
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libgphoto2)
@@ -104,6 +106,8 @@ BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(udev)
+BuildRequires:	pkgconfig(libcrypto)
+BuildRequires:	polkit-1-devel
 BuildRequires:	python2
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
@@ -481,7 +485,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
-	--disable-policykit \
+	--enable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
 
 %make
@@ -678,6 +682,9 @@ fi
 %files
 %config(noreplace) %{_sysconfdir}/hp
 %dir %{_localstatedir}/lib/hp/
+%{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
+%{_datadir}/dbus-1/system-services/com.hp.hplip.service
+%{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_bindir}/hp-uiscan
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
