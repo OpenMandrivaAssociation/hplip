@@ -24,7 +24,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.18.12
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -132,7 +132,6 @@ Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
 Requires:	python-dbus >= 1.2.0-11
 Requires:	polkit-agent
-Requires:	usermode-consoleonly
 Requires:	python-gi >= 3.14.0-3
 # Required by hp-scan for command line scanning
 Requires:	python-imaging >= 2.5.1-3
@@ -245,7 +244,6 @@ Requires:	python-qt5-gui
 Requires:	python-qt5-widgets
 Requires:	python-qt5-dbus
 Requires:	%{name} = %{version}-%{release}
-Requires:	usermode
 
 %description gui
 HPLIP graphical tools.
@@ -615,29 +613,10 @@ rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 #Add rules for all hp printers
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}/lib/udev/rules.d/56-hpmud.rules
 
-# consolehelper config
-#
-
+# (cg) Create post consolehelper compatibility links
 mkdir -p %{buildroot}%{_sbindir}
-
-# - console user, no password
 for pak in hp-setup hp-plugin hp-diagnose_plugin; do
-		mv %{buildroot}%{_bindir}/$pak %{buildroot}%{_sbindir}/$pak
-        ln -sf %{_bindir}/consolehelper %{buildroot}%{_bindir}/$pak
-        mkdir -p %{buildroot}%{_sysconfdir}/security/console.apps/
-        cat > %{buildroot}%{_sysconfdir}/security/console.apps/$pak <<EOF
-USER=root
-PROGRAM=%{_sbindir}/$pak
-FALLBACK=false
-SESSION=true
-EOF
-        mkdir -p %{buildroot}%{_sysconfdir}/pam.d/
-		cat > %{buildroot}%{_sysconfdir}/pam.d/$pak  <<EOF
-#%PAM-1.0
-auth		include		config-util-user
-account		include		config-util-user
-session		include		config-util-user
-EOF
+  ln -sf %{_bindir}/$pak %{buildroot}%{_sbindir}
 done
 
 %post -n hplip-hpijs-ppds
@@ -729,13 +708,6 @@ fi
 %{_sbindir}/hp-setup
 %{_sbindir}/hp-plugin
 
-%{_sysconfdir}/pam.d/hp-diagnose_plugin
-%{_sysconfdir}/pam.d/hp-plugin
-%{_sysconfdir}/pam.d/hp-setup
-%{_sysconfdir}/security/console.apps/hp-diagnose_plugin
-%{_sysconfdir}/security/console.apps/hp-plugin
-%{_sysconfdir}/security/console.apps/hp-setup
-
 # A tool to disable Smart Install
 %{_bindir}/SmartInstallDisable-Tool.run
 
@@ -804,11 +776,8 @@ fi
 %{_datadir}/hplip/pcard
 %{_datadir}/hplip/prnt
 %{_datadir}/hplip/scan
-#{_datadir}/polkit-1/actions/com.hp.hplip.policy
-#{_datadir}/dbus-1/system-services/com.hp.hplip.service
 %{_localstatedir}/lib/hp/hplip.state
 %{_docdir}/%{name}/README.urpmi
-#config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
 %dir %attr(0775,root,lp) /run/hplip
 %{_tmpfilesdir}/hplip.conf
 %{_unitdir}/hplip-printer@.service
