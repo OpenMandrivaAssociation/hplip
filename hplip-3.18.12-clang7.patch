@@ -1,0 +1,11 @@
+diff -up hplip-3.18.12/scan/sane/hpaio.c.omv~ hplip-3.18.12/scan/sane/hpaio.c
+--- hplip-3.18.12/scan/sane/hpaio.c.omv~	2018-12-19 01:09:20.640566423 +0100
++++ hplip-3.18.12/scan/sane/hpaio.c	2018-12-19 01:10:57.538961629 +0100
+@@ -45,6 +45,7 @@
+ #include "sclpml.h"
+ #include "escl.h"
+ #include "io.h"
++#include "orblite.h"
+ #include "orblitei.h"
+ 
+ 

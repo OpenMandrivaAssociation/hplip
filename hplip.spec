@@ -13,18 +13,21 @@
 %define devname %mklibname hpip -d
 
 # Suppress automatically generated Requires for devel packages
-%define __noautoreq 'devel\(.*\)'
+%global __requires_exclude	devel\\\(.*\\\)
+
+# we don't want to provide private python extension libs
+%global __provides_exclude	%{python3_sitearch}/.*\\.so$
 
 %define extraversion %nil
 %define _disable_ld_no_undefined 1
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.17.10
-Release:	1
+Version:	3.18.12
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
-Url:		http://hplip.sourceforge.net/
+Url:		https://developers.hp.com/hp-linux-imaging-and-printing
 Source0:	https://downloads.sourceforge.net/project/hplip/hplip/%{version}/hplip-%{version}.tar.gz
 Source1:	hpcups-update-ppds.sh
 Source2:	copy-deviceids.py
@@ -68,7 +71,6 @@ Patch134:	hplip-udev-rules.patch
 Patch201:	01_rss.dpatch
 Patch203:	14_charsign_fixes.dpatch
 #Patch204:	hplip-3.15.11-rebuild_python_ui.patch
-Patch206:	hplip-photosmart_b9100_support.patch
 Patch207:	pjl-duplex-binding.dpatch
 #hplip-pjl-duplex-binding.patch
 Patch208:	mga-kde4-kdesudo-support.patch
@@ -86,6 +88,10 @@ Patch228:	hpaio-option-duplex.diff
 # (tpg) https://issues.openmandriva.org/show_bug.cgi?id=1223
 Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
+Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
+Patch304:	hplip-3.18.12-clang7.patch
+# From Debian
+Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -93,6 +99,8 @@ BuildRequires:	polkit
 BuildRequires:	python-sip >= 1:4.16.4-1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
+# For ppdc
+BuildRequires:	cups-common cups
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libgphoto2)
@@ -100,6 +108,10 @@ BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(udev)
+BuildRequires:	pkgconfig(libcrypto)
+BuildRequires:	pkgconfig(zlib)
+BuildRequires:	polkit-1-devel
+BuildRequires:	python2
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
 BuildRequires:	xsane
@@ -120,7 +132,6 @@ Requires:	python-reportlab
 # Needed since 2.8.4 for IPC
 Requires:	python-dbus >= 1.2.0-11
 Requires:	polkit-agent
-Requires:	usermode-consoleonly
 Requires:	python-gi >= 3.14.0-3
 # Required by hp-scan for command line scanning
 Requires:	python-imaging >= 2.5.1-3
@@ -218,6 +229,7 @@ SANE driver for scanners in HP's multi-function devices (from HPLIP)
 %package model-data
 Summary:	Data file listing the HP printer models supported by HPLIP
 Group:		System/Printing
+Requires(post):	systemd
 
 %description model-data
 HPLIP supports most current HP printers and multifunction devices, but
@@ -232,7 +244,6 @@ Requires:	python-qt5-gui
 Requires:	python-qt5-widgets
 Requires:	python-qt5-dbus
 Requires:	%{name} = %{version}-%{release}
-Requires:	usermode
 
 %description gui
 HPLIP graphical tools.
@@ -413,10 +424,6 @@ sed -i.duplex-constraints \
 # compiling ui files to py
 #patch204 -p1 -b .85_rebuild_python_ui
 
-# Corrections on the models.dat entry for the HP PhotoSmart Pro B9100,
-# especially for the correct color calibration mode.
-%patch206 -p1 -b .hplip-photosmart_b9100_support
-
 # Fixes Short-edge duplex printing if duplex is PJL-controlled
 # https://bugs.launchpad.net/hplip/+bug/244295
 %patch207 -p1 -b .hplip-pjl-duplex-binding
@@ -446,6 +453,10 @@ sed -i.duplex-constraints \
 %patch229 -p1 -b .processEvents
 
 %patch302 -p0
+%patch303 -p1
+%patch304 -p1
+
+%patch400 -p1 -b .noClosedSource~
 
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
@@ -477,7 +488,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
-	--disable-policykit \
+	--enable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
 
 %make
@@ -602,29 +613,10 @@ rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 #Add rules for all hp printers
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}/lib/udev/rules.d/56-hpmud.rules
 
-# consolehelper config
-#
-
+# (cg) Create post consolehelper compatibility links
 mkdir -p %{buildroot}%{_sbindir}
-
-# - console user, no password
 for pak in hp-setup hp-plugin hp-diagnose_plugin; do
-		mv %{buildroot}%{_bindir}/$pak %{buildroot}%{_sbindir}/$pak
-        ln -sf %{_bindir}/consolehelper %{buildroot}%{_bindir}/$pak
-        mkdir -p %{buildroot}%{_sysconfdir}/security/console.apps/
-        cat > %{buildroot}%{_sysconfdir}/security/console.apps/$pak <<EOF
-USER=root
-PROGRAM=%{_sbindir}/$pak
-FALLBACK=false
-SESSION=true
-EOF
-        mkdir -p %{buildroot}%{_sysconfdir}/pam.d/
-		cat > %{buildroot}%{_sysconfdir}/pam.d/$pak  <<EOF
-#%PAM-1.0
-auth		include		config-util-user
-account		include		config-util-user
-session		include		config-util-user
-EOF
+  ln -sf %{_bindir}/$pak %{buildroot}%{_sbindir}
 done
 
 %post -n hplip-hpijs-ppds
@@ -674,6 +666,10 @@ fi
 %files
 %config(noreplace) %{_sysconfdir}/hp
 %dir %{_localstatedir}/lib/hp/
+%{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
+%{_datadir}/dbus-1/system-services/com.hp.hplip.service
+%{_datadir}/polkit-1/actions/com.hp.hplip.policy
+%{_bindir}/hp-uiscan
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
 %{_bindir}/hp-colorcal
@@ -681,7 +677,10 @@ fi
 %{_bindir}/hp-diagnose_plugin
 %{_bindir}/hp-diagnose_queues
 %{_bindir}/hp-doctor
+%{_datadir}/hplip/dat2drv
 %{_datadir}/hplip/doctor.py*
+%{_datadir}/hplip/locatedriver
+%{_datadir}/hplip/uiscan.py
 %{_bindir}/hp-fab
 %{_bindir}/hp-faxsetup
 %{_bindir}/hp-firmware
@@ -708,13 +707,6 @@ fi
 %{_sbindir}/hp-diagnose_plugin
 %{_sbindir}/hp-setup
 %{_sbindir}/hp-plugin
-
-%{_sysconfdir}/pam.d/hp-diagnose_plugin
-%{_sysconfdir}/pam.d/hp-plugin
-%{_sysconfdir}/pam.d/hp-setup
-%{_sysconfdir}/security/console.apps/hp-diagnose_plugin
-%{_sysconfdir}/security/console.apps/hp-plugin
-%{_sysconfdir}/security/console.apps/hp-setup
 
 # A tool to disable Smart Install
 %{_bindir}/SmartInstallDisable-Tool.run
@@ -784,11 +776,8 @@ fi
 %{_datadir}/hplip/pcard
 %{_datadir}/hplip/prnt
 %{_datadir}/hplip/scan
-#{_datadir}/polkit-1/actions/com.hp.hplip.policy
-#{_datadir}/dbus-1/system-services/com.hp.hplip.service
 %{_localstatedir}/lib/hp/hplip.state
 %{_docdir}/%{name}/README.urpmi
-#config(noreplace) %{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
 %dir %attr(0775,root,lp) /run/hplip
 %{_tmpfilesdir}/hplip.conf
 %{_unitdir}/hplip-printer@.service

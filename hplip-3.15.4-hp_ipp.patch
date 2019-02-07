@@ -1,6 +1,7 @@
---- hplip-3.17.10/Makefile.am.004~	2017-11-25 14:23:56.850077382 +0100
-+++ hplip-3.17.10/Makefile.am	2017-11-25 14:26:27.845360065 +0100
-@@ -39,7 +39,7 @@ if HPLIP_BUILD
+diff -up hplip-3.18.12/Makefile.am.004~ hplip-3.18.12/Makefile.am
+--- hplip-3.18.12/Makefile.am.004~	2018-12-19 00:37:04.778596619 +0100
++++ hplip-3.18.12/Makefile.am	2018-12-19 00:40:21.019455407 +0100
+@@ -47,7 +47,7 @@ if !HPLIP_CLASS_DRIVER
  hpdir = $(cupsbackenddir)
  hp_PROGRAMS = hp
  hp_SOURCES = prnt/backend/hp.c
@@ -8,4 +9,4 @@
 +hp_LDADD = libhpmud.la -lcups $(DBUS_LIBS)
  hp_LDFLAGS = $(libhpmud_la_LDFLAGS)
  hp_CFLAGS = $(DBUS_CFLAGS)
- 
+ endif #HPLIP_CLASS_DRIVER 
