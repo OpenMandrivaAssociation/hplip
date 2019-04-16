@@ -23,8 +23,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.18.12
-Release:	2
+Version:	3.19.3
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -92,7 +92,8 @@ Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 Patch304:	hplip-3.18.12-clang7.patch
 # From Debian
 Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
-
+# (itchka) Fix clang build error
+Patch500:	fix-void-function-returning-value-clang-error.patch
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
@@ -462,6 +463,8 @@ sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
 
+%patch500 -p1
+
 # Make all files in the source user-writable
 chmod -R u+w .
 
@@ -476,6 +479,8 @@ autoreconf -ifv
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
+#export CC=gcc
+#export CXX=g++
 %configure \
 	$WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \

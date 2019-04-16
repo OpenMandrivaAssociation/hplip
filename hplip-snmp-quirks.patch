@@ -1,21 +1,22 @@
-diff -up hplip-3.18.12/prnt/drv/hpcups.drv.in.snmp-quirks hplip-3.18.12/prnt/drv/hpcups.drv.in
---- hplip-3.18.12/prnt/drv/hpcups.drv.in.snmp-quirks	2018-12-19 00:55:30.521607556 +0100
-+++ hplip-3.18.12/prnt/drv/hpcups.drv.in	2018-12-19 00:57:33.251376786 +0100
-@@ -10828,6 +10828,8 @@ CustomMedia "B5/B5 176x250mm" 498.96 708
-       Attribute "NickName" "" "HP Officejet Pro 8500 a909a, hpcups $Version"
-       Attribute "ShortNickName" "" "HP Officejet Pro 8500 a909a hpijs"
-       Attribute "1284DeviceID" "" "MFG:HP;MDL:officejet pro 8500 a909a;DES:officejet pro 8500 a909a;"
-+      // This device lies about its supplies capacity.
-+      Attribute "cupsSNMPQuirks" "" "capacity"
-       PCFileName "hp-officejet_pro_8500_a909a.ppd"
-       Attribute "Product" "" "(HP Officejet Pro 8500 All-in-one Printer - a909a)"
-     }
-@@ -10836,6 +10838,8 @@ CustomMedia "B5/B5 176x250mm" 498.96 708
-       Attribute "NickName" "" "HP Officejet Pro 8500 a909g, hpcups $Version"
-       Attribute "ShortNickName" "" "HP Officejet Pro 8500 a909g hpijs"
-       Attribute "1284DeviceID" "" "MFG:HP;MDL:officejet pro 8500 a909g;DES:officejet pro 8500 a909g;"
-+      // This device lies about its supplies capacity.
-+      Attribute "cupsSNMPQuirks" "" "capacity"
-       PCFileName "hp-officejet_pro_8500_a909g.ppd"
-       Attribute "Product" "" "(HP Officejet Pro 8500 Wireless All-in-one Printer - a909g)"
-     }
+diff --git a/prnt/drv/hpijs.drv.in b/prnt/drv/hpijs.drv.in
+index eb21547..b2e7f4b 100644
+--- a/prnt/drv/hpijs.drv.in
++++ b/prnt/drv/hpijs.drv.in
+@@ -20052,6 +20052,8 @@ lity:PenSet=2,Quality:FullBleed=1"
+     Attribute "NickName" "" "HP Officejet Pro 8500 a909a hpijs, $Version"
+     Attribute "ShortNickName" "" "HP OJ Pro 8500 a909a hpijs"
+     Attribute "1284DeviceID" "" "MFG:HP;MDL:officejet pro 8500 a909a;DES:officejet pro 8500 a909a;"
++    // This device lies about its supplies capacity.
++    Attribute "cupsSNMPQuirks" "" "capacity"
+     PCFileName "hp-officejet_pro_8500_a909a-hpijs.ppd"
+     Attribute "Product" "" "(HP Officejet Pro 8500 All-in-one Printer - a909a)"
+   }
+@@ -20060,6 +20062,8 @@ lity:PenSet=2,Quality:FullBleed=1"
+     Attribute "NickName" "" "HP Officejet Pro 8500 a909g hpijs, $Version"
+     Attribute "ShortNickName" "" "HP OJ Pro 8500 a909g hpijs"
+     Attribute "1284DeviceID" "" "MFG:HP;MDL:officejet pro 8500 a909g;DES:officejet pro 8500 a909g;"
++    // This device lies about its supplies capacity.
++    Attribute "cupsSNMPQuirks" "" "capacity"
+     PCFileName "hp-officejet_pro_8500_a909g-hpijs.ppd"
+     Attribute "Product" "" "(HP Officejet Pro 8500 Wireless All-in-one Printer - a909g)"
+   }
