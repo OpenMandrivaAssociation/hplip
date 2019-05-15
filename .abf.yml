@@ -1,6 +1,4 @@
-removed_sources:
-  hplip-3.18.12.tar.gz: 48a3c2dc95bfb83f3a5296de214e6d893c912cb6
 sources:
   hp-sendfax.png: 2201320c59c2eaba10abce5c40306c6461e79beb
-  hplip-3.19.3.tar.gz: 96641eab5af326b33d18f2e041a284a486311f45
+  hplip-3.19.5.tar.gz: 96641eab5af326b33d18f2e041a284a486311f45
   SmartInstallDisable-Tool.run: c82103aa609cd7e58f43b090266bb77216933937
