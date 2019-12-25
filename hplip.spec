@@ -1,3 +1,4 @@
+%global optflags %{optflags} -I%(python -c "from distutils.sysconfig import get_python_inc; print (get_python_inc());")
 # Define if you want to build the sane backend (default)
 %define sane_backend 1
 %{?_with_sane: %global sane_backend 1}
@@ -23,8 +24,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.19.11
-Release:	2
+Version:	3.19.12
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
