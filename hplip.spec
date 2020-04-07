@@ -126,7 +126,7 @@ Requires:	foomatic-filters
 Requires:	hplip-model-data
 Requires:	hplip-hpijs
 Requires:	hplip-hpijs-ppds
-Requires:	python-sip >= 1:4.16.4-1
+Requires:	python-sip-qt5 
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
