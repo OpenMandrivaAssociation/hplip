@@ -292,6 +292,7 @@ flash memory cards.
 %patch2 -p1 -b .udev-rules-on-action-change
 %patch3 -p1 -b .cups22~
 %patch4 -p1 -b .004~
+%patch5 -p1
 
 # Fedora patches
 
