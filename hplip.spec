@@ -24,8 +24,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.20.2
-Release:	2
+Version:	3.20.5
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -44,6 +44,8 @@ Source6:	README.urpmi
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch3:		hplip-cups-2.2.patch
 Patch4:		hplip-3.15.4-hp_ipp.patch
+# Fix compiler issues on 3.20.5 
+Patch5:		hplip-fix-Wreturn-type-warning.patch
 
 # Fedora patches
 Patch101:	hplip-pstotiff-is-rubbish.patch
@@ -290,6 +292,7 @@ flash memory cards.
 %patch2 -p1 -b .udev-rules-on-action-change
 %patch3 -p1 -b .cups22~
 %patch4 -p1 -b .004~
+%patch5 -p1
 
 # Fedora patches
 
