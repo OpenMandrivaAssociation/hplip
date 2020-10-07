@@ -43,7 +43,7 @@ Source6:	README.urpmi
 # do not get applied in %%post on a new installation:
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch3:		hplip-cups-2.2.patch
-Patch4:		hplip-3.15.4-hp_ipp.patch
+#Patch4:		hplip-3.15.4-hp_ipp.patch
 # Fix compiler issues on 3.20.5 
 Patch5:		hplip-fix-Wreturn-type-warning.patch
 
@@ -291,7 +291,7 @@ flash memory cards.
 
 %patch2 -p1 -b .udev-rules-on-action-change
 %patch3 -p1 -b .cups22~
-%patch4 -p1 -b .004~
+#patch4 -p1 -b .004~
 %patch5 -p1
 
 # Fedora patches
