@@ -107,6 +107,7 @@ BuildRequires:	cups-devel
 BuildRequires:	cups-common cups
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(avahi-client)
 BuildRequires:	pkgconfig(libgphoto2)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
