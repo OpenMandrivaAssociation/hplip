@@ -24,7 +24,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.20.6
+Version:	3.20.9
 Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -43,7 +43,7 @@ Source6:	README.urpmi
 # do not get applied in %%post on a new installation:
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch3:		hplip-cups-2.2.patch
-Patch4:		hplip-3.15.4-hp_ipp.patch
+#Patch4:		hplip-3.15.4-hp_ipp.patch
 # Fix compiler issues on 3.20.5 
 Patch5:		hplip-fix-Wreturn-type-warning.patch
 
@@ -107,6 +107,8 @@ BuildRequires:	cups-devel
 BuildRequires:	cups-common cups
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(avahi-core)
+BuildRequires:	pkgconfig(avahi-client)
 BuildRequires:	pkgconfig(libgphoto2)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libv4l1)
@@ -291,7 +293,7 @@ flash memory cards.
 
 %patch2 -p1 -b .udev-rules-on-action-change
 %patch3 -p1 -b .cups22~
-%patch4 -p1 -b .004~
+#patch4 -p1 -b .004~
 %patch5 -p1
 
 # Fedora patches
