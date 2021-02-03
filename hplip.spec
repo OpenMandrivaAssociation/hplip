@@ -93,6 +93,7 @@ Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
 Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 Patch304:	hplip-3.18.12-clang7.patch
+Patch305:	hplip-3.20.11-authtype.patch
 # From Debian
 Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 # (itchka) Fix clang build error
@@ -463,6 +464,7 @@ sed -i.duplex-constraints \
 %patch302 -p0
 %patch303 -p1
 %patch304 -p1
+%patch305 -p1 -b .omv~
 
 %patch400 -p1 -b .noClosedSource~
 
