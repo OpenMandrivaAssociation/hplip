@@ -100,7 +100,7 @@ Patch500:	fix-void-function-returning-value-clang-error.patch
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
-BuildRequires:	python-sip >= 1:4.16.4-1
+BuildRequires:	python-sip >= 4.16.4-1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
 # For ppdc
