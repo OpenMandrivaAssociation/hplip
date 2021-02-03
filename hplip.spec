@@ -25,7 +25,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.20.11
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -249,6 +249,7 @@ Group:		System/Printing
 Requires:	python-qt5-gui
 Requires:	python-qt5-widgets
 Requires:	python-qt5-dbus
+Requires:	python3dist(distro)
 Requires:	%{name} = %{version}-%{release}
 
 %description gui
@@ -502,7 +503,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
 
-%make
+%make_build
 
 %install
 mkdir -p %{buildroot}%{_bindir}
@@ -510,7 +511,7 @@ mkdir -p %{buildroot}%{_includedir}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
 
-%makeinstall_std PYTHON=%{__python}
+%make_install PYTHON=%{__python}
 
 # Install files which the "make install" missed to install
 install -m 644 ip/hpip.h %{buildroot}%{_includedir}
