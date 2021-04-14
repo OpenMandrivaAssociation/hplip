@@ -24,8 +24,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.20.11
-Release:	2
+Version:	3.21.2
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -739,6 +739,7 @@ fi
 %{_prefix}/lib/cups/filter/pstotiff
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
+%{_datadir}/ppd/HP/hp_pagewide*.ppd*
 # Files
 %dir %{_datadir}/hplip
 %{_datadir}/hplip/align.py*
