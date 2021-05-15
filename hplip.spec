@@ -493,6 +493,7 @@ WITHOUT_SANE="--without-sane"
 %configure \
 	$WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
+	--disable-imageProcessor-build \
 	--enable-scan-build \
 	--enable-gui-build \
 	--enable-fax-build \
