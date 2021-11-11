@@ -466,7 +466,7 @@ sed -i.duplex-constraints \
 %patch304 -p1
 %patch305 -p1 -b .omv~
 
-%patch400 -p1 -b .noClosedSource~
+#patch400 -p1 -b .noClosedSource~
 
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
