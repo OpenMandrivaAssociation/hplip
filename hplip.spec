@@ -740,7 +740,6 @@ fi
 %{_prefix}/lib/cups/filter/pstotiff
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
-%{_datadir}/ppd/HP/hp_pagewide*.ppd*
 # Files
 %dir %{_datadir}/hplip
 %{_datadir}/hplip/align.py*
