@@ -1,11 +1,11 @@
-diff -up hplip-3.20.11/base/password.py.omv~ hplip-3.20.11/base/password.py
---- hplip-3.20.11/base/password.py.omv~	2021-02-03 14:56:24.319391449 +0100
-+++ hplip-3.20.11/base/password.py	2021-02-03 14:56:50.772689515 +0100
-@@ -57,6 +57,7 @@ AUTH_TYPES = {'mepis': 'su',
-               'boss': 'su',
-               'lfs': 'su',
-               'manjarolinux': 'sudo',
+diff -uraN hplip-3.21.10/base/password.py omv-hplip-3.21.10/base/password.py
+--- hplip-3.21.10/base/password.py	2021-10-28 23:31:45.000000000 +0200
++++ omv-hplip-3.21.10/base/password.py	2021-11-11 02:20:26.109798070 +0100
+@@ -36,6 +36,7 @@
+               'debian': 'su',
+               'suse': 'su',
+               'mandriva': 'su',
 +              'openmandrivalx': 'sudo',
-               }
- 
- 
+               'fedora': 'su',
+               'fedora28': 'sudo',
+               'redhat': 'su',

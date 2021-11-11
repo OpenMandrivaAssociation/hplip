@@ -24,7 +24,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.21.6
+Version:	3.21.10
 Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -95,7 +95,7 @@ Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 Patch304:	hplip-3.18.12-clang7.patch
 Patch305:	hplip-3.20.11-authtype.patch
 # From Debian
-Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
+#Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 # (itchka) Fix clang build error
 Patch500:	fix-void-function-returning-value-clang-error.patch
 BuildRequires:	desktop-file-utils
@@ -466,7 +466,7 @@ sed -i.duplex-constraints \
 %patch304 -p1
 %patch305 -p1 -b .omv~
 
-%patch400 -p1 -b .noClosedSource~
+#patch400 -p1 -b .noClosedSource~
 
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
@@ -740,7 +740,6 @@ fi
 %{_prefix}/lib/cups/filter/pstotiff
 %{_datadir}/ppd/HP/HP-Fax*.ppd*
 %{_datadir}/cups/drv/hp/hpcups.drv
-%{_datadir}/ppd/HP/hp_pagewide*.ppd*
 # Files
 %dir %{_datadir}/hplip
 %{_datadir}/hplip/align.py*
