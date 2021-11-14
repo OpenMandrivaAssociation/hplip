@@ -25,7 +25,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.21.10
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -46,6 +46,7 @@ Patch3:		hplip-cups-2.2.patch
 #Patch4:		hplip-3.15.4-hp_ipp.patch
 # Fix compiler issues on 3.20.5 
 Patch5:		hplip-fix-Wreturn-type-warning.patch
+Patch6:		hplip-3.31.10-fix-scan-icon-openmandriva.patch
 
 # Fedora patches
 Patch101:	hplip-pstotiff-is-rubbish.patch
@@ -95,7 +96,7 @@ Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 Patch304:	hplip-3.18.12-clang7.patch
 Patch305:	hplip-3.20.11-authtype.patch
 # From Debian
-#Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
+Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 # (itchka) Fix clang build error
 Patch500:	fix-void-function-returning-value-clang-error.patch
 BuildRequires:	desktop-file-utils
@@ -297,6 +298,7 @@ flash memory cards.
 %patch3 -p1 -b .cups22~
 #patch4 -p1 -b .004~
 %patch5 -p1
+%patch6 -p1
 
 # Fedora patches
 
@@ -466,7 +468,7 @@ sed -i.duplex-constraints \
 %patch304 -p1
 %patch305 -p1 -b .omv~
 
-#patch400 -p1 -b .noClosedSource~
+%patch400 -p1 -b .noClosedSource~
 
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
