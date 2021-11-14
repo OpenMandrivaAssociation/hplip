@@ -1,0 +1,10 @@
+diff -uraN hplip-3.21.10/hp-uiscan.desktop.in omv-hplip-3.21.10/hp-uiscan.desktop.in
+--- hplip-3.21.10/hp-uiscan.desktop.in	2021-10-28 23:31:45.000000000 +0200
++++ omv-hplip-3.21.10/hp-uiscan.desktop.in	2021-11-14 16:59:07.205545581 +0100
+@@ -5,4 +5,5 @@
+ Terminal=false
+ Name=hp-uiscan
+ Exec=/usr/bin/hp-uiscan
+-Icon=/usr/share/icons/Humanity/devices/48/printer.svg
++Icon=scanner.svg
++Categories=System;Settings;Printing;Qt;HardwareSettings;
