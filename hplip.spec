@@ -46,6 +46,7 @@ Patch3:		hplip-cups-2.2.patch
 #Patch4:		hplip-3.15.4-hp_ipp.patch
 # Fix compiler issues on 3.20.5 
 Patch5:		hplip-fix-Wreturn-type-warning.patch
+Patch6:		hplip-3.31.10-fix-scan-icon-openmandriva.patch
 
 # Fedora patches
 Patch101:	hplip-pstotiff-is-rubbish.patch
@@ -297,6 +298,7 @@ flash memory cards.
 %patch3 -p1 -b .cups22~
 #patch4 -p1 -b .004~
 %patch5 -p1
+%patch6 -p1
 
 # Fedora patches
 
