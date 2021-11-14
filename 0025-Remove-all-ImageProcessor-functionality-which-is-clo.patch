@@ -1,27 +1,19 @@
-From: Didier Raboud <odyx@debian.org>
-Date: Tue, 21 Aug 2018 18:18:10 +0200
-Subject: Remove all ImageProcessor functionality, which is closed-source
+# configure option --disable-imageProcessor-build work bad
+# force disable build imageProcessor, its non free
 
----
-(daviddavid) Rebase for 3.21.4
----
- Makefile.am                  | 14 ++------------
- 1 files changed, 2 insertions(+), 48 deletions(-)
-
-diff --git a/Makefile.am b/Makefile.am
-index c707e1e..0d8b692 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -167,7 +167,7 @@ if !HPLIP_CLASS_DRIVER
+diff -ruN a/Makefile.am b/Makefile.am
+--- a/Makefile.am	2021-11-08 13:44:40.756403630 +0300
++++ b/Makefile.am	2021-11-08 13:49:13.688678695 +0300
+@@ -167,7 +167,7 @@
  dist_hplip_SCRIPTS = hpssd.py __init__.py hpdio.py
  endif #HPLIP_CLASS_DRIVER
  
 -dist_noinst_DATA += prnt/drv/hpijs.drv.in.template prnt/drv/hpcups.drv.in.template prnt/hpcups/libImageProcessor-x86_64.so prnt/hpcups/libImageProcessor-x86_32.so
 +dist_noinst_DATA += prnt/drv/hpijs.drv.in.template prnt/drv/hpcups.drv.in.template
- dist_noinst_SCRIPTS += dat2drv.py install.py  hplip-install init-suse-firewall init-iptables-firewall class_rpm_build.sh hplipclassdriver.spec createPPD.sh Makefile_dat2drv hpijs-drv
  
- if !HPLIP_CLASS_DRIVER
-@@ -595,7 +595,7 @@ hpcups_SOURCES = prnt/hpcups/HPCupsFilter.cpp prnt/hpcups/HPCupsFilter.h prnt/hp
+ dist_noinst_DATA += prnt/ipp-usb/HPLIP.conf
+ dist_noinst_SCRIPTS += dat2drv.py install.py  hplip-install init-suse-firewall init-iptables-firewall class_rpm_build.sh hplipclassdriver.spec createPPD.sh Makefile_dat2drv hpijs-drv
+@@ -597,7 +597,7 @@
  	prnt/hpcups/ImageProcessor.h
  
  hpcups_CXXFLAGS = $(APDK_ENDIAN_FLAG) $(DBUS_CFLAGS)
@@ -30,7 +22,7 @@ index c707e1e..0d8b692 100644
  #else
  #hpcupsdir = $(cupsfilterdir)
  #hpcups_PROGRAMS = hpcups
-@@ -687,16 +687,6 @@ endif #HPLIP_CLASS_DRIVER
+@@ -687,16 +687,6 @@
  
  install-data-hook:
  if HPLIP_BUILD
@@ -44,6 +36,6 @@ index c707e1e..0d8b692 100644
 -		chmod 775 $(libdir)/libImageProcessor-x86_32.so ; \
 -		ln -sf $(libdir)/libImageProcessor-x86_32.so $(libdir)/libImageProcessor.so ; \
 -	fi
- if !HPLIP_CLASS_DRIVER
- #	   If scanner build, add hpaio entry to sane dll.conf.
- 	if [ "$(scan_build)" = "yes" ]; then \
+ 	if [ -d "/usr/share/ipp-usb/quirks/" ]; then \
+ 		echo "ipp-usb directory exists"; \
+ 		cp prnt/ipp-usb/HPLIP.conf /usr/share/ipp-usb/quirks/ ; \
