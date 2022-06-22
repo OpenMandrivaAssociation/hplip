@@ -25,7 +25,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.22.4
-Release:	2
+Release:	3
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -539,7 +539,6 @@ rm -f %{buildroot}%{_bindir}/hp-uninstall
 rm -f %{buildroot}%{_datadir}/hplip/upgrade.*
 rm -f %{buildroot}%{_bindir}/hp-upgrade
 rm -f %{buildroot}%{_bindir}/hp-config_usb_printer
-rm -f %{buildroot}%{_unitdir}/hplip-printer@.service
 rm -f %{buildroot}%{_datadir}/hplip/config_usb_printer.*
 rm -f %{buildroot}%{_datadir}/hplip/hpijs.drv.in.template
 rm -f %{buildroot}%{_datadir}/cups/mime/pstotiff.types
@@ -578,10 +577,6 @@ install -D -m 0644 48.png %{buildroot}%{_iconsdir}/hicolor/48x48/apps/hp-sendfax
 install -D -m 0644 64.png %{buildroot}%{_iconsdir}/hicolor/64x64/apps/hp-sendfax.png
 install -D -m 0644 %{SOURCE3} %{buildroot}%{_iconsdir}/hicolor/128x128/apps/hp-sendfax.png
 
-# (cg) Correct the udev rules dir
-mkdir -p %{buildroot}/lib
-mv %{buildroot}%{_sysconfdir}/udev %{buildroot}/lib/
-
 # Regenerate hpcups PPDs on upgrade if necessary (bug #579355).
 install -p -m755 %{SOURCE1} %{buildroot}%{_bindir}/hpcups-update-ppds
 
@@ -610,15 +605,8 @@ mkdir -p %{buildroot}%{_datadir}/hplip/prnt/plugins
 # create empty log directory so that it can be owned
 mkdir -p %{buildroot}%{_localstatedir}/log/hp/tmp
 
-mkdir -p %{buildroot}%{_unitdir}
-mv -f %{buildroot}/usr/lib/systemd/system/hplip-printer@.service %{buildroot}%{_unitdir}/hplip-printer@.service
-
 # Images in docdir should not be executable (bug #440552).
 find doc/images -type f -exec chmod 644 {} \;
-
-#sed -e 's/0664/0666/' -i %{buildroot}/lib/udev/rules.d/56-hpmud.rules
-#sed -e 's/ATTR/#ATTR/' -i %{buildroot}/lib/udev/rules.d/56-hpmud.rules
-#sed -e 's/ATTR/SYSFS/' -i %{buildroot}/lib/udev/rules.d/56-hpmud.rules
 
 # The systray applet doesn't work properly (displays icon as a
 # window), so don't ship the launcher yet.
@@ -628,13 +616,7 @@ find doc/images -type f -exec chmod 644 {} \;
 rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 
 #Add rules for all hp printers
-echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}/lib/udev/rules.d/56-hpmud.rules
-
-# (cg) Create post consolehelper compatibility links
-mkdir -p %{buildroot}%{_sbindir}
-for pak in hp-setup hp-plugin hp-diagnose_plugin; do
-  ln -sf %{_bindir}/$pak %{buildroot}%{_sbindir}
-done
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}%{_sysconfdir}/udev/rules.d/56-hpmud.rules
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
@@ -720,10 +702,6 @@ fi
 %{_bindir}/hp-timedate
 %{_bindir}/hp-unload
 %{_bindir}/hp-wificonfig
-
-%{_sbindir}/hp-diagnose_plugin
-%{_sbindir}/hp-setup
-%{_sbindir}/hp-plugin
 
 # A tool to disable Smart Install
 %{_bindir}/SmartInstallDisable-Tool.run
@@ -833,7 +811,7 @@ fi
 %endif
 
 %files model-data
-/lib/udev/rules.d/*.rules
+%{_sysconfdir}/udev/rules.d/*.rules
 %{_datadir}/hplip/data/models
 
 %files gui
