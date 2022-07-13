@@ -37,6 +37,8 @@ Source3:	hp-sendfax.png
 Source4:	hplip.rpmlintrc
 # http://hplipopensource.com/node/367
 Source5:	http://hplipopensource.com/hplip-web/smartinstall/SmartInstallDisable-Tool.run
+Source6:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hp-laserjet_cp_1025nw.ppd.gz
+Source7:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hp-laserjet_professional_p_1102w.ppd.gz
 
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
@@ -336,11 +338,17 @@ done
 # Recompress the PPDs now that we're done modifying them
 gzip -9 ${PPDS}
 
+sed -i.duplex-constraints \
+    -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
+    prnt/drv/hpcups.drv.in
+
 chmod +x %{SOURCE2}
 mv prnt/drv/hpijs.drv.in{,.deviceIDs-drv-hpijs}
 %{SOURCE2} prnt/drv/hpcups.drv.in \
            prnt/drv/hpijs.drv.in.deviceIDs-drv-hpijs \
            > prnt/drv/hpijs.drv.in
+
+cp -a %{S:6} %{S:7} ppd/hpcups
 
 # Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
 sed -i '/chgrp/d' Makefile.am
@@ -363,6 +371,7 @@ WITHOUT_SANE="--without-sane"
 %configure \
 	$WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
+	--enable-foomatic-drv-install \
 	--disable-imageProcessor-build \
 	--enable-scan-build \
 	--enable-gui-build \
@@ -373,6 +382,7 @@ WITHOUT_SANE="--without-sane"
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
+	--disable-imageProcessor-build \
 	--enable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
 
@@ -386,11 +396,16 @@ mkdir -p %{buildroot}%{_sysconfdir}/hp
 
 %make_install PYTHON=%{__python}
 
+mkdir -p %{buildroot}/run/hplip
+mkdir -p %{buildroot}%{_sharedstatedir}/hp
+mkdir -p %{buildroot}%{_tmpfilesdir}
+echo 'd /run/hplip 0775 root lp -' >%{buildroot}%{_tmpfilesdir}/hplip.conf
+
 # Install files which the "make install" missed to install
 install -m 644 ip/hpip.h %{buildroot}%{_includedir}
 install -m 644 ip/xform.h %{buildroot}%{_includedir}
 
-# Move doc in sub-package
+# Move docs to sub-package
 mv %{buildroot}%{_docdir}/%{name}-%{version}%{extraversion} %{buildroot}%{_docdir}/%{name}-doc-%{version}%{extraversion}
 
 # Remove static libraries of SANE driver
@@ -677,8 +692,11 @@ fi
 %endif
 
 %files model-data
-%{_prefix}/lib/udev/rules.d/*.rules
+%dir %attr(0755,root,lp) /run/hplip
+%{_tmpfilesdir}/hplip.conf
+%{_udevrulesdir}/*.rules
 %{_datadir}/hplip/data/models
+%{_datadir}/cups/drv/hp
 
 %files gui
 %{_bindir}/hp-check
