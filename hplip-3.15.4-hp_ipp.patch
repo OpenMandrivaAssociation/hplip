@@ -1,12 +1,12 @@
-diff -up hplip-3.18.12/Makefile.am.004~ hplip-3.18.12/Makefile.am
---- hplip-3.18.12/Makefile.am.004~	2018-12-19 00:37:04.778596619 +0100
-+++ hplip-3.18.12/Makefile.am	2018-12-19 00:40:21.019455407 +0100
+diff -up hplip-3.22.6/Makefile.am.3~ hplip-3.22.6/Makefile.am
+--- hplip-3.22.6/Makefile.am.3~	2022-07-14 01:20:30.429999993 +0200
++++ hplip-3.22.6/Makefile.am	2022-07-14 01:20:50.789106517 +0200
 @@ -47,7 +47,7 @@ if !HPLIP_CLASS_DRIVER
  hpdir = $(cupsbackenddir)
  hp_PROGRAMS = hp
  hp_SOURCES = prnt/backend/hp.c
--hp_LDADD = libhpmud.la $(DBUS_LIBS)
-+hp_LDADD = libhpmud.la -lcups $(DBUS_LIBS)
+-hp_LDADD = libhpmud.la libhpdiscovery.la $(DBUS_LIBS)
++hp_LDADD = libhpmud.la libhpdiscovery.la -lcups $(DBUS_LIBS)
  hp_LDFLAGS = $(libhpmud_la_LDFLAGS)
  hp_CFLAGS = $(DBUS_CFLAGS)
  endif #HPLIP_CLASS_DRIVER 

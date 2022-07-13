@@ -1,0 +1,46 @@
+diff -up hplip-3.22.6/clean.py.29~ hplip-3.22.6/clean.py
+--- hplip-3.22.6/clean.py.29~	2022-06-23 06:56:29.000000000 +0200
++++ hplip-3.22.6/clean.py	2022-07-14 01:18:49.054459027 +0200
+@@ -182,7 +182,7 @@ try:
+                         log.error("Cleaning not needed or supported on this device.")
+ 
+                 except Error as e:
+-                    log.error("An error occured: %s" % e[0])
++                    log.error("An error occured: %s" % e.msg)
+ 
+             else:
+                 log.error("Device is busy or in an error state. Please check device and try again.")
+diff -up hplip-3.22.6/ui4/wifisetupdialog.py.29~ hplip-3.22.6/ui4/wifisetupdialog.py
+--- hplip-3.22.6/ui4/wifisetupdialog.py.29~	2022-06-23 06:56:30.000000000 +0200
++++ hplip-3.22.6/ui4/wifisetupdialog.py	2022-07-14 01:18:49.054459027 +0200
+@@ -250,7 +250,7 @@ class WifiSetupDialog(QDialog, Ui_Dialog
+             try:
+                 self.dev = device.Device(self.device_uri)
+             except Error as e:
+-                FailureUI(self, self.__tr("<b>Error opening device:</b><p>%s</p><p>(%s)</p>") %(self.device_uri, QString(e[0])))
++                FailureUI(self, self.__tr("<b>Error opening device:</b><p>%s</p><p>(%s)</p>") %(self.device_uri, QString(e.msg)))
+ 
+                 if self.dev is not None:
+                     self.dev.close()
+@@ -828,7 +828,7 @@ class WifiSetupDialog(QDialog, Ui_Dialog
+ 
+ 
+     def showIOError(self, e):
+-        FailureUI(self, self.__tr("<b>An I/O error occurred.</b><p>Please check the USB connection to your printer and try again.</p>(%s)" % QString(e[0])))
++        FailureUI(self, self.__tr("<b>An I/O error occurred.</b><p>Please check the USB connection to your printer and try again.</p>(%s)" % QString(e.msg)))
+ 
+         if self.dev is not None:
+             self.dev.close()
+diff -up hplip-3.22.6/ui5/wifisetupdialog.py.29~ hplip-3.22.6/ui5/wifisetupdialog.py
+diff -up hplip-3.22.6/ui/scrollunload.py.29~ hplip-3.22.6/ui/scrollunload.py
+--- hplip-3.22.6/ui/scrollunload.py.29~	2022-06-23 06:56:30.000000000 +0200
++++ hplip-3.22.6/ui/scrollunload.py	2022-07-14 01:18:49.054459027 +0200
+@@ -120,7 +120,7 @@ class ScrollUnloadView(ScrollView):
+                 self.pc = photocard.PhotoCard(None, self.cur_device.device_uri, self.cur_printer)
+             except Error as e:
+                 QApplication.restoreOverrideCursor()
+-                self.form.FailureUI(self.__tr("An error occured: %s" % e[0]))
++                self.form.FailureUI(self.__tr("An error occured: %s" % e.msg))
+                 self.cleanup(EVENT_PCARD_UNABLE_TO_MOUNT)
+                 return False
+ 

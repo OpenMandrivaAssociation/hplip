@@ -1,9 +1,9 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 import os
 import re
 import sys
 if len (sys.argv) < 3:
-    print "Specify hpcups.drv and hpijs.drv pathnames"
+    print ("Specify hpcups.drv and hpijs.drv pathnames")
     sys.exit (1)
 
 hpcups_drv = sys.argv[1]
@@ -23,7 +23,7 @@ end_re = re.compile ('^\s*}')
 
 devid_by_mn = dict()
 
-hpcups_lines = file (hpcups_drv, "r").readlines ()
+hpcups_lines = open (hpcups_drv, "r").readlines ()
 current_mn = None
 for line in hpcups_lines:
     if current_mn == None:
@@ -41,12 +41,12 @@ for line in hpcups_lines:
     if end_re.match (line):
         current_mn = None
 
-print >>sys.stderr, \
-    "%d IEEE 1284 Device IDs loaded from %s" % (len (devid_by_mn),
-                                                os.path.basename (hpcups_drv))
+print("%d IEEE 1284 Device IDs loaded from %s" % (len (devid_by_mn),
+                                                os.path.basename (hpcups_drv)),
+      file=sys.stderr)
 
 replaced = 0
-hpijs_lines = file (hpijs_drv, "r").readlines ()
+hpijs_lines = open (hpijs_drv, "r").readlines ()
 current_mn = None
 for line in hpijs_lines:
     if current_mn == None:
@@ -63,13 +63,13 @@ for line in hpijs_lines:
                 line = (match.groups ()[0] + devid + match.groups ()[2])
                 replaced += 1
             else:
-                print >>sys.stderr, "Not matched: %s" % current_mn
+                print ("Not matched: %s" % current_mn, file=sys.stderr)
 
     if end_re.match (line):
         current_mn = None
 
-    print line.rstrip ("\n")
+    print (line.rstrip ("\n"))
 
-print >>sys.stderr, \
-    "%d IEEE 1284 Device IDs replaced in %s" % (replaced,
-                                                os.path.basename (hpijs_drv))
+print("%d IEEE 1284 Device IDs loaded in %s" % (replaced,
+                                                os.path.basename (hpijs_drv)),
+      file=sys.stderr)

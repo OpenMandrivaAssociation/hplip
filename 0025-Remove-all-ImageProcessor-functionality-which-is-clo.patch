@@ -1,10 +1,8 @@
-# configure option --disable-imageProcessor-build work bad
-# force disable build imageProcessor, its non free
-
-diff -ruN a/Makefile.am b/Makefile.am
---- a/Makefile.am	2021-11-08 13:44:40.756403630 +0300
-+++ b/Makefile.am	2021-11-08 13:49:13.688678695 +0300
-@@ -167,7 +167,7 @@
+diff --git a/Makefile.am b/Makefile.am
+index f65afea..12317dc 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -167,7 +167,7 @@ if !HPLIP_CLASS_DRIVER
  dist_hplip_SCRIPTS = hpssd.py __init__.py hpdio.py
  endif #HPLIP_CLASS_DRIVER
  
@@ -13,7 +11,7 @@ diff -ruN a/Makefile.am b/Makefile.am
  
  dist_noinst_DATA += prnt/ipp-usb/HPLIP.conf
  dist_noinst_SCRIPTS += dat2drv.py install.py  hplip-install init-suse-firewall init-iptables-firewall class_rpm_build.sh hplipclassdriver.spec createPPD.sh Makefile_dat2drv hpijs-drv
-@@ -597,7 +597,7 @@
+@@ -597,7 +597,7 @@ hpcups_SOURCES = prnt/hpcups/HPCupsFilter.cpp prnt/hpcups/HPCupsFilter.h prnt/hp
  	prnt/hpcups/ImageProcessor.h
  
  hpcups_CXXFLAGS = $(APDK_ENDIAN_FLAG) $(DBUS_CFLAGS)
@@ -22,7 +20,7 @@ diff -ruN a/Makefile.am b/Makefile.am
  #else
  #hpcupsdir = $(cupsfilterdir)
  #hpcups_PROGRAMS = hpcups
-@@ -687,16 +687,6 @@
+@@ -687,16 +687,6 @@ endif #HPLIP_CLASS_DRIVER
  
  install-data-hook:
  if HPLIP_BUILD

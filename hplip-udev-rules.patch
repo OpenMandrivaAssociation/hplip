@@ -1,23 +1,12 @@
-diff -up hplip-3.18.12/data/rules/56-hpmud.rules.udev-rules hplip-3.18.12/data/rules/56-hpmud.rules
---- hplip-3.18.12/data/rules/56-hpmud.rules.udev-rules	2018-12-19 00:57:59.134749837 +0100
-+++ hplip-3.18.12/data/rules/56-hpmud.rules	2018-12-19 00:57:59.302752258 +0100
-@@ -12,7 +12,4 @@ ENV{ID_USB_INTERFACES}=="", IMPORT{built
- # ENV{ID_HPLIP}="1" is for Ubuntu udev-acl
- ATTR{idVendor}=="03f0", ENV{ID_USB_INTERFACES}=="*:0701??:*|*:ffcc00:", OWNER="root", GROUP="lp", MODE="0664", ENV{libsane_matched}="yes", ENV{hp_test}="yes", ENV{ID_HPLIP}="1"
- 
--# This rule will check the smart install feature, plugin status and firmware download for the required printers.
--ENV{hp_test}=="yes", PROGRAM="/bin/sh -c 'logger -p user.info loading HP Device $env{BUSNUM} $env{DEVNUM}'", RUN+="/bin/sh -c '/usr/bin/nohup /usr/bin/hp-config_usb_printer $env{BUSNUM}:$env{DEVNUM}'"
--
- LABEL="hpmud_rules_end"
-diff -up hplip-3.18.12/Makefile.in.udev-rules hplip-3.18.12/Makefile.in
---- hplip-3.18.12/Makefile.in.udev-rules	2018-12-19 00:57:59.303752272 +0100
-+++ hplip-3.18.12/Makefile.in	2018-12-19 00:58:50.055483670 +0100
-@@ -4346,7 +4346,7 @@ dist_unrel_DATA =
- @HPLIP_BUILD_TRUE@dist_rulessystem_DATA = data/rules/hplip-printer@.service
+diff -up hplip-3.17.11/Makefile.am.udev-rules hplip-3.17.11/Makefile.am
+--- hplip-3.17.11/Makefile.am.udev-rules	2017-12-07 13:44:04.472414453 +0100
++++ hplip-3.17.11/Makefile.am	2017-12-07 15:20:18.544755557 +0100
+@@ -132,7 +132,7 @@ dist_rulessystem_DATA =data/rules/hplip-
  
  # hpmud.rules
--@HPLIP_BUILD_TRUE@@HPLIP_CLASS_DRIVER_FALSE@rulesdir = /etc/udev/rules.d
-+@HPLIP_BUILD_TRUE@@HPLIP_CLASS_DRIVER_FALSE@rulesdir = /usr/lib/udev/rules.d
- @HPLIP_BUILD_TRUE@@HPLIP_CLASS_DRIVER_FALSE@@UDEV_SYSFS_RULES_FALSE@dist_rules_DATA = data/rules/56-hpmud.rules
- @HPLIP_BUILD_TRUE@@HPLIP_CLASS_DRIVER_FALSE@@UDEV_SYSFS_RULES_TRUE@dist_rules_DATA = data/rules/56-hpmud_sysfs.rules
- @HPLIP_BUILD_TRUE@halpredir = /usr/share/hal/fdi/preprobe/10osvendor
+ if !HPLIP_CLASS_DRIVER
+-rulesdir = /etc/udev/rules.d
++rulesdir = /usr/lib/udev/rules.d
+ if UDEV_SYSFS_RULES
+ dist_rules_DATA = data/rules/56-hpmud_sysfs.rules
+ else

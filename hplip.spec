@@ -30,45 +30,85 @@ License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
 Source0:	https://downloads.sourceforge.net/project/hplip/hplip/%{version}/hplip-%{version}.tar.gz
-Source1:	hpcups-update-ppds.sh
-Source2:	copy-deviceids.py
+Source1:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hpcups-update-ppds.sh
+Source2:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/copy-deviceids.py
 # http://www.iconfinder.com/icondetails/6393/128/fax_hardware_icon
 Source3:	hp-sendfax.png
 Source4:	hplip.rpmlintrc
 # http://hplipopensource.com/node/367
 Source5:	http://hplipopensource.com/hplip-web/smartinstall/SmartInstallDisable-Tool.run
-Source6:	README.urpmi
 
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch3:		hplip-cups-2.2.patch
-#Patch4:		hplip-3.15.4-hp_ipp.patch
-# Fix compiler issues on 3.20.5 
-Patch5:		hplip-fix-Wreturn-type-warning.patch
+Patch4:		hplip-3.15.4-hp_ipp.patch
+Patch5:		hplip-3.22.6-formatstrings.patch
 Patch6:		hplip-3.31.10-fix-scan-icon-openmandriva.patch
 
 # Fedora patches
-Patch101:	hplip-pstotiff-is-rubbish.patch
-Patch102:	hplip-strstr-const.patch
-Patch103:	hplip-ui-optional.patch
-Patch104:	hplip-no-asm.patch
-Patch105:	https://src.fedoraproject.org/rpms/hplip/raw/master/f/hplip-deviceIDs-drv.patch
-Patch107:	https://src.fedoraproject.org/rpms/hplip/raw/master/f/hplip-deviceIDs-ppd.patch
-Patch108:	hplip-retry-open.patch
-Patch109:	hplip-snmp-quirks.patch
-Patch111:	hplip-hpijs-marker-supply.patch
-Patch112:	hplip-clear-old-state-reasons.patch
-Patch114:	hplip-hpcups-sigpipe.patch
-Patch115:	hplip-logdir.patch
-Patch116:	hplip-bad-low-ink-warning.patch
-Patch121:	hplip-ppd-ImageableArea.patch
-# fedora patch not necessary. done via sed call
-#Patch129: hplip-makefile-chgrp.patch
-Patch131:	hplip-ipp-accessors.patch
-Patch132:	hplip-IEEE-1284-4.patch
-Patch133:	hplip-check.patch
-Patch134:	hplip-udev-rules.patch
+Patch100:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-pstotiff-is-rubbish.patch
+Patch101:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-strstr-const.patch
+Patch102:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-ui-optional.patch
+Patch103:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-no-asm.patch
+Patch104:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-deviceIDs-drv.patch
+Patch105:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-udev-rules.patch
+Patch106:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-retry-open.patch
+Patch107:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-snmp-quirks.patch
+Patch108:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpijs-marker-supply.patch
+Patch109:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-clear-old-state-reasons.patch
+Patch110:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpcups-sigpipe.patch
+Patch111:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-logdir.patch
+Patch112:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-bad-low-ink-warning.patch
+Patch113:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-deviceIDs-ppd.patch
+Patch114:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-ppd-ImageableArea.patch
+Patch115:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-scan-tmp.patch
+Patch116:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-log-stderr.patch
+Patch117:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-avahi-parsing.patch
+Patch118:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-dj990c-margin.patch
+Patch119:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-strncpy.patch
+Patch120:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-no-write-bytecode.patch
+Patch121:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-silence-ioerror.patch
+Patch122:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-sourceoption.patch
+Patch123:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-noernie.patch
+Patch124:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-appdata.patch
+Patch125:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-check-cups.patch
+Patch126:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-typo.patch
+Patch127:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-use-binary-str.patch
+Patch128:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-error-print.patch
+Patch129:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpfax-importerror-print.patch
+Patch130:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-wifisetup.patch
+Patch131:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-keyserver.patch
+Patch132:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0026-Call-QMessageBox-constructors-of-PyQT5-with-the-corr.patch
+Patch133:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
+Patch134:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0027-Fixed-incomplete-removal-of-hp-toolbox-features-whic.patch
+Patch135:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-add-ppd-crash.patch
+Patch136:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-missing-links.patch
+Patch137:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hplj-3052.patch
+Patch138:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpmud-string-parse.patch
+Patch139:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-m278-m281-needs-plugin.patch
+Patch140:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpcups-crash.patch
+Patch141:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-covscan.patch
+Patch142:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-logging-segfault.patch
+Patch143:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-systray-blockerror.patch
+Patch144:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-missing-drivers.patch
+Patch145:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-model-mismatch.patch
+Patch146:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-unicodeerror.patch
+Patch147:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-fix-Wreturn-type-warning.patch
+Patch148:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-configure-python.patch
+Patch149:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-dialog-infinite-loop.patch
+Patch150:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-find-driver.patch
+Patch151:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-clean-ldl.patch
+Patch152:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-revert-plugins.patch
+Patch153:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-check-userperms.patch
+Patch154:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-fab-import.patch
+Patch155:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpsetup-noscanjets.patch
+Patch156:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpfirmware-timeout.patch
+Patch157:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-gpgdir-perms.patch
+Patch158:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-plugin-udevissues.patch
+Patch159:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-osname-mismatch.patch
+Patch160:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-no-libhpmud-libm-warnings.patch
+Patch161:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-fedora-gui.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
@@ -80,12 +120,7 @@ Patch207:	pjl-duplex-binding.dpatch
 Patch208:	mga-kde4-kdesudo-support.patch
 Patch209:	hplip-3.15.11-mga-plasma-delay-startup.patch
 Patch215:	simple-scan-as-default.dpatch
-# (doktor5000) rediff original debian patch for hplip 3.11.10
-Patch217:	hplip-3.11.10-mga-remove-duplicate-entry-for-cp1700-in-drv-files.patch
 Patch220:	add-lidil-two-cartridge-modes.dpatch
-Patch221:	add_missing_newline_for_error_log.dpatch
-Patch224:	hplip-syslog-fix-debug-messages-to-error.dpatch
-Patch225:	hpfax-bug-function-used-before-importing-log.dpatch
 Patch226:	hp-systray-make-menu-title-visible-in-sni-qt-indicator.dpatch
 Patch227:	hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde.dpatch
 Patch228:	hpaio-option-duplex.diff
@@ -95,10 +130,6 @@ Patch302:	hplip-CVE-2013-4325.patch
 Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 Patch304:	hplip-3.18.12-clang7.patch
 Patch305:	hplip-3.20.11-authtype.patch
-# From Debian
-Patch400:	0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
-# (itchka) Fix clang build error
-Patch500:	fix-void-function-returning-value-clang-error.patch
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
@@ -119,7 +150,6 @@ BuildRequires:	pkgconfig(udev)
 BuildRequires:	pkgconfig(libcrypto)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	polkit-1-devel
-BuildRequires:	python2
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
 BuildRequires:	xsane
@@ -292,56 +322,19 @@ Peripherals or MFPs), which can print, scan, copy, fax, and/or access
 flash memory cards.
 
 %prep
-%setup -qn %{name}-%{version}%{extraversion}
+%setup -n %{name}-%{version}%{extraversion}
 
-%patch2 -p1 -b .udev-rules-on-action-change
-%patch3 -p1 -b .cups22~
-#patch4 -p1 -b .004~
-%patch5 -p1
-%patch6 -p1
+# Some patches touch compressed PPDs -- since binary patches
+# are ugly, let's uncompress them first...
+for i in prnt/*/*.gz; do
+	PPDS="$PPDS ${i/.gz/}"
+	gunzip $i
+done
 
-# Fedora patches
+%autopatch -p1
 
-# The pstotiff filter is rubbish so replace it (launchpad #528394).
-%patch101 -p1 -b .pstotiff-is-rubbish
-
-# Fix compilation.
-%patch102 -p1 -b .strstr-const
-
-# Make utils.checkPyQtImport() look for the gui sub-package (RH bug #243273).
-%patch103 -p1 -b .ui-optional
-
-# Make sure to avoid handwritten asm.
-%patch104 -p1 -b .no-asm
-
-# Corrected several IEEE 1284 Device IDs using foomatic data.
-# Color LaserJet CM1312nfi (bug #581005)
-# Color LaserJet 3800 (bug #581935)
-# Color LaserJet 2840 (bug #582215)
-# Color LaserJet CP1518ni (bug #613689)
-# Color LaserJet 2600n (bug #613712)
-# Color LaserJet 2500/3700/4550/4600/4650/4700/5550/CP1515n/CP2025n
-#                CP3525/CP4520 Series/CM2320nf (bug #659040)
-# Color LaserJet CP2025dn (bug #651509)
-# Color LaserJet CM4730 MFP (bug #658831)
-# Color LaserJet CM3530 MFP (bug #659381)
-# LaserJet 4050 Series/4100 Series/2100 Series/4350/5100 Series/8000 Series
-#          P3005/P3010 Series/P4014/P4515 (bug #659039)
-# LaserJet Professional P1606dn (bug #708472)
-# LaserJet Professional M1212nf MFP (bug #742490)
-# LaserJet M1536dnf MFP (bug #743915)
-# LaserJet M1522nf MFP (bug #745498)
-# LaserJet M1319f MFP (bug #746614)
-# LaserJet M1120 MFP (bug #754139)
-# LaserJet P1007 (bug #585272)
-# LaserJet P1505 (bug #680951)
-# LaserJet P2035 (Ubuntu #917703)
-# PSC 1600 series (bug #743821)
-# Officejet 6300 series (bug #689378)
-# LaserJet Professional P1102w (bug #795958)
-# Color LaserJet CM4540 MFP (bug #968177)
-# Color LaserJet cp4005 (bug #980976)
-%patch105 -p1 -b .ids
+# Recompress the PPDs now that we're done modifying them
+gzip -9 ${PPDS}
 
 chmod +x %{SOURCE2}
 mv prnt/drv/hpijs.drv.in{,.deviceIDs-drv-hpijs}
@@ -349,134 +342,9 @@ mv prnt/drv/hpijs.drv.in{,.deviceIDs-drv-hpijs}
            prnt/drv/hpijs.drv.in.deviceIDs-drv-hpijs \
            > prnt/drv/hpijs.drv.in
 
-# Add Device ID for
-# LaserJet 1200 (bug #577308)
-# LaserJet 1320 series (bug #579920)
-# LaserJet 2300 (bug #576928)
-# LaserJet P2015 Series (bug #580231)
-# LaserJet 4250 (bug #585499)
-# Color LaserJet 2605dn (bug #583953)
-# Color LaserJet 3800 (bug #581935)
-# Color LaserJet 2840 (bug #582215)
-# LaserJet 4050 Series/4100 Series/2100 Series/2420/4200/4300/4350/5100 Series
-#          8000 Series/M3027 MFP/M3035 MFP/P3005/P3010 Series (bug #659039)
-# Color LaserJet 2500/2550/2605dn/3700/4550/4600
-#                4650/4700/5550/CP3525 (bug #659040)
-# Color LaserJet CM4730 MFP (bug #658831)
-# Color LaserJet CM3530 MFP (bug #659381)
-# Designjet T770 (bug #747957)
-# Color LaserJet CM4540 MFP (bug #968177)
-# Color LaserJet cp4005 (bug #980976)
-for ppd_file in $(grep '^diff' %{PATCH107} | cut -d " " -f 4);
-do
-  gunzip ${ppd_file#*/}.gz
-done
-
-%patch107 -p1 -b .deviceIDs-ppd
-for ppd_file in $(grep '^diff' %{PATCH107} | cut -d " " -f 4);
-do
-  gzip -n ${ppd_file#*/}
-done
-
-
-# Retry when connecting to device fails (RH bug #532112).
-%patch108 -p1 -b .retry-open
-
-# Mark SNMP quirks in PPD for HP OfficeJet Pro 8500 (RH bug #581825).
-%patch109 -p1 -b .snmp-quirks
-
-# Fixed bogus low ink warnings from hpijs driver (RH bug #643643).
-%patch111 -p1 -b .hpijs-marker-supply
-
-# Clear old printer-state-reasons we used to manage (RH bug #510926).
-%patch112 -p1 -b .clear-old-state-reasons
-
-# Avoid busy loop in hpcups when backend has exited (RH bug #525944).
-%patch114 -p1 -b .hpcups-sigpipe
-
-%patch115 -p1 -b .logdir
-
-# Fixed Device ID parsing code in hpijs's dj9xxvip.c (RH bug #510926).
-%patch116 -p1 -b .bad-low-ink-warning
-
-# Fix ImageableArea for Laserjet 8150/9000 (RH bug #596298).
-for ppd_file in $(grep '^diff' %{PATCH121} | cut -d " " -f 4);
-do
-  gunzip ${ppd_file#*/}.gz
-done
-%patch121 -p1 -b .ImageableArea
-for ppd_file in $(grep '^diff' %{PATCH121} | cut -d " " -f 4);
-do
-  gzip -n ${ppd_file#*/}
-done
-
 # Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
 sed -i '/chgrp/d' Makefile.am
 
-sed -i.duplex-constraints \
-    -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
-    prnt/drv/hpcups.drv.in
-
-#patch132 -p1 -b .hplip-IEEE-1284-4
-
-# Removed SYSFS use in udev rules and actually made them work (bug #560754).
-# Move udev rules to /lib/udev/rules.d (bug #748208).
-%patch134 -p1 -b .udev-rules
-
-# Debian/Ubuntu patches
-
-# This patch tries to make sure that black is printed with just
-# the black pen, if the printer supports it
-%patch201 -p1 -b .01_rss
-
-# code cleanup related to char signedness
-%patch203 -p1 -b .14_charsign
-
-# compiling ui files to py
-#patch204 -p1 -b .85_rebuild_python_ui
-
-# Fixes Short-edge duplex printing if duplex is PJL-controlled
-# https://bugs.launchpad.net/hplip/+bug/244295
-%patch207 -p1 -b .hplip-pjl-duplex-binding
-
-# original patch from debian, path to kdesu added for %%_libdir on x86_64
-# %patch208 -p1 -b .mga-kde4-kdesudo-support
-
-%patch209 -p1 -b .plasma
-
-# disable for now, as this changes default hplip behavior
-# and change in default scanning application should be decided by a poll first
-#%patch215 -p1 -b .simple-scan-as-default
-
-#patch217 -p1 -b .mga-remove-duplicate-entry-for-cp1700-in-drv-files
-
-%patch220 -p1 -b .add-lidil-two-cartridge-modes
-# fixed by upstream
-#patch224 -p1 -b .hplip-syslog-fix-debug-messages-to-error
-
-%patch225 -p1 -b .hpfax-bug-function-used-before-importing-log
-
-%patch226 -p1 -b .hp-systray-make-menu-title-visible-in-sni-qt-indicator
-
-%patch227 -p1 -b .hp-systray-make-menu-appear-in-sni-qt-indicator-with-kde
-
-%patch228 -p1 -b .hpaio-option-duplex
-%patch229 -p1 -b .processEvents
-
-%patch302 -p0
-%patch303 -p1
-%patch304 -p1
-%patch305 -p1 -b .omv~
-
-%patch400 -p1 -b .noClosedSource~
-
-sed -i.duplex-constraints \
-    -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
-    prnt/drv/hpcups.drv.in
-
-%patch500 -p1
-
-# Make all files in the source user-writable
 chmod -R u+w .
 
 %build
@@ -587,7 +455,6 @@ install -p -m755 %{SOURCE1} %{buildroot}%{_bindir}/hpcups-update-ppds
 # disabled on linux in order to have the device function as a printer.
 install -p -m755 %{SOURCE5} %{buildroot}%{_bindir}/SmartInstallDisable-Tool.run
 mkdir -p %{buildroot}%{_docdir}/%{name}
-install -p -m755 %{SOURCE6} %{buildroot}%{_docdir}/%{name}
 
 # Make sure pyc files are generated, otherwise we can get
 # difficult to debug problems
@@ -616,7 +483,7 @@ find doc/images -type f -exec chmod 644 {} \;
 rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 
 #Add rules for all hp printers
-echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}%{_sysconfdir}/udev/rules.d/56-hpmud.rules
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}%{_prefix}/lib/udev/rules.d/56-hpmud.rules
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
@@ -772,7 +639,6 @@ fi
 %{_datadir}/hplip/prnt
 %{_datadir}/hplip/scan
 %{_localstatedir}/lib/hp/hplip.state
-%{_docdir}/%{name}/README.urpmi
 %dir %attr(0775,root,lp) /run/hplip
 %{_tmpfilesdir}/hplip.conf
 %{_unitdir}/hplip-printer@.service
@@ -811,7 +677,7 @@ fi
 %endif
 
 %files model-data
-%{_sysconfdir}/udev/rules.d/*.rules
+%{_prefix}/lib/udev/rules.d/*.rules
 %{_datadir}/hplip/data/models
 
 %files gui
