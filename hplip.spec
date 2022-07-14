@@ -25,7 +25,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.22.6
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -692,7 +692,7 @@ fi
 %endif
 
 %files model-data
-%dir %attr(0755,root,lp) /run/hplip
+#dir %attr(0755,root,lp) /run/hplip
 %{_tmpfilesdir}/hplip.conf
 %{_udevrulesdir}/*.rules
 %{_datadir}/hplip/data/models
