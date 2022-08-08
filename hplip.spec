@@ -25,7 +25,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.22.6
-Release:	2
+Release:	3
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -324,7 +324,7 @@ Peripherals or MFPs), which can print, scan, copy, fax, and/or access
 flash memory cards.
 
 %prep
-%setup -n %{name}-%{version}%{extraversion}
+%setup -qn %{name}-%{version}%{extraversion}
 
 # Some patches touch compressed PPDs -- since binary patches
 # are ugly, let's uncompress them first...
@@ -439,6 +439,7 @@ desktop-file-install --vendor='' \
 	--add-category='Qt' \
 	--add-category='HardwareSettings' \
 	--remove-key='Version' \
+	--set-icon=%{_iconsdir}/hicolor/32x32/apps/hp-sendfax.png \
 	%{buildroot}%{_datadir}/applications/hplip.desktop
 
 # Create /run/hplip
