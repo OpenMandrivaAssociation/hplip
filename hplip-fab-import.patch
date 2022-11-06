@@ -1,13 +1,12 @@
-diff --git a/ui5/fabwindow.py b/ui5/fabwindow.py
-index 0b95c94..631727c 100644
---- a/ui5/fabwindow.py
-+++ b/ui5/fabwindow.py
-@@ -518,7 +518,7 @@ class FABWindow(QMainWindow,  Ui_MainWindow):
+diff -up hplip-3.22.10/ui5/fabwindow.py.60~ hplip-3.22.10/ui5/fabwindow.py
+--- hplip-3.22.10/ui5/fabwindow.py.60~	2022-11-06 18:43:30.971212064 +0100
++++ hplip-3.22.10/ui5/fabwindow.py	2022-11-06 18:45:47.942384427 +0100
+@@ -518,7 +518,7 @@ class FABWindow(QMainWindow,  Ui_MainWin
                           self.__tr("Import fax addresses from LDIF or vCard"),
                           #user_conf.workingDirectory(),
                           self.user_settings.working_dir,
 -                         "vCard (*.vcf);;LDIF (*.ldif *.ldi)"))
 +                         "vCard (*.vcf);;LDIF (*.ldif *.ldi)")[0])
- 
+         result = (eval(result)[0])
          if result:
              working_directory = to_unicode(os.path.dirname(result))
