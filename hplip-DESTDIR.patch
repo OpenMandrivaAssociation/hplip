@@ -1,0 +1,13 @@
+diff -up hplip-3.23.3/Makefile.am.omv~ hplip-3.23.3/Makefile.am
+--- hplip-3.23.3/Makefile.am.omv~	2023-04-29 13:50:56.947446635 +0200
++++ hplip-3.23.3/Makefile.am	2023-04-29 13:51:04.863519193 +0200
+@@ -697,7 +697,7 @@ install-data-hook:
+ if HPLIP_BUILD
+-	if [ -d "/usr/share/ipp-usb/quirks/" ]; then \
++	if [ -d "/" ]; then \
+ 		echo "ipp-usb directory exists"; \
+-		cp prnt/ipp-usb/HPLIP.conf /usr/share/ipp-usb/quirks/ ; \
++		mkdir -p $(DESTDIR)/usr/share/ipp-usb/quirks/ ; cp prnt/ipp-usb/HPLIP.conf $(DESTDIR)/usr/share/ipp-usb/quirks/ ; \
+ 	fi
+ if !HPLIP_CLASS_DRIVER
+ #	   If scanner build, add hpaio entry to sane dll.conf.

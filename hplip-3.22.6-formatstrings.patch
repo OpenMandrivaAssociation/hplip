@@ -1,16 +1,16 @@
-diff -up hplip-3.22.6/protocol/hp_ipp.c.omv~ hplip-3.22.6/protocol/hp_ipp.c
---- hplip-3.22.6/protocol/hp_ipp.c.omv~	2022-07-14 01:28:12.665295290 +0200
-+++ hplip-3.22.6/protocol/hp_ipp.c	2022-07-14 01:29:47.635744228 +0200
-@@ -110,7 +110,7 @@ int addCupsPrinter(char *name, char *dev
-      }
+diff -up hplip-3.23.3/protocol/hp_ipp.c.4~ hplip-3.23.3/protocol/hp_ipp.c
+--- hplip-3.23.3/protocol/hp_ipp.c.4~	2023-03-28 09:26:11.000000000 +0200
++++ hplip-3.23.3/protocol/hp_ipp.c	2023-04-29 12:48:33.214165935 +0200
+@@ -109,7 +109,7 @@ int addCupsPrinter(char *name, char *dev
+     }
  
       if ( info == NULL )
 -        snprintf( info,sizeof(info), name );
-+        snprintf( info,sizeof(info), "%s", name );
++        snprintf( info, sizeof(info), "%s", name );
  
-      sprintf( printer_uri, "ipp://localhost/printers/%s", name );
+     sprintf(printer_uri, "ipp://localhost/printers/%s", name);
  
-@@ -511,27 +511,27 @@ int __parsePrinterAttributes(ipp_t *resp
+@@ -514,27 +514,27 @@ int __parsePrinterAttributes(ipp_t *resp
  
               if ( strcmp(attr_name, "printer-name") == 0 &&
                                          val_tag == IPP_TAG_NAME ) {

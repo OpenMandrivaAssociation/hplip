@@ -1,25 +1,17 @@
-diff -up hplip-3.22.10/base/password.py.omv~ hplip-3.22.10/base/password.py
---- hplip-3.22.10/base/password.py.omv~	2022-11-06 19:55:43.492064411 +0100
-+++ hplip-3.22.10/base/password.py	2022-11-06 20:00:08.168322415 +0100
-@@ -36,6 +36,7 @@ AUTH_TYPES = {'mepis': 'su',
-               'debian': 'su',
-               'suse': 'su',
-               'mandriva': 'su',
-+              'openmandriva': 'sudo',
-               'openmandrivalx': 'sudo',
-               'fedora': 'su',
-               'fedora28': 'sudo',
-@@ -127,9 +128,10 @@ class Password(object):
-     def __readAuthType(self):
-         # TBD: Getting distro name should get distro class
-         # added replace() to remove the spaces in distro_name
--        (os_name,_ver) = utils.get_distro_name() #.lower().replace(" ","")
+diff -up hplip-3.23.3/base/password.py.80~ hplip-3.23.3/base/password.py
+--- hplip-3.23.3/base/password.py.80~	2023-04-29 13:11:22.410101546 +0200
++++ hplip-3.23.3/base/password.py	2023-04-29 13:13:25.652152141 +0200
+@@ -279,9 +279,10 @@ class Password(object):
+         return AuthType, AuthCmd
+ 
+     def __get_password_utils_ui(self):
+-        (os_name,_ver) = utils.get_distro_name()
 -        os_name = os_name.lower().replace(" ","")
 -        distro_name = get_distro_std_name(os_name)
 +        import distro
 +        os_name = distro.id()
 +        _ver = distro.version()
 +        distro_name = os_name
-         self.__authType = user_conf.get('authentication', 'su_sudo', '')
-         if self.__authType != "su" and self.__authType != "sudo":
-             try:
+         if self.__authType == "sudo":
+             AuthType, AuthCmd = 'sudo', 'sudo %s'
+         else:

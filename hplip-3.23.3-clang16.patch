@@ -1,0 +1,126 @@
+diff -up hplip-3.23.3/fax/filters/cdmfax/jetlib.cpp.omv~ hplip-3.23.3/fax/filters/cdmfax/jetlib.cpp
+--- hplip-3.23.3/fax/filters/cdmfax/jetlib.cpp.omv~	2023-04-29 13:44:59.449096264 +0200
++++ hplip-3.23.3/fax/filters/cdmfax/jetlib.cpp	2023-04-29 13:45:08.774185964 +0200
+@@ -7568,8 +7568,8 @@ HP_StdFuncPrefix HP_M2TIFF_CalcCompressi
+     HP_pCharHuge lpfirst;
+     HP_pCharHuge lpchar;
+     HP_BOOL in_run, FourByteWordPad;
+-    register HP_UByte count;
+-    register HP_SInt16 state;
++    HP_UByte count;
++    HP_SInt16 state;
+     HP_UByte padCount;
+     HP_pUByte  lpEnd;
+ 
+@@ -7704,8 +7704,8 @@ HP_StdFuncPrefix HP_M2TIFF_Compress(
+     HP_pCharHuge lpfirst;
+     HP_pCharHuge lpchar;
+     HP_BOOL in_run,FourByteWordPad;
+-    register HP_UByte count;
+-    register HP_SInt16 state;
++    HP_UByte count;
++    HP_SInt16 state;
+     HP_pCharHuge   lpEnd;
+     HP_UByte padCount;
+     
+diff -up hplip-3.23.3/prnt/hpcups/Mode9.cpp.omv~ hplip-3.23.3/prnt/hpcups/Mode9.cpp
+--- hplip-3.23.3/prnt/hpcups/Mode9.cpp.omv~	2023-04-29 13:45:20.022293964 +0200
++++ hplip-3.23.3/prnt/hpcups/Mode9.cpp	2023-04-29 13:45:21.946312415 +0200
+@@ -203,7 +203,7 @@ bool Mode9::Process(RASTERDATA* input)
+     unsigned int    offset,byte_count,rem_count;
+     Mode9_comtype       command;
+     char* dest=    (char*) compressBuf;
+-    register char *dptr=dest;
++    char *dptr=dest;
+ 
+     while ( size > 0 )
+     {
+diff -up hplip-3.23.3/prnt/hpcups/ModeDeltaPlus.cpp.omv~ hplip-3.23.3/prnt/hpcups/ModeDeltaPlus.cpp
+--- hplip-3.23.3/prnt/hpcups/ModeDeltaPlus.cpp.omv~	2023-04-29 13:45:29.734387039 +0200
++++ hplip-3.23.3/prnt/hpcups/ModeDeltaPlus.cpp	2023-04-29 13:45:31.763406464 +0200
+@@ -241,8 +241,8 @@ bool ModeDeltaPlus::compress (BYTE   *ou
+                               const     uint32_t    inheight,
+                               uint32_t  horz_ht_dist)
+ {
+-    register    BYTE     *outptr = outmem;
+-    register    uint32_t    col;
++    BYTE     *outptr = outmem;
++    uint32_t    col;
+     const       BYTE     *seedrow;
+     uint32_t                seedrow_count = 0;
+     uint32_t                location = 0;
+diff -up hplip-3.23.3/prnt/hpijs/compression.cpp.omv~ hplip-3.23.3/prnt/hpijs/compression.cpp
+--- hplip-3.23.3/prnt/hpijs/compression.cpp.omv~	2023-04-29 13:18:01.814472470 +0200
++++ hplip-3.23.3/prnt/hpijs/compression.cpp	2023-04-29 13:18:06.471511291 +0200
+@@ -266,7 +266,7 @@ BOOL Mode9::Process(RASTERDATA* input)
+     unsigned int    offset,byte_count,rem_count;
+     Mode9_comtype       command;
+     char* dest=    (char*) compressBuf;
+-    register char *dptr=dest;
++    char *dptr=dest;
+ 
+     while ( size > 0 )
+     {
+diff -up hplip-3.23.3/prnt/hpijs/ljfastraster.cpp.omv~ hplip-3.23.3/prnt/hpijs/ljfastraster.cpp
+--- hplip-3.23.3/prnt/hpijs/ljfastraster.cpp.omv~	2023-04-29 13:43:46.575389687 +0200
++++ hplip-3.23.3/prnt/hpijs/ljfastraster.cpp	2023-04-29 13:43:51.665439377 +0200
+@@ -919,8 +919,8 @@ BOOL ModeDeltaPlus::Compress (HPUInt8
+                               const     uint32_t    inheight,
+                               uint32_t  horz_ht_dist)
+ {
+-	register    HPUInt8     *outptr = outmem;
+-	register    uint32_t    col;
++	HPUInt8     *outptr = outmem;
++	uint32_t    col;
+     const       HPUInt8     *seedrow;
+     uint32_t                seedrow_count = 0;
+     uint32_t                location = 0;
+diff -up hplip-3.23.3/prnt/hpps/pserror.c.omv~ hplip-3.23.3/prnt/hpps/pserror.c
+--- hplip-3.23.3/prnt/hpps/pserror.c.omv~	2023-04-29 13:45:46.768549910 +0200
++++ hplip-3.23.3/prnt/hpps/pserror.c	2023-04-29 13:45:52.934608744 +0200
+@@ -24,7 +24,7 @@ extern char *program ;	/* Defined by mai
+ void message(int flags, char *format, ...)
+ {
+   va_list args ;
+-  static column = 0 ;		/* current screen column for message wrap */
++  static int column = 0 ;	/* current screen column for message wrap */
+   char msgbuf[MAX_MESSAGE] ;	/* buffer in which to put the message */
+   char *bufptr = msgbuf ;	/* message buffer pointer */
+ 
+diff -up hplip-3.23.3/scan/sane/orblite.c.omv~ hplip-3.23.3/scan/sane/orblite.c
+--- hplip-3.23.3/scan/sane/orblite.c.omv~	2023-04-29 13:46:40.964064998 +0200
++++ hplip-3.23.3/scan/sane/orblite.c	2023-04-29 13:47:16.287398375 +0200
+@@ -8,12 +8,12 @@
+ //   which was factored into the initial SANE API framework
+ //
+ 
+-
+-
+ #ifdef __cplusplus
+  extern "C" {
+ #endif
+ 
++#include <dlfcn.h>
++
+ #include "sane.h"           /* SANE API */
+ #define DEBUG_NOT_STATIC
+ #undef NDEBUG
+@@ -195,7 +195,6 @@ bugout:
+ 
+ static int bb_unload(SANE_THandle ps)
+ {
+-   _DBG("Calling orblite bb_unload: \n");
+    if (ps->bb_handle)
+    {
+       dlclose(ps->bb_handle);
+diff -up hplip-3.23.3/scan/sane/sclpml.c.omv~ hplip-3.23.3/scan/sane/sclpml.c
+--- hplip-3.23.3/scan/sane/sclpml.c.omv~	2023-04-29 13:46:18.481851870 +0200
++++ hplip-3.23.3/scan/sane/sclpml.c	2023-04-29 13:46:29.196953538 +0200
+@@ -25,6 +25,7 @@
+ 
+ \************************************************************************************/
+ 
++#define _GNU_SOURCE 1 /* for strcasestr */
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>

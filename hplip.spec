@@ -5,12 +5,17 @@
 %{?_without_sane: %global sane_backend 0}
 
 %define major 0
-%define libhpip %mklibname hpip %{major}
-%define libhpipp %mklibname hpipp %{major}
-%define libhpmud %mklibname hpmud %{major}
-%define libhpdiscovery %mklibname hpdiscovery %{major}
+%define oldlibhpip %mklibname hpip 0
+%define oldlibhpipp %mklibname hpipp 0
+%define oldlibhpmud %mklibname hpmud 0
+%define oldlibhpdiscovery %mklibname hpdiscovery 0
+%define libhpip %mklibname hpip
+%define libhpipp %mklibname hpipp
+%define libhpmud %mklibname hpmud
+%define libhpdiscovery %mklibname hpdiscovery
 %define sanemaj 1
-%define libsane %mklibname sane-hpaio %{sanemaj}
+%define oldlibsane %mklibname sane-hpaio 1
+%define libsane %mklibname sane-hpaio
 %define devname %mklibname hpip -d
 
 # Suppress automatically generated Requires for devel packages
@@ -24,8 +29,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.22.10
-Release:	2
+Version:	3.23.3
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -102,7 +107,7 @@ Patch149:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-dialog-in
 Patch150:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-find-driver.patch
 Patch151:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-clean-ldl.patch
 Patch152:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-revert-plugins.patch
-Patch153:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-check-userperms.patch
+#Patch153:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-check-userperms.patch
 Patch154:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-fab-import.patch
 Patch155:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpsetup-noscanjets.patch
 Patch156:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpfirmware-timeout.patch
@@ -129,11 +134,13 @@ Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
 Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
 Patch304:	hplip-3.18.12-clang7.patch
-Patch305:	hplip-3.20.11-authtype.patch
+#Patch305:	hplip-3.20.11-authtype.patch
 
 # OMV
 Patch400:	hplip-3.22.10-python-3.11.patch
 Patch401:	hplip-3.22.10-distrorecognition.patch
+Patch402:	hplip-3.23.3-clang16.patch
+Patch403:	hplip-DESTDIR.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
@@ -216,6 +223,7 @@ there is the graphical tool "hp-toolbox" available (Menu:
 %package -n %{libhpip}
 Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
 Group:		System/Printing
+%rename %{oldlibhpip}
 
 %description -n %{libhpip}
 Library needed for the "hplip" HP printer/all-in-one drivers
@@ -223,6 +231,7 @@ Library needed for the "hplip" HP printer/all-in-one drivers
 %package -n %{libhpipp}
 Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
 Group:		System/Printing
+%rename %{oldlibhpipp}
 
 %description -n %{libhpipp}
 Library needed for the "hplip" HP printer/all-in-one drivers
@@ -231,6 +240,7 @@ Library needed for the "hplip" HP printer/all-in-one drivers
 Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
 Group:		System/Printing
 Conflicts:	%{_lib}hpip0 < 3.13.2-4
+%rename %{oldlibhpmud}
 
 %description -n %{libhpmud}
 Library needed for the "hplip" HP printer/all-in-one drivers
@@ -238,6 +248,7 @@ Library needed for the "hplip" HP printer/all-in-one drivers
 %package -n %{libhpdiscovery}
 Summary:        Dynamic library for the "hplip" HP printer/all-in-one drivers
 Group:          System/Printing
+%rename %{oldlibhpdiscovery}
 
 %description -n %{libhpdiscovery}
 Library needed for the "hplip" HP printer/all-in-one drivers
@@ -264,6 +275,7 @@ Requires(post):	sane-backends
 Provides:	sane-backends-hpaio = %{version}-%{release}
 # (cjw) for system-config-printer
 Provides:	libsane-hpaio
+%rename %{oldlibsane}
 
 %description -n %{libsane}
 SANE driver for scanners in HP's multi-function devices (from HPLIP)
@@ -588,7 +600,8 @@ fi
 %{_bindir}/hp-timedate
 %{_bindir}/hp-unload
 %{_bindir}/hp-wificonfig
-
+%{_prefix}/lib/cups/filter/hpcdmfax
+%{_datadir}/ipp-usb/quirks/HPLIP.conf
 # A tool to disable Smart Install
 %{_bindir}/SmartInstallDisable-Tool.run
 
