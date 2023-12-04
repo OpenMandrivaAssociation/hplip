@@ -1,3 +1,4 @@
+%global optflags %{optflags} -Wno-return-type
 %global optflags %{optflags} -I%(python -c "from distutils.sysconfig import get_python_inc; print (get_python_inc());")
 # Define if you want to build the sane backend (default)
 %define sane_backend 1
