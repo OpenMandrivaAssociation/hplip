@@ -30,7 +30,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.23.8
+Version:	3.23.12
 Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -51,7 +51,7 @@ Source7:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hp-laserjet_prof
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch3:		hplip-cups-2.2.patch
 Patch4:		hplip-3.15.4-hp_ipp.patch
-Patch5:		hplip-3.22.6-formatstrings.patch
+#Patch5:		hplip-3.22.6-formatstrings.patch
 Patch6:		hplip-3.31.10-fix-scan-icon-openmandriva.patch
 
 # Fedora patches
