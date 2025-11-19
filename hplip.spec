@@ -90,7 +90,7 @@ Patch130:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-wifisetup
 Patch132:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0026-Call-QMessageBox-constructors-of-PyQT5-with-the-corr.patch
 Patch133:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 Patch134:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0027-Fixed-incomplete-removal-of-hp-toolbox-features-whic.patch
-Patch135:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-add-ppd-crash.patch
+#Patch135:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-add-ppd-crash.patch
 Patch136:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-missing-links.patch
 Patch137:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hplj-3052.patch
 Patch138:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpmud-string-parse.patch
