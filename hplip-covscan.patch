@@ -1,6 +1,6 @@
-diff -up hplip-3.23.3/common/utils.c.47~ hplip-3.23.3/common/utils.c
---- hplip-3.23.3/common/utils.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/common/utils.c	2023-04-29 13:01:53.911021064 +0200
+diff -up hplip-3.25.2/common/utils.c.covscan hplip-3.25.2/common/utils.c
+--- hplip-3.25.2/common/utils.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/common/utils.c	2025-04-11 10:21:58.034950818 +0200
 @@ -1,5 +1,9 @@
 +#ifndef _GNU_SOURCE
 +#define _GNU_SOURCE
@@ -12,10 +12,10 @@ diff -up hplip-3.23.3/common/utils.c.47~ hplip-3.23.3/common/utils.c
  #include <dlfcn.h>
  #include <sys/stat.h>
  #include <errno.h>
-diff -up hplip-3.23.3/io/hpmud/hpmud.c.47~ hplip-3.23.3/io/hpmud/hpmud.c
---- hplip-3.23.3/io/hpmud/hpmud.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/io/hpmud/hpmud.c	2023-04-29 13:01:53.911021064 +0200
-@@ -759,6 +759,7 @@ enum HPMUD_RESULT hpmud_get_dstat(HPMUD_
+diff -up hplip-3.25.2/io/hpmud/hpmud.c.covscan hplip-3.25.2/io/hpmud/hpmud.c
+--- hplip-3.25.2/io/hpmud/hpmud.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/io/hpmud/hpmud.c	2025-04-11 10:21:58.035151792 +0200
+@@ -769,6 +769,7 @@ enum HPMUD_RESULT hpmud_get_dstat(HPMUD_
     }
  
     strncpy(ds->uri, msp->device[dd].uri, sizeof(ds->uri));
@@ -23,9 +23,9 @@ diff -up hplip-3.23.3/io/hpmud/hpmud.c.47~ hplip-3.23.3/io/hpmud/hpmud.c
     ds->io_mode = msp->device[dd].io_mode;
     ds->channel_cnt = msp->device[dd].channel_cnt;
     ds->mlc_up = msp->device[dd].mlc_up;
-diff -up hplip-3.23.3/io/hpmud/jd.c.47~ hplip-3.23.3/io/hpmud/jd.c
---- hplip-3.23.3/io/hpmud/jd.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/io/hpmud/jd.c	2023-04-29 13:01:53.911021064 +0200
+diff -up hplip-3.25.2/io/hpmud/jd.c.covscan hplip-3.25.2/io/hpmud/jd.c
+--- hplip-3.25.2/io/hpmud/jd.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/io/hpmud/jd.c	2025-04-11 10:21:58.035328288 +0200
 @@ -31,6 +31,7 @@
  #endif
  
@@ -34,9 +34,9 @@ diff -up hplip-3.23.3/io/hpmud/jd.c.47~ hplip-3.23.3/io/hpmud/jd.c
  #include "hpmud.h"
  #include "hpmudi.h"
  
-diff -up hplip-3.23.3/io/hpmud/model.c.47~ hplip-3.23.3/io/hpmud/model.c
---- hplip-3.23.3/io/hpmud/model.c.47~	2023-04-29 13:01:53.849020478 +0200
-+++ hplip-3.23.3/io/hpmud/model.c	2023-04-29 13:01:53.912021074 +0200
+diff -up hplip-3.25.2/io/hpmud/model.c.covscan hplip-3.25.2/io/hpmud/model.c
+--- hplip-3.25.2/io/hpmud/model.c.covscan	2025-04-11 10:21:58.023885145 +0200
++++ hplip-3.25.2/io/hpmud/model.c	2025-04-11 10:21:58.035487541 +0200
 @@ -117,6 +117,7 @@ static int ReadConfig()
        if (rcbuf[0] == '[')
        {
@@ -53,9 +53,9 @@ diff -up hplip-3.23.3/io/hpmud/model.c.47~ hplip-3.23.3/io/hpmud/model.c
           break;  /* done */
        }
     }
-diff -up hplip-3.23.3/io/hpmud/musb.c.47~ hplip-3.23.3/io/hpmud/musb.c
---- hplip-3.23.3/io/hpmud/musb.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/io/hpmud/musb.c	2023-04-29 13:01:53.912021074 +0200
+diff -up hplip-3.25.2/io/hpmud/musb.c.covscan hplip-3.25.2/io/hpmud/musb.c
+--- hplip-3.25.2/io/hpmud/musb.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/io/hpmud/musb.c	2025-04-11 10:21:58.035717762 +0200
 @@ -776,7 +776,7 @@ static int device_id(int fd, unsigned ch
          len = size-1;   /* leave byte for zero termination */
      if (len > 2)
@@ -65,9 +65,9 @@ diff -up hplip-3.23.3/io/hpmud/musb.c.47~ hplip-3.23.3/io/hpmud/musb.c
      buffer[len]=0;
      DBG("read actual device_id successfully fd=%d len=%d\n", fd, len);
  
-diff -up hplip-3.23.3/io/hpmud/pp.c.47~ hplip-3.23.3/io/hpmud/pp.c
---- hplip-3.23.3/io/hpmud/pp.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/io/hpmud/pp.c	2023-04-29 13:01:53.912021074 +0200
+diff -up hplip-3.25.2/io/hpmud/pp.c.covscan hplip-3.25.2/io/hpmud/pp.c
+--- hplip-3.25.2/io/hpmud/pp.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/io/hpmud/pp.c	2025-04-11 10:21:58.035977040 +0200
 @@ -632,7 +632,7 @@ static int device_id(int fd, char *buffe
        len = size-1;   /* leave byte for zero termination */
     if (len > 2)
@@ -77,9 +77,9 @@ diff -up hplip-3.23.3/io/hpmud/pp.c.47~ hplip-3.23.3/io/hpmud/pp.c
     buffer[len]=0;
  
     DBG("read actual device_id successfully fd=%d len=%d\n", fd, len);
-diff -up hplip-3.23.3/Makefile.am.47~ hplip-3.23.3/Makefile.am
---- hplip-3.23.3/Makefile.am.47~	2023-04-29 13:01:53.746019503 +0200
-+++ hplip-3.23.3/Makefile.am	2023-04-29 13:01:53.911021064 +0200
+diff -up hplip-3.25.2/Makefile.am.covscan hplip-3.25.2/Makefile.am
+--- hplip-3.25.2/Makefile.am.covscan	2025-04-11 10:21:58.010155532 +0200
++++ hplip-3.25.2/Makefile.am	2025-04-11 10:22:52.826357214 +0200
 @@ -3,7 +3,7 @@
  #
  #  (c) 2004-2015 Copyright HP Development Company, LP
@@ -90,7 +90,7 @@ diff -up hplip-3.23.3/Makefile.am.47~ hplip-3.23.3/Makefile.am
  CXXFLAGS+= -DCONFDIR=\"$(hplip_confdir)\"
  
 @@ -310,7 +310,7 @@ dist_pcard_DATA = pcard/__init__.py pcar
- pcardextdir = $(pyexecdir)
+ pcardextdir = $(PYTHONEXECDIR)
  pcardext_LTLIBRARIES = pcardext.la
  pcardext_la_LDFLAGS = -module -avoid-version
 -pcardext_la_SOURCES = pcard/pcardext/pcardext.c pcard/fat.c
@@ -107,9 +107,9 @@ diff -up hplip-3.23.3/Makefile.am.47~ hplip-3.23.3/Makefile.am
  libhpipp_la_LDFLAGS = -version-info 0:1:0
  libhpipp_la_LIBADD = libhpmud.la
  
-diff -up hplip-3.23.3/pcard/fat.c.47~ hplip-3.23.3/pcard/fat.c
---- hplip-3.23.3/pcard/fat.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/pcard/fat.c	2023-04-29 13:01:53.912021074 +0200
+diff -up hplip-3.25.2/pcard/fat.c.covscan hplip-3.25.2/pcard/fat.c
+--- hplip-3.25.2/pcard/fat.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/pcard/fat.c	2025-04-11 10:21:58.036450105 +0200
 @@ -519,14 +519,17 @@ int FatFreeSpace(void)
  
  int FatDiskAttributes( PHOTO_CARD_ATTRIBUTES * pa )
@@ -139,46 +139,9 @@ diff -up hplip-3.23.3/pcard/fat.c.47~ hplip-3.23.3/pcard/fat.c
     cwd.StartSector = ConvertClusterToSector(fa.StartCluster);
     cwd.CurrSector = cwd.StartSector;
     cwd.StartCluster = fa.StartCluster;
-diff -up hplip-3.23.3/prnt/hpcups/genPCLm.cpp.47~ hplip-3.23.3/prnt/hpcups/genPCLm.cpp
---- hplip-3.23.3/prnt/hpcups/genPCLm.cpp.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/prnt/hpcups/genPCLm.cpp	2023-04-29 13:01:53.912021074 +0200
-@@ -1237,11 +1237,16 @@ void PCLmGenerator::writeJobTicket()
- 	char orientation[256];
- 	char duplex[256];
- 	char colorthemes[256];
--	strncpy(colorthemes,getColorThemesString(m_pPCLmSSettings->colorTheme),256);
--	strncpy(inputBin,getInputBinString(m_pPCLmSSettings->userInputBin),256);
--	strncpy(outputBin,getOutputBin(m_pPCLmSSettings->userOutputBin),256);
--	strncpy(orientation,getOrientationString(m_pPCLmSSettings->userOrientation),256);
--	strncpy(duplex,getDuplexString(currDuplexDisposition),256);
-+	strncpy(colorthemes,getColorThemesString(m_pPCLmSSettings->colorTheme), sizeof(colorthemes));
-+	colorthemes[sizeof(colorthemes)-1] = '\0';
-+	strncpy(inputBin,getInputBinString(m_pPCLmSSettings->userInputBin), sizeof(inputBin));
-+	inputBin[sizeof(inputBin)-1] = '\0';
-+	strncpy(outputBin,getOutputBin(m_pPCLmSSettings->userOutputBin), sizeof(outputBin));
-+	outputBin[sizeof(outputBin)-1] = '\0';
-+	strncpy(orientation,getOrientationString(m_pPCLmSSettings->userOrientation), sizeof(orientation));
-+	orientation[sizeof(orientation)-1] = '\0';
-+	strncpy(duplex,getDuplexString(currDuplexDisposition), sizeof(duplex));
-+	duplex[sizeof(duplex)-1] = '\0';
- 
- 	snprintf(pOutStr,OUT_STR_SIZE,"%%  genPCLm (Ver: %f)\n",PCLM_Ver); writeStr2OutBuff(pOutStr);
- 	snprintf(pOutStr,OUT_STR_SIZE,"%%============= Job Ticket =============\n"); writeStr2OutBuff(pOutStr);
-@@ -1635,7 +1640,10 @@ int  PCLmGenerator::StartPage(PCLmPageSe
- 	}
- 
- 	if(strlen(PCLmPageContent->mediaSizeName))
--		strncpy(currMediaName,PCLmPageContent->mediaSizeName,256);
-+	{
-+		strncpy(currMediaName,PCLmPageContent->mediaSizeName, sizeof(currMediaName));
-+		currMediaName[sizeof(currMediaName)-1] = '\0';
-+	}
- 
- 	currStripHeight=PCLmPageContent->stripHeight;
- 	if(!currStripHeight)
-diff -up hplip-3.23.3/prnt/hpijs/context2.cpp.47~ hplip-3.23.3/prnt/hpijs/context2.cpp
---- hplip-3.23.3/prnt/hpijs/context2.cpp.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/prnt/hpijs/context2.cpp	2023-04-29 13:01:53.912021074 +0200
+diff -up hplip-3.25.2/prnt/hpijs/context2.cpp.covscan hplip-3.25.2/prnt/hpijs/context2.cpp
+--- hplip-3.25.2/prnt/hpijs/context2.cpp.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/prnt/hpijs/context2.cpp	2025-04-11 10:21:58.036656862 +0200
 @@ -1302,6 +1302,7 @@ DRIVER_ERROR PrintContext::SelectDevice
  	if(0 == strnlen((const char *)pSS->strDevID, DevIDBuffSize))
  	{
@@ -187,9 +150,9 @@ diff -up hplip-3.23.3/prnt/hpijs/context2.cpp.47~ hplip-3.23.3/prnt/hpijs/contex
  	}
      thePrinter = pPFI->CreatePrinter (pSS, familyHandle);
      if (thePrinter->constructor_error != NO_ERROR)
-diff -up hplip-3.23.3/prnt/hpijs/systemservices.cpp.47~ hplip-3.23.3/prnt/hpijs/systemservices.cpp
---- hplip-3.23.3/prnt/hpijs/systemservices.cpp.47~	2023-03-28 09:26:27.000000000 +0200
-+++ hplip-3.23.3/prnt/hpijs/systemservices.cpp	2023-04-29 13:01:53.913021083 +0200
+diff -up hplip-3.25.2/prnt/hpijs/systemservices.cpp.covscan hplip-3.25.2/prnt/hpijs/systemservices.cpp
+--- hplip-3.25.2/prnt/hpijs/systemservices.cpp.covscan	2025-02-27 13:12:44.000000000 +0100
++++ hplip-3.25.2/prnt/hpijs/systemservices.cpp	2025-04-11 10:21:58.036891582 +0200
 @@ -396,7 +396,10 @@ void SystemServices::AdjustIO(IO_MODE IM
      IOMode.bDevID =IM.bDevID  && IOMode.bDevID;
  
@@ -201,10 +164,10 @@ diff -up hplip-3.23.3/prnt/hpijs/systemservices.cpp.47~ hplip-3.23.3/prnt/hpijs/
  }
  
  APDK_END_NAMESPACE
-diff -up hplip-3.23.3/prnt/hpps/hppsfilter.c.47~ hplip-3.23.3/prnt/hpps/hppsfilter.c
---- hplip-3.23.3/prnt/hpps/hppsfilter.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/prnt/hpps/hppsfilter.c	2023-04-29 13:01:53.913021083 +0200
-@@ -274,13 +274,13 @@ static void WriteHeader(char **argument)
+diff -up hplip-3.25.2/prnt/hpps/hppsfilter.c.covscan hplip-3.25.2/prnt/hpps/hppsfilter.c
+--- hplip-3.25.2/prnt/hpps/hppsfilter.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/prnt/hpps/hppsfilter.c	2025-04-11 10:21:58.037072084 +0200
+@@ -329,13 +329,13 @@ static void WriteHeader(char **argument)
      /*		Writing Header Information
      argument[1] = JOB ID , argument[2]= USERNAME,  argument[3] = TITLE		*/
      hpwrite("\x1b%-12345X@PJL JOBNAME=", strlen("\x1b%-12345X@PJL JOBNAME="));
@@ -221,9 +184,9 @@ diff -up hplip-3.23.3/prnt/hpps/hppsfilter.c.47~ hplip-3.23.3/prnt/hpps/hppsfilt
      hpwrite(buffer, strlen(buffer));
      fprintf(stderr, "HP PS filter func = WriteHeader           : WRITING PJL HEADER INFO\n");
      return;
-diff -up hplip-3.23.3/protocol/hp_ipp.h.47~ hplip-3.23.3/protocol/hp_ipp.h
---- hplip-3.23.3/protocol/hp_ipp.h.47~	2023-04-29 13:01:53.913021083 +0200
-+++ hplip-3.23.3/protocol/hp_ipp.h	2023-04-29 13:03:14.165772472 +0200
+diff -up hplip-3.25.2/protocol/hp_ipp.h.covscan hplip-3.25.2/protocol/hp_ipp.h
+--- hplip-3.25.2/protocol/hp_ipp.h.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/protocol/hp_ipp.h	2025-04-11 10:21:58.037239020 +0200
 @@ -168,6 +168,11 @@ HPIPP_RESULT parseResponseHeader(char* h
  HPIPP_RESULT prepend_http_header(raw_ipp *raw_request,const char *resource);
  enum HPMUD_RESULT sendUSBRequest(char *buf, int size, raw_ipp *responseptr, char * device_uri);
@@ -236,9 +199,9 @@ diff -up hplip-3.23.3/protocol/hp_ipp.h.47~ hplip-3.23.3/protocol/hp_ipp.h
  
  ipp_t * createFaxDetailRequest(const char *printer_name);
  ipp_t * getDeviceFaxModemAttributes(char* device_uri,char* printer_name, int *count);
-diff -up hplip-3.23.3/scan/sane/bb_ledm.c.47~ hplip-3.23.3/scan/sane/bb_ledm.c
---- hplip-3.23.3/scan/sane/bb_ledm.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/bb_ledm.c	2023-04-29 13:01:53.913021083 +0200
+diff -up hplip-3.25.2/scan/sane/bb_ledm.c.covscan hplip-3.25.2/scan/sane/bb_ledm.c
+--- hplip-3.25.2/scan/sane/bb_ledm.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/bb_ledm.c	2025-04-11 10:21:58.037378913 +0200
 @@ -26,6 +26,7 @@
  # include "http.h"
  # include "xml.h"
@@ -247,9 +210,9 @@ diff -up hplip-3.23.3/scan/sane/bb_ledm.c.47~ hplip-3.23.3/scan/sane/bb_ledm.c
  
  # include <stdint.h>
  
-diff -up hplip-3.23.3/scan/sane/common.h.47~ hplip-3.23.3/scan/sane/common.h
---- hplip-3.23.3/scan/sane/common.h.47~	2023-04-29 13:01:53.111013495 +0200
-+++ hplip-3.23.3/scan/sane/common.h	2023-04-29 13:01:53.913021083 +0200
+diff -up hplip-3.25.2/scan/sane/common.h.covscan hplip-3.25.2/scan/sane/common.h
+--- hplip-3.25.2/scan/sane/common.h.covscan	2025-04-11 10:21:57.806326475 +0200
++++ hplip-3.25.2/scan/sane/common.h	2025-04-11 10:21:58.037532413 +0200
 @@ -36,7 +36,7 @@
  #define _STRINGIZE(x) #x
  #define STRINGIZE(x) _STRINGIZE(x)
@@ -259,9 +222,9 @@ diff -up hplip-3.23.3/scan/sane/common.h.47~ hplip-3.23.3/scan/sane/common.h
  #define BUG_DUMP(data, size) bugdump((data), (size))
  #define BUG_SZ(args...) {syslog(LOG_ERR, args); DBG(2, args);}
  
-diff -up hplip-3.23.3/scan/sane/escl.c.47~ hplip-3.23.3/scan/sane/escl.c
---- hplip-3.23.3/scan/sane/escl.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/escl.c	2023-04-29 13:01:53.913021083 +0200
+diff -up hplip-3.25.2/scan/sane/escl.c.covscan hplip-3.25.2/scan/sane/escl.c
+--- hplip-3.25.2/scan/sane/escl.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/escl.c	2025-04-11 10:21:58.037677793 +0200
 @@ -849,7 +849,7 @@ SANE_Status escl_control_option(SANE_Han
    //DBG8("escl_control_option (option=%s) action=%d\n", ps->option[option].name, action);
    if (stat != SANE_STATUS_GOOD)
@@ -280,9 +243,9 @@ diff -up hplip-3.23.3/scan/sane/escl.c.47~ hplip-3.23.3/scan/sane/escl.c
      return;
    }
  
-diff -up hplip-3.23.3/scan/sane/http.c.47~ hplip-3.23.3/scan/sane/http.c
---- hplip-3.23.3/scan/sane/http.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/http.c	2023-04-29 13:01:53.913021083 +0200
+diff -up hplip-3.25.2/scan/sane/http.c.covscan hplip-3.25.2/scan/sane/http.c
+--- hplip-3.25.2/scan/sane/http.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/http.c	2025-04-11 10:21:58.037859247 +0200
 @@ -36,6 +36,7 @@
  #include <string.h>
  #include <syslog.h>
@@ -291,9 +254,9 @@ diff -up hplip-3.23.3/scan/sane/http.c.47~ hplip-3.23.3/scan/sane/http.c
  #include "hpmud.h"
  #include "http.h"
  
-diff -up hplip-3.23.3/scan/sane/io.c.47~ hplip-3.23.3/scan/sane/io.c
---- hplip-3.23.3/scan/sane/io.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/io.c	2023-04-29 13:01:53.913021083 +0200
+diff -up hplip-3.25.2/scan/sane/io.c.covscan hplip-3.25.2/scan/sane/io.c
+--- hplip-3.25.2/scan/sane/io.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/io.c	2025-04-11 10:21:58.037998005 +0200
 @@ -50,7 +50,7 @@ int __attribute__ ((visibility ("hidden"
      
     if (dbus_error_is_set(&dbus_err))
@@ -321,9 +284,9 @@ diff -up hplip-3.23.3/scan/sane/io.c.47~ hplip-3.23.3/scan/sane/io.c
          return 0;
      }
  
-diff -up hplip-3.23.3/scan/sane/ledm.c.47~ hplip-3.23.3/scan/sane/ledm.c
---- hplip-3.23.3/scan/sane/ledm.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/ledm.c	2023-04-29 13:01:53.913021083 +0200
+diff -up hplip-3.25.2/scan/sane/ledm.c.covscan hplip-3.25.2/scan/sane/ledm.c
+--- hplip-3.25.2/scan/sane/ledm.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/ledm.c	2025-04-11 10:21:58.038131991 +0200
 @@ -813,7 +813,7 @@ SANE_Status ledm_control_option(SANE_Han
  
    if (stat != SANE_STATUS_GOOD)
@@ -342,9 +305,9 @@ diff -up hplip-3.23.3/scan/sane/ledm.c.47~ hplip-3.23.3/scan/sane/ledm.c
      return;
    }
  
-diff -up hplip-3.23.3/scan/sane/marvell.c.47~ hplip-3.23.3/scan/sane/marvell.c
---- hplip-3.23.3/scan/sane/marvell.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/marvell.c	2023-04-29 13:01:53.914021093 +0200
+diff -up hplip-3.25.2/scan/sane/marvell.c.covscan hplip-3.25.2/scan/sane/marvell.c
+--- hplip-3.25.2/scan/sane/marvell.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/marvell.c	2025-04-11 10:21:58.038309394 +0200
 @@ -134,7 +134,7 @@ static int get_ip_data(struct marvell_se
  
     if (!ps->ip_handle)
@@ -444,9 +407,9 @@ diff -up hplip-3.23.3/scan/sane/marvell.c.47~ hplip-3.23.3/scan/sane/marvell.c
        goto bugout;
     }
  
-diff -up hplip-3.23.3/scan/sane/sclpml.c.47~ hplip-3.23.3/scan/sane/sclpml.c
---- hplip-3.23.3/scan/sane/sclpml.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/sclpml.c	2023-04-29 13:01:53.914021093 +0200
+diff -up hplip-3.25.2/scan/sane/sclpml.c.covscan hplip-3.25.2/scan/sane/sclpml.c
+--- hplip-3.25.2/scan/sane/sclpml.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/sclpml.c	2025-04-11 10:21:58.038605168 +0200
 @@ -30,6 +30,7 @@
  #include <unistd.h>
  #include <fcntl.h>
@@ -464,9 +427,9 @@ diff -up hplip-3.23.3/scan/sane/sclpml.c.47~ hplip-3.23.3/scan/sane/sclpml.c
        return;
       }
  
-diff -up hplip-3.23.3/scan/sane/soap.c.47~ hplip-3.23.3/scan/sane/soap.c
---- hplip-3.23.3/scan/sane/soap.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/soap.c	2023-04-29 13:01:53.914021093 +0200
+diff -up hplip-3.25.2/scan/sane/soap.c.covscan hplip-3.25.2/scan/sane/soap.c
+--- hplip-3.25.2/scan/sane/soap.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/soap.c	2025-04-11 10:21:58.038894758 +0200
 @@ -142,7 +142,7 @@ static int get_ip_data(struct soap_sessi
  
     if (!ps->ip_handle)
@@ -557,9 +520,9 @@ diff -up hplip-3.23.3/scan/sane/soap.c.47~ hplip-3.23.3/scan/sane/soap.c
        goto bugout;
     }
  
-diff -up hplip-3.23.3/scan/sane/soapht.c.47~ hplip-3.23.3/scan/sane/soapht.c
---- hplip-3.23.3/scan/sane/soapht.c.47~	2023-03-28 09:26:11.000000000 +0200
-+++ hplip-3.23.3/scan/sane/soapht.c	2023-04-29 13:01:53.914021093 +0200
+diff -up hplip-3.25.2/scan/sane/soapht.c.covscan hplip-3.25.2/scan/sane/soapht.c
+--- hplip-3.25.2/scan/sane/soapht.c.covscan	2025-02-27 13:12:29.000000000 +0100
++++ hplip-3.25.2/scan/sane/soapht.c	2025-04-11 10:21:58.039106018 +0200
 @@ -136,7 +136,7 @@ static int get_ip_data(struct soap_sessi
  
     if (!ps->ip_handle)
