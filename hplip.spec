@@ -30,7 +30,7 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.24.4
+Version:	3.25.8
 Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
@@ -86,11 +86,11 @@ Patch127:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-use-binar
 Patch128:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-error-print.patch
 Patch129:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpfax-importerror-print.patch
 Patch130:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-wifisetup.patch
-Patch131:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-keyserver.patch
+#Patch131:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-keyserver.patch
 Patch132:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0026-Call-QMessageBox-constructors-of-PyQT5-with-the-corr.patch
 Patch133:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 Patch134:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0027-Fixed-incomplete-removal-of-hp-toolbox-features-whic.patch
-Patch135:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-add-ppd-crash.patch
+#Patch135:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-add-ppd-crash.patch
 Patch136:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-missing-links.patch
 Patch137:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hplj-3052.patch
 Patch138:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpmud-string-parse.patch
