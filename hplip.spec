@@ -147,6 +147,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake m4
 BuildRequires:	make
 BuildRequires:	libtool
+BuildRequires:	slibtoolize
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
