@@ -143,6 +143,7 @@ Patch401:	hplip-3.22.10-distrorecognition.patch
 Patch402:	hplip-3.23.3-clang16.patch
 Patch403:	hplip-DESTDIR.patch
 
+BuildRequires:	libtool-base
 BuildRequires:	autoconf
 BuildRequires:	automake m4
 BuildRequires:	make
