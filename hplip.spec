@@ -155,6 +155,7 @@ BuildRequires:	polkit
 BuildRequires:	python-sip >= 4.16.4-1
 BuildRequires:	net-snmp-devel
 BuildRequires:	cups-devel
+BuildRequires:	atomic-devel
 # For ppdc
 BuildRequires:	cups-common cups
 BuildRequires:	jpeg-devel
