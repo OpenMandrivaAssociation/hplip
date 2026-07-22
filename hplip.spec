@@ -384,6 +384,10 @@ chmod -R u+w .
 # create required files as placeholder, otherwise autoreconf fails
 touch NEWS README AUTHORS ChangeLog
 sed -i 's|^AM_INIT_AUTOMAKE|AM_INIT_AUTOMAKE([foreign])|g' configure.in
+ln -sf %{_bindir}/libtoolize slibtoolize
+export PATH=$PWD:$PATH
+export LIBTOOLIZE=%{_bindir}/libtoolize
+export LIBTOOL=%{_bindir}/libtool
 autoreconf -ifv
 
 %if !%{sane_backend}
