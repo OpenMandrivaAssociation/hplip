@@ -148,7 +148,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake m4
 BuildRequires:	make
 BuildRequires:	libtool
-BuildRequires:	slibtool
+#BuildRequires:	slibtool
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
 BuildRequires:	polkit
@@ -391,6 +391,10 @@ WITHOUT_SANE="--without-sane"
 %endif
 #export CC=gcc
 #export CXX=g++
+ln -sf %{_bindir}/libtoolize slibtoolize
+export PATH=$PWD:$PATH
+export LIBTOOLIZE=%{_bindir}/libtoolize
+export LIBTOOL=%{_bindir}/libtool
 %configure \
 	$WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
