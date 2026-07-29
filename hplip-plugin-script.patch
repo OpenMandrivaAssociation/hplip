@@ -1,0 +1,28 @@
+diff --git a/Makefile.am b/Makefile.am
+index bb4195c..ddac16a 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -680,6 +680,12 @@ if HPLIP_CLASS_DRIVER
+ filterdir=$(cupsfilterdir)
+ printpluginsdir=$(cupsfilterdir)
+ 
++#
++# HP Plugin
++#
++
++pkgplugindir=$(bindir)
++pkgplugin_DATA=hp-plugin
+ 
+ dist_filter_DATA = hpcups hpps dat2drv
+ dist_printplugins_DATA = prnt/plugins/hbpl1-arm32.so prnt/plugins/hbpl1-arm64.so prnt/plugins/hbpl1-x86_32.so prnt/plugins/hbpl1-x86_64.so prnt/plugins/lj-arm32.so prnt/plugins/lj-arm64.so prnt/plugins/lj-x86_32.so prnt/plugins/lj-x86_64.so
+diff --git a/configure.in b/configure.in
+index f8f1a28..7fa5d12 100644
+--- a/configure.in
++++ b/configure.in
+@@ -801,5 +801,5 @@ AC_SUBST(udev_sysfs_rules)
+ AC_SUBST(epm_class_driver)
+ AC_SUBST(epm_class_install)
+ 
+-AC_CONFIG_FILES(Makefile hplip.conf hplip.desktop hp-uiscan.desktop hplip-systray.desktop prnt/drv/hpijs.drv prnt/drv/hpcups.drv hplip.list data/policykit/com.hp.hplip.service)
++AC_CONFIG_FILES(Makefile hplip.conf hplip.desktop hp-uiscan.desktop hplip-systray.desktop prnt/drv/hpijs.drv prnt/drv/hpcups.drv hplip.list data/policykit/com.hp.hplip.service hp-plugin)
+ AC_OUTPUT

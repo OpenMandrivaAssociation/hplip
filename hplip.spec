@@ -1,4 +1,4 @@
-%global optflags %{optflags} -Wno-return-type
+%global optflags %{optflags} -Wno-return-type -Wno-register
 %global optflags %{optflags} -I%(python -c "from distutils.sysconfig import get_python_inc; print (get_python_inc());")
 # Define if you want to build the sane backend (default)
 %define sane_backend 1
@@ -30,8 +30,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.25.8
-Release:	2
+Version:	3.26.4
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -51,7 +51,6 @@ Source7:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hp-laserjet_prof
 Patch2:		hplip-apply-udev-rules-on-action-change.patch
 Patch3:		hplip-cups-2.2.patch
 Patch4:		hplip-3.15.4-hp_ipp.patch
-#Patch5:		hplip-3.22.6-formatstrings.patch
 Patch6:		hplip-3.31.10-fix-scan-icon-openmandriva.patch
 
 # Fedora patches
@@ -86,7 +85,8 @@ Patch127:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-use-binar
 Patch128:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-error-print.patch
 Patch129:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpfax-importerror-print.patch
 Patch130:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-wifisetup.patch
-#Patch131:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-keyserver.patch
+# Local (rebased for 3.26.4): multi-keyserver failover; keep new upstream key
+Patch131:	hplip-keyserver.patch
 Patch132:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0026-Call-QMessageBox-constructors-of-PyQT5-with-the-corr.patch
 Patch133:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
 Patch134:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0027-Fixed-incomplete-removal-of-hp-toolbox-features-whic.patch
@@ -116,6 +116,23 @@ Patch157:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-gpgdir-pe
 Patch158:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-plugin-udevissues.patch
 Patch160:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-no-libhpmud-libm-warnings.patch
 Patch161:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-fedora-gui.patch
+# C99 / modern compiler / Python fixes from Fedora (3.25.x/3.26.x)
+Patch162:	hplip-pserror-c99.patch
+Patch163:	hplip-scan-hpaio-include.patch
+Patch164:	hplip-scan-orblite-c99.patch
+Patch165:	hplip-pcardext-disable.patch
+Patch166:	hplip-sclpml-strcasestr.patch
+Patch167:	hplip-fix-parsing-lpstat.patch
+Patch168:	hplip-plugin-curl.patch
+Patch169:	hplip-use-raw-strings.patch
+Patch170:	hplip-hpaio-gcc14.patch
+Patch171:	hplip-gcc15-stdc23.patch
+Patch172:	hplip-format-qdatetime.patch
+Patch173:	hplip-no-urlopener.patch
+Patch174:	hplip-scan-size.patch
+Patch175:	hplip-plugin-stdout.patch
+Patch176:	hplip-curl-fallback.patch
+Patch177:	hplip-CVE-2026-8631-osh.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
@@ -134,13 +151,10 @@ Patch228:	hpaio-option-duplex.diff
 Patch229:	process-events-for-systray.patch
 Patch302:	hplip-CVE-2013-4325.patch
 Patch303:	hplip-3.17.11-hp-systray-dont-start-in-KDE.patch
-Patch304:	hplip-3.18.12-clang7.patch
-#Patch305:	hplip-3.20.11-authtype.patch
 
 # OMV
 Patch400:	hplip-3.22.10-python-3.11.patch
 Patch401:	hplip-3.22.10-distrorecognition.patch
-Patch402:	hplip-3.23.3-clang16.patch
 Patch403:	hplip-DESTDIR.patch
 
 BuildRequires:	libtool-base
@@ -408,7 +422,10 @@ WITHOUT_SANE="--without-sane"
 	--enable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
 
-%make_build
+# GNU libtool is broken here (LTO + mangled lt_cv_sys_global_symbol_to_cdecl);
+# OpenMandriva prefers slibtool for linking.
+export LIBTOOL=slibtool-shared
+%make_build LIBTOOL=slibtool-shared
 
 %install
 mkdir -p %{buildroot}%{_bindir}
@@ -416,7 +433,8 @@ mkdir -p %{buildroot}%{_includedir}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
 
-%make_install PYTHON=%{__python}
+export LIBTOOL=slibtool-shared
+%make_install PYTHON=%{__python} LIBTOOL=slibtool-shared
 
 mkdir -p %{buildroot}/run/hplip
 mkdir -p %{buildroot}%{_sharedstatedir}/hp

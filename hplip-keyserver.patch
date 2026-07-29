@@ -14,21 +14,22 @@ diff --git a/base/validation.py b/base/validation.py
 index ee6b05a..5e955dc 100644
 --- a/base/validation.py
 +++ b/base/validation.py
-@@ -42,8 +42,11 @@ class DigiSign_Verification(object):
+@@ -42,8 +42,12 @@ class DigiSign_Verification(object):
  
  
  class GPG_Verification(DigiSign_Verification):
--    def __init__(self, pgp_site = 'pgp.mit.edu', key = 0x4ABA2F66DBD5A95894910E0673D770CDA59047B9):
+-    def __init__(self, pgp_site = 'hkp://keyserver.ubuntu.com:80', key = 0x82FFA7C6AA7411D934BDE173AC69536A2CF3A243):
 -        self.__pgp_site = pgp_site
-+    def __init__(self, keyservers = ['keyserver.ubuntu.com',
++    def __init__(self, keyservers = ['hkp://keyserver.ubuntu.com:80',
++                                     'keyserver.ubuntu.com',
 +                                     'pgp.surf.nl',
 +                                     'pgp.mit.edu'],
-+                 key = 0x4ABA2F66DBD5A95894910E0673D770CDA59047B9):
++                 key = 0x82FFA7C6AA7411D934BDE173AC69536A2CF3A243):
 +        self.__keyservers = keyservers
          self.__key = key
          self.__gpg = utils.which('gpg',True)
  
-@@ -82,13 +85,18 @@ class GPG_Verification(DigiSign_Verification):
+@@ -82,13 +86,18 @@ class GPG_Verification(DigiSign_Verification):
  
  
      def __acquire_gpg_key(self):
