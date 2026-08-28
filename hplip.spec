@@ -1,5 +1,5 @@
 %global optflags %{optflags} -Wno-return-type -Wno-register
-%global optflags %{optflags} -I%(python -c "from distutils.sysconfig import get_python_inc; print (get_python_inc());")
+%global optflags %{optflags} -I%(python -c "import sysconfig; print(sysconfig.get_path('include'))")
 # Define if you want to build the sane backend (default)
 %define sane_backend 1
 %{?_with_sane: %global sane_backend 1}
@@ -31,7 +31,7 @@
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
 Version:	3.26.4
-Release:	1
+Release:	2
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -77,7 +77,8 @@ Patch119:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-strncpy.p
 Patch120:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-no-write-bytecode.patch
 Patch121:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-silence-ioerror.patch
 Patch122:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-sourceoption.patch
-Patch123:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-noernie.patch
+# ErnieFilter is GPL in 3.26.4+; keep it for inkjet print quality
+#Patch123:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-noernie.patch
 Patch124:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-appdata.patch
 Patch125:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-check-cups.patch
 Patch126:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-typo.patch
@@ -157,59 +158,50 @@ Patch400:	hplip-3.22.10-python-3.11.patch
 Patch401:	hplip-3.22.10-distrorecognition.patch
 Patch403:	hplip-DESTDIR.patch
 
-BuildRequires:	libtool-base
 BuildRequires:	autoconf
 BuildRequires:	automake m4
 BuildRequires:	make
-BuildRequires:	libtool
 BuildRequires:	slibtool
 BuildRequires:	desktop-file-utils
 BuildRequires:	imagemagick
-BuildRequires:	polkit
-BuildRequires:	python-sip >= 4.16.4-1
-BuildRequires:	net-snmp-devel
-BuildRequires:	cups-devel
+BuildRequires:	pkgconfig(netsnmp)
+BuildRequires:	pkgconfig(cups)
 # For ppdc
-BuildRequires:	cups-common cups
-BuildRequires:	jpeg-devel
+BuildRequires:	cups-common
+BuildRequires:	pkgconfig(libjpeg)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(avahi-core)
 BuildRequires:	pkgconfig(avahi-client)
-BuildRequires:	pkgconfig(libgphoto2)
 BuildRequires:	pkgconfig(libusb)
-BuildRequires:	pkgconfig(libv4l1)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(udev)
 BuildRequires:	pkgconfig(libcrypto)
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	polkit-1-devel
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
-BuildRequires:	xsane
-Requires(post):	hplip
 %endif
-Requires(post):	systemd
 Requires(post):	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
-Requires:	hplip-model-data
-Requires:	hplip-hpijs
-Requires:	hplip-hpijs-ppds
-Requires:	python-sip-qt5 
+Requires:	hplip-model-data = %{EVRD}
+Requires:	hplip-hpijs = %{EVRD}
+Requires:	hplip-hpijs-ppds = %{EVRD}
+Requires:	python%{pyver}dist(pyqt5-sip)
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
-Requires:	python-reportlab
-# Needed since 2.8.4 for IPC
-Requires:	python-dbus >= 1.2.0-11
+Requires:	python%{pyver}dist(reportlab)
+# Needed for IPC
+Requires:	python%{pyver}dist(dbus-python)
 Requires:	polkit-agent
-Requires:	python-gi >= 3.14.0-3
+Requires:	python%{pyver}dist(pygobject)
 # Required by hp-scan for command line scanning
-Requires:	python-imaging >= 2.5.1-3
-Requires:	sane-backends-hpaio
-# Needed to avoid misleading errors about network connectivity (RH bug #705843)
+Requires:	python%{pyver}dist(pillow)
+Requires:	sane-backends-hpaio = %{EVRD}
+# Plugin download uses curl; some other helpers still call wget
+Requires:	curl
 Requires:	wget
-# (tpg) hp-check needs this
+# hp-check needs this
 Requires:	acl
 # hplip tools use internal symbols from libhplip that can change among versions
 Requires:	%{libhpip} = %{EVRD}
@@ -217,12 +209,11 @@ Requires:	%{libhpipp} = %{EVRD}
 # Some HP ppds are in foomatic-db and foomatic-db-hpijs (mdv bug #47415)
 Suggests:	foomatic-db-hpijs
 # hp-doctor requires gui modules
-Requires:	hplip-gui
+Requires:	hplip-gui = %{EVRD}
 Requires:	gnupg
 
 # foomatic-db-hpijs drivers are provided by hp and by this package now
-# NOTE: remove the foomatic-db-hpijs deps sometime in 2010-10-?? ?
-Provides:	foomatic-db-hpijs = %{version}-%{release}
+Provides:	foomatic-db-hpijs = %{EVRD}
 
 %description
 This is the HP driver package to supply Linux support for most
@@ -267,8 +258,8 @@ Conflicts:	%{_lib}hpip0 < 3.13.2-4
 Library needed for the "hplip" HP printer/all-in-one drivers
 
 %package -n %{libhpdiscovery}
-Summary:        Dynamic library for the "hplip" HP printer/all-in-one drivers
-Group:          System/Printing
+Summary:	Dynamic library for the "hplip" HP printer/all-in-one drivers
+Group:		System/Printing
 %rename %{oldlibhpdiscovery}
 
 %description -n %{libhpdiscovery}
@@ -277,11 +268,11 @@ Library needed for the "hplip" HP printer/all-in-one drivers
 %package -n %{devname}
 Summary:	Headers and links to compile against the "%{libhpip}" ("hplip") library
 Group:		Development/C
-Requires:	%{libhpip} >= %{version}-%{release}
-Requires:	%{libhpipp} >= %{version}-%{release}
-Requires:	%{libhpmud} >= %{version}-%{release}
-Requires:	%{libsane} >= %{version}-%{release}
-Provides:	libhpip-devel = %{version}-%{release}
+Requires:	%{libhpip} = %{EVRD}
+Requires:	%{libhpipp} = %{EVRD}
+Requires:	%{libhpmud} = %{EVRD}
+Requires:	%{libsane} = %{EVRD}
+Provides:	libhpip-devel = %{EVRD}
 Obsoletes:	%{_lib}hpip0-devel < 3.13.2-4
 
 %description -n %{devname}
@@ -293,7 +284,7 @@ the "%{libhpip}" library.
 Summary:	SANE driver for scanners in HP's multi-function devices (from HPLIP)
 Group:		System/Printing
 Requires(post):	sane-backends
-Provides:	sane-backends-hpaio = %{version}-%{release}
+Provides:	sane-backends-hpaio = %{EVRD}
 # (cjw) for system-config-printer
 Provides:	libsane-hpaio
 %rename %{oldlibsane}
@@ -319,8 +310,8 @@ Group:		System/Printing
 Requires:	python-qt5-gui
 Requires:	python-qt5-widgets
 Requires:	python-qt5-dbus
-Requires:	python3dist(distro)
-Requires:	%{name} = %{version}-%{release}
+Requires:	python%{pyver}dist(distro)
+Requires:	%{name} = %{EVRD}
 
 %description gui
 HPLIP graphical tools.
@@ -340,7 +331,7 @@ printers made by HP.
 Summary:	PPD files for the HPIJS printer driver
 Group:		System/Printing
 Requires:	foomatic-filters
-Requires:	hplip-hpijs
+Requires:	hplip-hpijs = %{EVRD}
 
 %description hpijs-ppds
 PPD files to use the HPIJS printer driver with foomatic-rip and a
@@ -389,21 +380,24 @@ cp -a %{S:6} %{S:7} ppd/hpcups
 # Don't run 'chgrp lp /var/log/hp' in makefile (removes all lines with "chgrp")
 sed -i '/chgrp/d' Makefile.am
 
+# cups_drv.inc lists both the glob and every individual PPD. GNU install 9.x
+# refuses to copy the same destination twice in one invocation.
+sed -i '/ppd\/hpcups\/\*\.ppd\.gz/d' cups_drv.inc
+
 chmod -R u+w .
 
 %build
 %serverbuild
-#needed by patches 204 and 205
 # create required files as placeholder, otherwise autoreconf fails
 touch NEWS README AUTHORS ChangeLog
 sed -i 's|^AM_INIT_AUTOMAKE|AM_INIT_AUTOMAKE([foreign])|g' configure.in
+export LIBTOOLIZE=slibtoolize
+export LIBTOOL=slibtool-shared
 autoreconf -ifv
 
 %if !%{sane_backend}
 WITHOUT_SANE="--without-sane"
 %endif
-#export CC=gcc
-#export CXX=g++
 %configure \
 	$WITHOUT_SANE \
 	--disable-foomatic-rip-hplip-install \
@@ -418,28 +412,21 @@ WITHOUT_SANE="--without-sane"
 	--enable-cups-drv-install \
 	--enable-cups-ppd-install \
 	--enable-hpijs-install \
-	--disable-imageProcessor-build \
 	--enable-policykit \
 	--with-mimedir=%{_datadir}/cups/mime PYTHON=%{__python}
 
-# GNU libtool is broken here (LTO + mangled lt_cv_sys_global_symbol_to_cdecl);
-# OpenMandriva prefers slibtool for linking.
-export LIBTOOL=slibtool-shared
 %make_build LIBTOOL=slibtool-shared
 
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_includedir}
-mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/hp
 
 export LIBTOOL=slibtool-shared
+# GNU install 9.x refuses to copy the same dest twice in one invocation;
+# cups_drv.inc / Makefile list both the glob and every individual PPD.
+sed -i '/ppd\/hpcups\/\*\.ppd\.gz/d' Makefile
 %make_install PYTHON=%{__python} LIBTOOL=slibtool-shared
-
-mkdir -p %{buildroot}/run/hplip
-mkdir -p %{buildroot}%{_sharedstatedir}/hp
-mkdir -p %{buildroot}%{_tmpfilesdir}
-echo 'd /run/hplip 0775 root lp -' >%{buildroot}%{_tmpfilesdir}/hplip.conf
 
 # Install files which the "make install" missed to install
 install -m 644 ip/hpip.h %{buildroot}%{_includedir}
@@ -482,10 +469,8 @@ desktop-file-install --vendor='' \
 	--set-icon=%{_iconsdir}/hicolor/32x32/apps/hp-sendfax.png \
 	%{buildroot}%{_datadir}/applications/hplip.desktop
 
-# Create /run/hplip
+# Create /run/hplip and tmpfiles snippet
 mkdir -p %{buildroot}/run/hplip
-
-# install /usr/lib/tmpfiles.d/hplip.conf (bug #1015831)
 mkdir -p %{buildroot}%{_tmpfilesdir}
 cat > %{buildroot}%{_tmpfilesdir}/hplip.conf <<EOF
 # See tmpfiles.d(5) for details
@@ -538,8 +523,17 @@ find doc/images -type f -exec chmod 644 {} \;
 #We do not need hal
 rm -f %{buildroot}%{_datadir}/hal/fdi/preprobe/10osvendor/20-hplip-devices.fdi
 
-#Add rules for all hp printers
-echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}%{_prefix}/lib/udev/rules.d/56-hpmud.rules
+# Add rules for all hp printers
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", GROUP="lp", MODE:="666"' >> %{buildroot}%{_udevrulesdir}/56-hpmud.rules
+
+%post
+# Restart CUPS to make the fax PPDs known to it
+/bin/systemctl try-restart cups.socket ||:
+/bin/systemctl try-restart cups.service ||:
+
+%postun
+/bin/systemctl try-restart cups.socket ||:
+/bin/systemctl try-restart cups.service ||:
 
 %post -n hplip-hpijs-ppds
 # Restart CUPS to make the printing PPDs known to it
@@ -567,23 +561,17 @@ fi
 %if %{sane_backend}
 %preun -n %{libsane}
 # Remove HPLIP driver from /etc/sane.d/dll.conf
-if [ "$1" = 0 ]; then \
-	if grep ^hpaio /etc/sane.d/dll.conf >/dev/null 2>/dev/null ; then \
-		sed '/hpaio/d' /etc/sane.d/dll.conf > /tmp/$$; \
-		cp -f /tmp/$$ /etc/sane.d/dll.conf; \
-		rm -f /tmp/$$; \
-	fi; \
+if [ "$1" = 0 ]; then
+	if grep -q ^hpaio /etc/sane.d/dll.conf 2>/dev/null; then
+		sed -i '/^hpaio/d' /etc/sane.d/dll.conf
+	fi
 fi
 %endif
 
-# Restart CUPS to make the removal of the Fax PPD known to it
-/bin/systemctl restart cups.socket ||:
-/bin/systemctl restart cups.service ||:
-
 %postun -n hplip-hpijs-ppds
 # Restart CUPS to make the removal of the printing PPDs known to it
-/bin/systemctl restart cups.socket ||:
-/bin/systemctl restart cups.service ||:
+/bin/systemctl try-restart cups.socket ||:
+/bin/systemctl try-restart cups.service ||:
 
 %files
 %config(noreplace) %{_sysconfdir}/hp
@@ -635,7 +623,7 @@ fi
 %{_libdir}/python*/*/*.so*
 # CUPS backends (0755 permissions, so that CUPS 1.2 runs these backends
 # as lp user)
-# Note: this must be /usr/lib not %{_libdir}, since that's the
+# Note: this must be /usr/lib not libdir, since that's the
 # CUPS serverbin directory.
 %attr(0755,root,root) %{_prefix}/lib/cups/backend/hp*
 %{_prefix}/lib/cups/filter/hpcups
@@ -650,7 +638,7 @@ fi
 %{_datadir}/hplip/check-plugin.py*
 %{_datadir}/hplip/clean.py*
 %{_datadir}/hplip/colorcal.py*
-#{_datadir}/hplip/config_usb_printer.py*
+# config_usb_printer.py is not packaged
 %{_datadir}/hplip/devicesettings.py*
 %{_datadir}/hplip/diagnose_plugin.py*
 %{_datadir}/hplip/diagnose_queues.py*
@@ -678,9 +666,9 @@ fi
 %{_datadir}/hplip/setup.py*
 %{_datadir}/hplip/testpage.py*
 %{_datadir}/hplip/timedate.py*
-#%{_datadir}/hplip/uninstall.py*
+# uninstall.py is not packaged
 %{_datadir}/hplip/unload.py*
-#%{_datadir}/hplip/upgrade.py*
+# upgrade.py is not packaged
 %{_datadir}/hplip/wificonfig.py*
 # Directories
 %{_datadir}/hplip/base
@@ -688,7 +676,6 @@ fi
 %dir %{_datadir}/hplip/data
 %{_datadir}/hplip/data/ldl
 %{_datadir}/hplip/data/localization
-%{_datadir}/hplip/data/models
 %{_datadir}/hplip/data/pcl
 %{_datadir}/hplip/data/ps
 %{_datadir}/hplip/installer
@@ -734,11 +721,10 @@ fi
 %endif
 
 %files model-data
-#dir %attr(0755,root,lp) /run/hplip
-%{_tmpfilesdir}/hplip.conf
 %{_udevrulesdir}/*.rules
 %{_datadir}/hplip/data/models
-%{_datadir}/cups/drv/hp
+%dir %{_datadir}/cups/drv/hp
+%{_datadir}/cups/drv/hp/hpijs.drv
 
 %files gui
 %{_bindir}/hp-check
