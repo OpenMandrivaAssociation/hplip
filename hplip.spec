@@ -45,6 +45,10 @@ Source4:	hplip.rpmlintrc
 Source5:	http://hplipopensource.com/hplip-web/smartinstall/SmartInstallDisable-Tool.run
 Source6:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hp-laserjet_cp_1025nw.ppd.gz
 Source7:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hp-laserjet_professional_p_1102w.ppd.gz
+# PyQt6 compatibility for the still-PyQt5 upstream UI
+Source8:	hplip-qtcompat.py
+Source9:	hplip-port-qt6.py
+Source10:	hplip-qt6-smoketest.py
 
 # (Anssi) Apply udev rules even on ACTION=="change", otherwise the permissions
 # do not get applied in %%post on a new installation:
@@ -180,13 +184,16 @@ BuildRequires:	pkgconfig(zlib)
 %if %{sane_backend}
 BuildRequires:	pkgconfig(sane-backends)
 %endif
+# For the offscreen PyQt6 UI smoke test
+BuildRequires:	python-qt6-gui
+BuildRequires:	python-qt6-widgets
+BuildRequires:	python-qt6-dbus
 Requires(post):	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
 Requires:	hplip-model-data = %{EVRD}
 Requires:	hplip-hpijs = %{EVRD}
 Requires:	hplip-hpijs-ppds = %{EVRD}
-Requires:	python%{pyver}dist(pyqt5-sip)
 # Needed for communicating with ethernet-connected printers
 Requires:	net-snmp-mibs
 # Needed to generate fax cover pages
@@ -307,9 +314,10 @@ determine whether HPLIP has to be installed or not.
 %package gui
 Summary:	HPLIP graphical tools
 Group:		System/Printing
-Requires:	python-qt5-gui
-Requires:	python-qt5-widgets
-Requires:	python-qt5-dbus
+Requires:	python-qt6-gui
+Requires:	python-qt6-widgets
+Requires:	python-qt6-dbus
+Requires:	python%{pyver}dist(pyqt6-sip)
 Requires:	python%{pyver}dist(distro)
 Requires:	%{name} = %{EVRD}
 
@@ -383,6 +391,10 @@ sed -i '/chgrp/d' Makefile.am
 # cups_drv.inc lists both the glob and every individual PPD. GNU install 9.x
 # refuses to copy the same destination twice in one invocation.
 sed -i '/ppd\/hpcups\/\*\.ppd\.gz/d' cups_drv.inc
+
+# Upstream UI is still PyQt5; run it on PyQt6 via a compat layer.
+install -m 644 %{SOURCE8} ui5/qtcompat.py
+%{__python} %{SOURCE9} .
 
 chmod -R u+w .
 
@@ -502,6 +514,13 @@ mkdir -p %{buildroot}%{_docdir}/%{name}
 pushd %{buildroot}%{_datadir}/%{name}
 %{__python} -m compileall .
 popd
+
+# Make sure the PyQt6 UI actually imports and can construct dialogs.
+# There is no compile-time check for this Python/Qt code.
+install -m 644 ui5/qtcompat.py %{buildroot}%{_datadir}/hplip/ui5/qtcompat.py
+export QT_QPA_PLATFORM=offscreen
+export PYTHONPATH=%{buildroot}%{_datadir}/hplip:%{buildroot}%{python3_sitearch}${PYTHONPATH:+:$PYTHONPATH}
+%{__python} %{SOURCE10}
 
 # create empty /var/lib/hp/hplip.state to fix hp-plugin installation (mga#5395)
 mkdir -p %{buildroot}%{_localstatedir}/lib/hp/
