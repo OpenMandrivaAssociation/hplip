@@ -522,6 +522,7 @@ popd
 install -m 644 ui5/qtcompat.py %{buildroot}%{_datadir}/hplip/ui5/qtcompat.py
 export QT_QPA_PLATFORM=offscreen
 export PYTHONPATH=%{buildroot}%{_datadir}/hplip:%{buildroot}%{python3_sitearch}${PYTHONPATH:+:$PYTHONPATH}
+export LD_LIBRARY_PATH=%{buildroot}%{_libdir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 %{__python} %{SOURCE10}
 
 # create empty /var/lib/hp/hplip.state to fix hp-plugin installation (mga#5395)
