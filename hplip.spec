@@ -188,6 +188,7 @@ BuildRequires:	pkgconfig(sane-backends)
 BuildRequires:	python-qt6-gui
 BuildRequires:	python-qt6-widgets
 BuildRequires:	python-qt6-dbus
+BuildRequires:	python%{pyver}dist(pygobject)
 Requires(post):	cups
 # For dynamic ppd generation.
 Requires:	foomatic-filters
