@@ -405,6 +405,8 @@ touch NEWS README AUTHORS ChangeLog
 sed -i 's|^AM_INIT_AUTOMAKE|AM_INIT_AUTOMAKE([foreign])|g' configure.in
 export LIBTOOLIZE=slibtoolize
 export LIBTOOL=slibtool-shared
+# slibtool.m4 provides AC_PROG_LIBTOOL / AC_DISABLE_STATIC
+export ACLOCAL_PATH=/usr/share/slibtool${ACLOCAL_PATH:+:$ACLOCAL_PATH}
 autoreconf -ifv
 
 %if !%{sane_backend}
