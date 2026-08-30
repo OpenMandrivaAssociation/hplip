@@ -70,14 +70,20 @@ for _cls in (
 	except Exception:
 		pass
 
-# exec_() / exec_loop() aliases (Qt3/Qt5 names)
+# exec_() / exec_loop() aliases (Qt3/Qt5 names).
+# Assigning the SIP method itself is not a usable instance method on
+# subclasses (NoDevicesDialog.exec_() would TypeError and abort).
+def _exec_alias(self, *args, **kwargs):
+	return self.exec(*args, **kwargs)
+
+
 for _cls in (QApplication, QDialog, QMenu, QEventLoop, QMessageBox,
 		QColorDialog, QFileDialog, QFontDialog, QInputDialog,
 		QProgressDialog, QWizard):
 	if hasattr(_cls, "exec") and not hasattr(_cls, "exec_"):
-		_cls.exec_ = _cls.exec
+		_cls.exec_ = _exec_alias
 	if hasattr(_cls, "exec") and not hasattr(_cls, "exec_loop"):
-		_cls.exec_loop = _cls.exec
+		_cls.exec_loop = _exec_alias
 
 # qApp was a PyQt5 builtin
 class _QAppProxy:
@@ -94,11 +100,172 @@ qApp = _QAppProxy()
 
 # Removed / renamed Qt 6 APIs used by HPLIP
 if not hasattr(QDateTime, "setTime_t"):
-	QDateTime.setTime_t = QDateTime.setSecsSinceEpoch
+	# Assigning the SIP method itself is not a usable instance method.
+	def _setTime_t(self, secs):
+		return self.setSecsSinceEpoch(int(secs))
+
+	QDateTime.setTime_t = _setTime_t
 
 if not hasattr(QApplication, "UnicodeUTF8"):
 	QApplication.UnicodeUTF8 = 0
 	QtWidgets.QApplication.UnicodeUTF8 = 0
+
+if not hasattr(QPalette, "Background") and hasattr(QPalette, "Window"):
+	QPalette.Background = QPalette.Window
+
+if not hasattr(QFontMetrics, "width") and hasattr(QFontMetrics, "horizontalAdvance"):
+	def _fm_width(self, *args, **kwargs):
+		return self.horizontalAdvance(*args, **kwargs)
+
+	QFontMetrics.width = _fm_width
+
+if not hasattr(QHeaderView, "setClickable") and hasattr(QHeaderView, "setSectionsClickable"):
+	def _setClickable(self, *args, **kwargs):
+		return self.setSectionsClickable(*args, **kwargs)
+
+	QHeaderView.setClickable = _setClickable
+if not hasattr(QHeaderView, "setMovable") and hasattr(QHeaderView, "setSectionsMovable"):
+	def _setMovable(self, *args, **kwargs):
+		return self.setSectionsMovable(*args, **kwargs)
+
+	QHeaderView.setMovable = _setMovable
+if not hasattr(QHeaderView, "setResizeMode") and hasattr(QHeaderView, "setSectionResizeMode"):
+	def _setResizeMode(self, *args, **kwargs):
+		return self.setSectionResizeMode(*args, **kwargs)
+
+	QHeaderView.setResizeMode = _setResizeMode
+
+# Qt3 QListWidget.setSelected(item, bool) — used by DevMgr5.activateDevice()
+if not hasattr(QListWidget, "setSelected"):
+	def _list_setSelected(self, item, selected=True):
+		if item is not None:
+			item.setSelected(selected)
+
+	QListWidget.setSelected = _list_setSelected
+
+# Qt 6 QDropEvent dropped pos(); fax address-book DnD still calls e.pos()
+if not hasattr(QDropEvent, "pos") and hasattr(QDropEvent, "position"):
+	def _drop_pos(self):
+		return self.position().toPoint()
+
+	QDropEvent.pos = _drop_pos
+
+if not hasattr(QWheelEvent, "pos") and hasattr(QWheelEvent, "position"):
+	def _wheel_pos(self):
+		return self.position().toPoint()
+
+	QWheelEvent.pos = _wheel_pos
+
+
+class _PathResult(str):
+	"""File-dialog path that is both a string (PyQt4) and indexable (PyQt5/6)."""
+
+	def __new__(cls, path, selected_filter=""):
+		obj = str.__new__(cls, path or "")
+		obj._filter = selected_filter
+		return obj
+
+	def __getitem__(self, idx):
+		if idx == 0:
+			return str(self)
+		if idx == 1:
+			return self._filter
+		raise IndexError(idx)
+
+	def __iter__(self):
+		yield str(self)
+		yield self._filter
+
+
+_orig_getOpenFileName = QFileDialog.getOpenFileName
+_orig_getSaveFileName = QFileDialog.getSaveFileName
+
+
+def _wrap_file_path_dialog(orig):
+	def wrapped(*args, **kwargs):
+		result = orig(*args, **kwargs)
+		if isinstance(result, tuple):
+			path = result[0] if result else ""
+			filt = result[1] if len(result) > 1 else ""
+			return _PathResult(path, filt)
+		return _PathResult(result)
+
+	return staticmethod(wrapped)
+
+
+QFileDialog.getOpenFileName = _wrap_file_path_dialog(_orig_getOpenFileName)
+QFileDialog.getSaveFileName = _wrap_file_path_dialog(_orig_getSaveFileName)
+
+
+class _SignalSubscriptProxy:
+	"""Restore PyQt5 signal[type] selection for overloads dropped in Qt 6."""
+
+	def __init__(self, default, extra):
+		self._default = default
+		self._extra = extra
+
+	def _resolve(self, key):
+		if key in self._extra:
+			return self._extra[key]
+		if key is str or key == "str" or (
+			isinstance(key, str) and "QString" in key
+		):
+			return self._extra.get(str)
+		if key is int or key == "int":
+			return self._extra.get(int)
+		return None
+
+	def __getitem__(self, key):
+		try:
+			return self._default[key]
+		except KeyError:
+			mapped = self._resolve(key)
+			if mapped is not None:
+				return mapped
+			raise
+
+	def connect(self, *args, **kwargs):
+		return self._default.connect(*args, **kwargs)
+
+	def disconnect(self, *args, **kwargs):
+		return self._default.disconnect(*args, **kwargs)
+
+	def emit(self, *args, **kwargs):
+		return self._default.emit(*args, **kwargs)
+
+	def __getattr__(self, name):
+		return getattr(self._default, name)
+
+
+class _RestoredSignalOverloads:
+	def __init__(self, orig, extra_name):
+		self._orig = orig
+		self._extra_name = extra_name
+
+	def __get__(self, obj, objtype=None):
+		if obj is None:
+			return self._orig
+		default = self._orig.__get__(obj, objtype)
+		extra = {
+			str: getattr(obj, self._extra_name),
+			int: default,
+		}
+		return _SignalSubscriptProxy(default, extra)
+
+
+# Qt 6 dropped the QString overloads of these QComboBox signals.
+# PyQt5 code selects them with activated[str] / currentIndexChanged[str] /
+# highlighted[str]; map those back onto the Qt 6 replacements.
+_QComboBox = QtWidgets.QComboBox
+_QComboBox.activated = _RestoredSignalOverloads(
+	_QComboBox.activated, "textActivated"
+)
+_QComboBox.currentIndexChanged = _RestoredSignalOverloads(
+	_QComboBox.currentIndexChanged, "currentTextChanged"
+)
+_QComboBox.highlighted = _RestoredSignalOverloads(
+	_QComboBox.highlighted, "textHighlighted"
+)
 
 
 class QTextCodec:

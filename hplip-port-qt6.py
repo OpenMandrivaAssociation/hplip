@@ -107,6 +107,81 @@ def SIGNAL_name(sig: str) -> str:
 	return sig.split("(", 1)[0].strip()
 
 
+# Live PyQt4/ui4 imports that the PyQt5 rewrite never touched.
+PYQT4_UI4_BLOCK_RE = re.compile(
+	r"""(?P<indent>[ \t]*)try:\n"""
+	r"""(?P=indent)    from PyQt4\.QtGui import QApplication(?P<extra>, QMessageBox)?\n"""
+	r"""(?P=indent)    from ui4\.(?P<mod>\w+) import (?P<cls>\w+)\n"""
+	r"""(?:(?P=indent)    from installer import core_install\n)?"""
+	r"""(?P=indent)except ImportError:\n"""
+	r"""(?P=indent)    log\.error\("[^"]*"\)\n"""
+	r"""(?P=indent)    sys\.exit\(1\)\n""",
+)
+
+
+def _ensure_import_module(text: str) -> str:
+	if re.search(
+		r"from importlib import import_module|dyn_import_mod as import_module",
+		text,
+	):
+		return text
+	needle = "from base.g import *\n"
+	if needle in text:
+		return text.replace(
+			needle,
+			needle
+			+ "try:\n"
+			+ "    from importlib import import_module\n"
+			+ "except ImportError:\n"
+			+ "    from base.utils import dyn_import_mod as import_module\n",
+			1,
+		)
+	return text
+
+
+def rewrite_qt4_entry(text: str) -> str:
+	"""Point leftover hp-* GUI tools at ui5 via import_dialog()."""
+
+	def repl(m: re.Match) -> str:
+		indent = m.group("indent")
+		mod = m.group("mod")
+		cls = m.group("cls")
+		extra = m.group("extra") or ""
+		block = (
+			f"{indent}QApplication, ui_package = utils.import_dialog(ui_toolkit)\n"
+			f"{indent}ui = import_module(ui_package + \".{mod}\")\n"
+		)
+		if extra:
+			block += f"{indent}from ui5.qtcompat import QMessageBox\n"
+		# Keep the dialog construction working after the import rewrite.
+		nonlocal_text_fix.append((rf"\b{cls}\(", f"ui.{cls}("))
+		return block
+
+	nonlocal_text_fix: list[tuple[str, str]] = []
+	text = PYQT4_UI4_BLOCK_RE.sub(repl, text)
+	for pat, repl_s in nonlocal_text_fix:
+		text = re.sub(pat, repl_s, text)
+	if "utils.import_dialog(ui_toolkit)" in text:
+		text = _ensure_import_module(text)
+	# Tools that only advertised Qt4 never selected the configured Qt5 toolkit.
+	text = text.replace("(UI_TOOLKIT_QT4,)", "(UI_TOOLKIT_QT4, UI_TOOLKIT_QT5)")
+	# cups_operation() treated every non-Qt3 toolkit as Qt4.
+	text = text.replace(
+		"from ui4 import ui_utils\n                    ui_utils.FailureUI(",
+		"from ui5 import ui_utils\n                    ui_utils.FailureUI(",
+	)
+	return text
+
+
+def rewrite_signal_defs(text: str) -> str:
+	# FAB group table emits (row, items) but the signal was declared with no args.
+	text = text.replace(
+		"namesAddedToGroup = pyqtSignal()",
+		"namesAddedToGroup = pyqtSignal(int, object)",
+	)
+	return text
+
+
 def process(path: pathlib.Path) -> bool:
 	rel = path.relative_to(ROOT)
 	parts = rel.parts
@@ -118,6 +193,12 @@ def process(path: pathlib.Path) -> bool:
 	if "PyQt5" in text or "pyqt5" in text or "QTextCodec" in text or "SIGNAL(" in text:
 		text = rewrite_imports(text, in_ui5)
 		text = rewrite_apis(text)
+	if "from PyQt4" in text or "from ui4" in text:
+		text = rewrite_qt4_entry(text)
+	if "utils.import_dialog(ui_toolkit)" in text:
+		text = _ensure_import_module(text)
+	if "pyqtSignal()" in text:
+		text = rewrite_signal_defs(text)
 	if text != orig:
 		path.write_text(text, encoding="utf-8")
 		return True
