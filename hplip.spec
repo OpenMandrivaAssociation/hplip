@@ -676,7 +676,6 @@ fi
 %{_datadir}/hplip/logcapture.py*
 %{_datadir}/hplip/makecopies.py*
 %{_datadir}/hplip/makeuri.py*
-%{_datadir}/hplip/pkservice.py*
 %{_datadir}/hplip/plugin.py*
 %{_datadir}/hplip/pqdiag.py*
 %{_datadir}/hplip/printsettings.py*
