@@ -164,26 +164,6 @@ diff -up hplip-3.25.2/prnt/hpijs/systemservices.cpp.covscan hplip-3.25.2/prnt/hp
  }
  
  APDK_END_NAMESPACE
-diff -up hplip-3.25.2/prnt/hpps/hppsfilter.c.covscan hplip-3.25.2/prnt/hpps/hppsfilter.c
---- hplip-3.25.2/prnt/hpps/hppsfilter.c.covscan	2025-02-27 13:12:29.000000000 +0100
-+++ hplip-3.25.2/prnt/hpps/hppsfilter.c	2025-04-11 10:21:58.037072084 +0200
-@@ -329,13 +329,13 @@ static void WriteHeader(char **argument)
-     /*		Writing Header Information
-     argument[1] = JOB ID , argument[2]= USERNAME,  argument[3] = TITLE		*/
-     hpwrite("\x1b%-12345X@PJL JOBNAME=", strlen("\x1b%-12345X@PJL JOBNAME="));
--    sprintf(buffer, "hplip_%s_%s\x0a", argument[2], argument[1]);
-+    snprintf(buffer, MAX_BUFFER-1, "hplip_%s_%s\x0a", argument[2], argument[1]);
-     hpwrite(buffer, strlen(buffer));
-     memset(buffer, 0, sizeof(buffer));
--    sprintf(buffer, "@PJL SET USERNAME=\"%s\"\x0a", argument[2]);
-+    snprintf(buffer, MAX_BUFFER-1, "@PJL SET USERNAME=\"%s\"\x0a", argument[2]);
-     hpwrite(buffer, strlen(buffer));
-     memset(buffer, 0, sizeof(buffer));
--    sprintf(buffer, "@PJL SET JOBNAME=\"%s\"\x0a", argument[3]);
-+    snprintf(buffer, MAX_BUFFER-1, "@PJL SET JOBNAME=\"%s\"\x0a", argument[3]);
-     hpwrite(buffer, strlen(buffer));
-     fprintf(stderr, "HP PS filter func = WriteHeader           : WRITING PJL HEADER INFO\n");
-     return;
 diff -up hplip-3.25.2/protocol/hp_ipp.h.covscan hplip-3.25.2/protocol/hp_ipp.h
 --- hplip-3.25.2/protocol/hp_ipp.h.covscan	2025-02-27 13:12:29.000000000 +0100
 +++ hplip-3.25.2/protocol/hp_ipp.h	2025-04-11 10:21:58.037239020 +0200
@@ -407,18 +387,10 @@ diff -up hplip-3.25.2/scan/sane/marvell.c.covscan hplip-3.25.2/scan/sane/marvell
        goto bugout;
     }
  
-diff -up hplip-3.25.2/scan/sane/sclpml.c.covscan hplip-3.25.2/scan/sane/sclpml.c
---- hplip-3.25.2/scan/sane/sclpml.c.covscan	2025-02-27 13:12:29.000000000 +0100
-+++ hplip-3.25.2/scan/sane/sclpml.c	2025-04-11 10:21:58.038605168 +0200
-@@ -30,6 +30,7 @@
- #include <unistd.h>
- #include <fcntl.h>
- #include <string.h>
-+#include <sys/time.h>
- #include "sane.h"
- #include "saneopts.h"
- #include "common.h"
-@@ -2090,7 +2091,7 @@ void sclpml_close(SANE_Handle handle)
+diff -up hplip-3.26.6/scan/sane/sclpml.c.covscan hplip-3.26.6/scan/sane/sclpml.c
+--- hplip-3.26.6/scan/sane/sclpml.c.covscan	2026-09-16 00:00:00.000000000 +0000
++++ hplip-3.26.6/scan/sane/sclpml.c	2026-09-17 00:00:00.000000000 +0000
+@@ -2114,7 +2114,7 @@ void sclpml_close(SANE_Handle handle)
      DBG(8, "sane_hpaio_close(): %s %d\n", __FILE__, __LINE__); 
      if (hpaio == NULL || hpaio != session)
      {

@@ -30,8 +30,8 @@
 
 Summary:	HP printer/all-in-one driver infrastructure
 Name:		hplip
-Version:	3.26.4
-Release:	3
+Version:	3.26.6
+Release:	1
 License:	GPLv2+ and MIT
 Group:		System/Printing
 Url:		https://developers.hp.com/hp-linux-imaging-and-printing
@@ -90,7 +90,7 @@ Patch127:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-use-binar
 Patch128:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-error-print.patch
 Patch129:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpfax-importerror-print.patch
 Patch130:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-wifisetup.patch
-# Local (rebased for 3.26.4): multi-keyserver failover; keep new upstream key
+# Local (rebased for 3.26.6): multi-keyserver failover; keep new upstream key
 Patch131:	hplip-keyserver.patch
 Patch132:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0026-Call-QMessageBox-constructors-of-PyQT5-with-the-corr.patch
 Patch133:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
@@ -114,7 +114,8 @@ Patch150:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-find-driv
 Patch151:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-clean-ldl.patch
 Patch152:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-revert-plugins.patch
 #Patch153:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-check-userperms.patch
-Patch154:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-fab-import.patch
+# 3.26.6 already unpacks QFileDialog.getOpenFileName() as result, _
+#Patch154:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-fab-import.patch
 Patch155:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpsetup-noscanjets.patch
 Patch156:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-hpfirmware-timeout.patch
 Patch157:	https://src.fedoraproject.org/rpms/hplip/raw/rawhide/f/hplip-gpgdir-perms.patch
@@ -137,7 +138,8 @@ Patch173:	hplip-no-urlopener.patch
 Patch174:	hplip-scan-size.patch
 Patch175:	hplip-plugin-stdout.patch
 Patch176:	hplip-curl-fallback.patch
-Patch177:	hplip-CVE-2026-8631-osh.patch
+# Overflow checks landed upstream in 3.26.6
+#Patch177:	hplip-CVE-2026-8631-osh.patch
 
 # Debian/Ubuntu patches
 # taken from http://patch-tracker.debian.org/package/hplip/3.11.7-1
