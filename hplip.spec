@@ -601,9 +601,6 @@ fi
 %files
 %config(noreplace) %{_sysconfdir}/hp
 %dir %{_localstatedir}/lib/hp/
-%{_sysconfdir}/dbus-1/system.d/com.hp.hplip.conf
-%{_datadir}/dbus-1/system-services/com.hp.hplip.service
-%{_datadir}/polkit-1/actions/com.hp.hplip.policy
 %{_bindir}/hp-uiscan
 %{_bindir}/hp-align
 %{_bindir}/hp-clean
@@ -625,7 +622,6 @@ fi
 %{_bindir}/hp-logcapture
 %{_bindir}/hp-makecopies
 %{_bindir}/hp-makeuri
-%{_bindir}/hp-pkservice
 %{_bindir}/hp-plugin
 %{_bindir}/hp-pqdiag
 %{_bindir}/hp-printsettings
