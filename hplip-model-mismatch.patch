@@ -41,8 +41,9 @@ index d546ec1..adb3d87 100644
  
     if ((fp = fopen(datFile, "r")) == NULL)
        goto bugout;
-@@ -422,10 +425,17 @@ static int ParseFile(char *datFile, char *model, char *attr, int attrSize, int *
-          strncpy(section, rcbuf+1, sizeof(section)); /* found new section */
+@@ -421,11 +424,18 @@ static int ParseFile(char *datFile, char *model, char *attr, int attrSize, int *
+          strncpy(section, rcbuf+1, sizeof(section)-1); /* found new section */
+          section[sizeof(section)-1] = '\0';
           n = strlen(section);
           section[n-2]=0; /* remove ']' and CR */
 +         n -= 2;
